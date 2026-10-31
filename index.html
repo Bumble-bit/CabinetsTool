@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diseñador de armarios</title>
+<meta name="description" content="Diseña tu armario a medida: vistas 3D, despiece por fases, planos de taller y DXF para AutoCAD. Gratis y en tu navegador.">
+<style>
+:root{--navy:#14306b;--blue:#2a4aa8;--blue2:#3558c4;--ink:#1f2430;--mut:#58627b;--line:#d9dfec;--bg:#f3f5fa;--card:#fff;--ok:#1d5a30;--warn:#9b4a00}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+a{color:var(--blue)}
+:focus-visible{outline:3px solid #7aa2ff;outline-offset:2px;border-radius:6px}
+.sr{position:absolute;left:-9999px}
+/* ---------- portada ---------- */
+#home{min-height:100vh;display:flex;flex-direction:column}
+.hero{background:linear-gradient(135deg,#0f2552 0%,#1c3f8f 55%,#2a4aa8 100%);color:#fff;padding:34px 22px 74px;position:relative;overflow:hidden}
+.hero .in{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1.25fr .75fr;gap:28px;align-items:center}
+.hero h1{font-size:clamp(28px,4.4vw,44px);line-height:1.1;margin:0 0 12px;letter-spacing:-.5px}
+.hero p{margin:0 0 14px;font-size:clamp(15px,1.8vw,18px);color:#dbe6ff;max-width:560px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chips span{font-size:12.5px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);padding:3px 11px;border-radius:99px}
+.hero svg{width:100%;height:auto;max-height:250px;filter:drop-shadow(0 10px 22px rgba(0,0,0,.35))}
+.wrap{max-width:1040px;margin:-46px auto 0;padding:0 18px 40px;width:100%;flex:1;position:relative;z-index:2}
+.resume{display:none;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-left:5px solid #2e7d4f;border-radius:12px;padding:11px 16px;margin-bottom:14px;box-shadow:0 6px 18px rgba(20,48,107,.12)}
+.resume b{color:var(--navy)}
+.resume .sp{flex:1}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 20px 18px;box-shadow:0 8px 24px rgba(20,48,107,.10);display:flex;flex-direction:column;gap:8px;position:relative;transition:transform .15s,box-shadow .15s,border-color .15s}
+.card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(20,48,107,.16)}
+.card .ico{width:46px;height:46px;border-radius:12px;background:#e8eefc;color:var(--blue);display:grid;place-items:center;font-size:24px}
+.card h2{margin:4px 0 0;font-size:20px;color:var(--navy)}
+.card p{margin:0;color:var(--mut);font-size:14px}
+.card .act{margin-top:auto;padding-top:10px}
+label.fl{display:block;font-size:12.5px;font-weight:600;color:var(--navy);margin:6px 0 4px}
+input[type=text]{width:100%;font:inherit;font-size:15px;padding:10px 12px;border:1.5px solid #b9c3dc;border-radius:10px;background:#fff;color:var(--ink)}
+input[type=text]:focus{border-color:var(--blue);outline:3px solid #cfe0ff}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:700;font-size:15.5px;border-radius:11px;padding:11px 18px;cursor:pointer;border:1.5px solid var(--blue);background:var(--blue);color:#fff;text-decoration:none;width:100%}
+.btn:hover{background:var(--blue2)}
+.btn.sec{background:#fff;color:var(--navy)}
+.btn.sec:hover{background:#eef3ff}
+.btn.sm{width:auto;padding:7px 14px;font-size:14px}
+.drop{display:block;border:2px dashed #aebbe0;border-radius:12px;padding:14px;text-align:center;color:var(--mut);font-size:13.5px;background:#f8faff;cursor:pointer;transition:background .15s,border-color .15s}
+.drop.over{background:#e6eeff;border-color:var(--blue)}
+.drop b{color:var(--navy)}
+.msg{font-size:13px;min-height:18px;margin-top:6px}
+.msg.bad{color:var(--warn)}.msg.ok{color:var(--ok)}
+.foot{max-width:1040px;margin:0 auto;padding:0 18px 28px;color:var(--mut);font-size:12.5px;display:flex;flex-wrap:wrap;gap:6px 18px}
+.foot span::before{content:"· ";color:#9aa6c4}.foot span:first-child::before{content:""}
+/* ---------- diálogo ---------- */
+#dlg{position:fixed;inset:0;background:rgba(15,25,55,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+#dlg.on{display:flex}
+#dlg .box{background:#fff;border-radius:16px;max-width:460px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+#dlg h3{margin:0 0 8px;color:var(--navy);font-size:18px}
+#dlg p{margin:0 0 16px;color:var(--mut);font-size:14px}
+#dlg .row{display:flex;gap:10px;flex-wrap:wrap}
+#dlg .row .btn{flex:1;width:auto}
+/* ---------- manual ---------- */
+#manual{display:none;min-height:100vh}
+.mtop{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);padding:10px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.mtop h1{font-size:18px;margin:0;color:var(--navy);flex:1;min-width:180px}
+.mtop input[type=search]{font:inherit;padding:7px 12px;border:1.5px solid #b9c3dc;border-radius:10px;min-width:200px}
+.mlay{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:260px 1fr;gap:26px;padding:20px 18px 60px}
+.toc{position:sticky;top:70px;align-self:start;max-height:calc(100vh - 90px);overflow:auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 10px}
+.toc b{display:block;font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--mut);margin:2px 8px 6px}
+.toc a{display:block;text-decoration:none;color:var(--ink);font-size:13.5px;padding:5px 9px;border-radius:8px}
+.toc a:hover,.toc a.on{background:#e8eefc;color:var(--navy)}
+.mbody{background:#fff;border:1px solid var(--line);border-radius:16px;padding:8px 30px 30px;min-width:0}
+.m-sec{padding-top:22px;border-top:1px solid #eef1f8;margin-top:18px}
+.m-sec:first-of-type{border-top:none;margin-top:0}
+.m-sec h2{font-size:22px;color:var(--navy);margin:0 0 8px}
+.m-sec h3{font-size:16px;color:var(--blue);margin:18px 0 4px}
+.m-sec p,.m-sec li{font-size:15px}
+.m-sec ul,.m-sec ol{padding-left:22px;margin:6px 0 10px}
+.m-sec li{margin:3px 0}
+code,kbd{font-family:Consolas,"Cascadia Mono",monospace;font-size:.9em;background:#eef2fb;border:1px solid #dbe3f5;border-radius:5px;padding:0 5px}
+kbd{border-bottom-width:2px}
+.cmd{display:inline-block;background:#eaf0ff;border:1px solid #c6d3f5;border-radius:99px;padding:1px 10px;margin:2px 3px 2px 0;font-size:13.5px;color:var(--navy)}
+.tip,.warnb,.note{border-radius:10px;padding:9px 14px;margin:12px 0;font-size:14.5px}
+.tip{background:#eaf7ee;border:1px solid #9fd3ae;color:#1d5a30}
+.warnb{background:#fff8e1;border:1px solid #e3c36a;color:#6a4a00}
+.note{background:#eef3ff;border:1px solid #c6d3f5;color:#14306b}
+table.t{border-collapse:collapse;width:100%;font-size:14px;margin:8px 0 12px}
+table.t th,table.t td{border:1px solid #e1e6f2;padding:6px 10px;text-align:left;vertical-align:top}
+table.t th{background:#f3f6fd;color:var(--navy)}
+.ph{display:inline-block;font-size:12px;font-weight:700;border-radius:99px;padding:1px 10px;color:#fff}
+.ph.c{background:#6b4b2a}.ph.p{background:#c26a00}.ph.a{background:#2e7d4f}
+.flow{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin:10px 0;counter-reset:f}
+.flow div{background:#f6f8fe;border:1px solid #dbe3f5;border-radius:12px;padding:10px 12px;font-size:14px;counter-increment:f}
+.flow div::before{content:counter(f);display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-weight:700;font-size:12px;margin-right:8px}
+.hide{display:none!important}
+.nores{display:none;padding:30px;text-align:center;color:var(--mut)}
+@media(max-width:860px){
+  .hero .in{grid-template-columns:1fr}.hero svg{max-height:190px}
+  .cards{grid-template-columns:1fr}
+  .mlay{grid-template-columns:1fr}.toc{position:static;max-height:none}
+  .mbody{padding:6px 16px 24px}
+}
+@media print{
+  body{background:#fff}#home,.mtop,.toc{display:none!important}#manual{display:block!important}
+  .mlay{display:block;padding:0}.mbody{border:none;padding:0}.m-sec{break-inside:avoid-page}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== PORTADA ===================== -->
+<div id="home">
+  <header class="hero">
+    <div class="in">
+      <div>
+        <h1>Diseñador de armarios a medida</h1>
+        <p>Dibuja tu armario sobre las medidas reales de tu pared, mira cómo queda en 3D y obtén el despiece, los planos de taller y los archivos DXF para AutoCAD. Todo en tu navegador, sin instalar nada.</p>
+        <div class="chips"><span>Vista 3D y planos</span><span>Despiece por fases</span><span>DXF para AutoCAD</span><span>Accesorios Intoo</span></div>
+      </div>
+      <svg viewBox="0 0 330 250" role="img" aria-label="Ilustración de un armario con tres cuerpos">
+        <defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#f3e3c4"/><stop offset="1" stop-color="#e2c795"/></linearGradient></defs>
+        <rect x="26" y="186" width="278" height="12" rx="3" fill="#0e2250" opacity=".45"/>
+        <rect x="36" y="22" width="258" height="168" rx="4" fill="url(#g1)" stroke="#fff" stroke-width="3"/>
+        <g stroke="#b99a63" stroke-width="2.5"><line x1="122" y1="22" x2="122" y2="190"/><line x1="208" y1="22" x2="208" y2="190"/></g>
+        <g stroke="#9c7d49" stroke-width="3"><line x1="48" y1="48" x2="112" y2="48"/><line x1="218" y1="48" x2="284" y2="48"/></g>
+        <g fill="#8c8c96"><rect x="52" y="52" width="3" height="46" rx="1.5"/><rect x="66" y="52" width="3" height="40" rx="1.5"/><rect x="80" y="52" width="3" height="48" rx="1.5"/><rect x="94" y="52" width="3" height="42" rx="1.5"/></g>
+        <g stroke="#b99a63" stroke-width="2.5"><line x1="132" y1="64" x2="198" y2="64"/><line x1="132" y1="100" x2="198" y2="100"/><line x1="132" y1="136" x2="198" y2="136"/></g>
+        <g fill="#fff" stroke="#b99a63" stroke-width="2"><rect x="218" y="112" width="66" height="20" rx="2"/><rect x="218" y="136" width="66" height="20" rx="2"/><rect x="218" y="160" width="66" height="22" rx="2"/></g>
+        <g stroke="#2a4aa8" stroke-width="1.6" fill="none"><line x1="36" y1="215" x2="294" y2="215"/><line x1="36" y1="209" x2="36" y2="221"/><line x1="294" y1="209" x2="294" y2="221"/></g>
+        <text x="165" y="236" text-anchor="middle" font-size="13" fill="#fff" font-family="Segoe UI,Arial">2 291 mm</text>
+      </svg>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="resume" id="resume" role="region" aria-label="Proyecto en curso">
+      <span>Tienes un proyecto abierto en este navegador: <b id="resName">—</b></span>
+      <span class="sp"></span>
+      <button class="btn sm" id="btnResume" type="button">Continuar donde lo dejé</button>
+    </div>
+
+    <div class="cards">
+      <section class="card" aria-labelledby="t-new">
+        <div class="ico" aria-hidden="true">✚</div>
+        <h2 id="t-new">Nuevo proyecto</h2>
+        <p>Empieza desde cero con un armario sencillo de tres cuerpos y adáptalo a tu pared.</p>
+        <div class="act">
+          <label class="fl" for="projName">Nombre del proyecto</label>
+          <input type="text" id="projName" placeholder="Ej.: Armario dormitorio" maxlength="80" autocomplete="off">
+          <div style="height:10px"></div>
+          <button class="btn" id="btnNew" type="button">Crear proyecto</button>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="t-load">
+        <div class="ico" aria-hidden="true">📂</div>
+        <h2 id="t-load">Cargar proyecto</h2>
+        <p>Abre un backup guardado antes (archivo <code>.armario.json</code>) para seguir trabajando.</p>
+        <div class="act">
+          <label class="drop" id="drop" for="fileIn" tabindex="0">
+            <b>Elige un archivo</b> o suéltalo aquí
+            <input type="file" id="fileIn" accept=".json,.txt,application/json,text/plain" class="sr">
+          </label>
+          <div class="msg" id="loadMsg" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="t-demo">
+        <div class="ico" aria-hidden="true">🧪</div>
+        <h2 id="t-demo">Proyecto de prueba</h2>
+        <p>Parte de un armario ya diseñado: dos cuerpos con mochetas, registro, cajoneras, accesorios y zócalo. Ideal para explorar cada función.</p>
+        <div class="act"><button class="btn sec" id="btnDemo" type="button">Abrir el ejemplo</button></div>
+      </section>
+
+      <section class="card" aria-labelledby="t-man">
+        <div class="ico" aria-hidden="true">📖</div>
+        <h2 id="t-man">Instrucciones</h2>
+        <p>Manual completo: del primer boceto al pedido de tableros y los planos para el taller.</p>
+        <div class="act"><a class="btn sec" id="btnMan" href="#instrucciones">Leer el manual</a></div>
+      </section>
+    </div>
+    <div class="msg" id="globalMsg" aria-live="polite"></div>
+  </main>
+
+  <footer class="foot">
+    <span>Tus diseños se guardan solo en tu navegador y en los archivos que descargues; no se envían a ningún servidor.</span>
+    <span>Los códigos de accesorios Intoo/Uniferag están transcritos del catálogo público del fabricante: verifícalos con él antes de pedir.</span>
+  </footer>
+</div>
+
+<!-- ===================== DIÁLOGO ===================== -->
+<div id="dlg" role="dialog" aria-modal="true" aria-labelledby="dlgT">
+  <div class="box">
+    <h3 id="dlgT">Ya tienes un proyecto en este navegador</h3>
+    <p id="dlgP">Si continúas, se sustituirá el proyecto en curso. Si no has guardado un backup, cancela y entra con «Continuar donde lo dejé».</p>
+    <div class="row"><button class="btn sec" id="dlgNo" type="button">Cancelar</button><button class="btn" id="dlgYes" type="button">Sustituirlo</button></div>
+  </div>
+</div>
+
+<!-- ===================== MANUAL ===================== -->
+<div id="manual">
+  <div class="mtop">
+    <button class="btn sec sm" id="btnBack" type="button">← Volver al inicio</button>
+    <h1>Manual del diseñador de armarios</h1>
+    <input type="search" id="q" placeholder="Buscar en el manual…" aria-label="Buscar en el manual">
+    <button class="btn sec sm" id="btnPrint" type="button">🖨 Imprimir</button>
+    <a class="btn sm" id="btnGo" href="app.html">Abrir la aplicación</a>
+  </div>
+  <div class="mlay">
+    <nav class="toc" id="toc" aria-label="Índice"><b>Contenido</b></nav>
+    <article class="mbody" id="mbody">
+
+<section class="m-sec" id="empezar">
+<h2>Empezar</h2>
+<p>El diseñador trabaja sobre las <b>medidas reales de tu pared</b>: ancho, altura de techo, mochetas, registros y fondo disponible. A partir de ahí reparte el armario en <b>cuerpos</b> (módulos separados por tabiques), coloca puertas, cajones, baldas y accesorios, y calcula automáticamente el despiece de tableros, los avisos de medidas y los planos.</p>
+<p>Desde la portada tienes cuatro entradas:</p>
+<ul>
+<li><b>Nuevo proyecto</b>: escribe un nombre y pulsa «Crear proyecto». Parte de un armario de tres cuerpos, 240 cm de pared, 60 cm de fondo, puertas abatibles y algo de interior, para que lo adaptes.</li>
+<li><b>Cargar proyecto</b>: abre un backup <code>.armario.json</code> (elígelo o suéltalo en la zona punteada).</li>
+<li><b>Proyecto de prueba</b>: un armario completo ya diseñado para explorar todas las funciones sin miedo a estropear nada.</li>
+<li><b>Instrucciones</b>: este manual.</li>
+</ul>
+<h3>Flujo de trabajo recomendado</h3>
+<div class="flow">
+<div><b>Pared.</b> Mide y escribe el ancho, el techo y las mochetas.</div>
+<div><b>Armario.</b> Alto, fondo, zócalo y número de cuerpos.</div>
+<div><b>Interior.</b> Baldas, barras, cajones y accesorios.</div>
+<div><b>Puertas.</b> Correderas o abatibles; revisa las hojas.</div>
+<div><b>Avisos.</b> Corrige lo que marque en amarillo.</div>
+<div><b>Pedido por fases.</b> Caja → puertas → accesorios.</div>
+<div><b>Planos.</b> PDF o DXF para taller y AutoCAD.</div>
+<div><b>Guardar.</b> Descarga el backup de tu proyecto.</div>
+</div>
+<div class="tip">Las medidas se escriben en <b>centímetros</b> en la aplicación (admite decimales con punto o coma). Los planos, el despiece de corte y los DXF salen en <b>milímetros</b>.</div>
+</section>
+
+<section class="m-sec" id="pantalla">
+<h2>La pantalla de un vistazo</h2>
+<table class="t">
+<tr><th>Zona</th><th>Qué hay</th></tr>
+<tr><td><b>Panel izquierdo</b></td><td>Proyecto (nombre, GUARDAR, CARGAR, Copilot), Agente de diseño y todos los formularios: dimensiones, pared y mochetas, cuerpos, puertas, traseras y una ficha por cada cuerpo.</td></tr>
+<tr><td><b>Barra superior</b></td><td>Deshacer/Rehacer, selector de modo de vista, PNG de las vistas, DXF de planos y DXF de corte.</td></tr>
+<tr><td><b>Vista 3D</b></td><td>Armario en perspectiva con barra de vistas, interruptores de capas y deslizadores de apertura.</td></tr>
+<tr><td><b>Vista inferior</b></td><td>Planta o alzado 2D con cotas amarillas editables y herramienta de medición.</td></tr>
+<tr><td><b>Pestañas de información</b></td><td>Resumen, Accesorios, Puertas, Traseras, Despiece, ✂ Corte, 📐 Planos, Pedido y Catálogo (modo «Tablas»).</td></tr>
+</table>
+<h3>Modos de vista</h3>
+<ul>
+<li><b>3D + Vista inferior</b>: lo más cómodo para diseñar.</li>
+<li><b>3D</b>: solo el modelo, a pantalla completa.</li>
+<li><b>Solo inferior</b>: planta o alzado a pantalla completa.</li>
+<li><b>Tablas</b>: las pestañas de información (despiece, corte, planos…).</li>
+</ul>
+</section>
+
+<section class="m-sec" id="proyecto">
+<h2>Guardar, cargar y deshacer</h2>
+<ul>
+<li><b>GUARDAR</b> descarga un archivo <code>nombre_fecha.armario.json</code> con todo el diseño. También funciona con <kbd>Ctrl</kbd>+<kbd>S</kbd>.</li>
+<li><b>CARGAR</b> abre un backup. También puedes arrastrar el archivo encima de la aplicación.</li>
+<li><b>Autoguardado</b>: el proyecto se guarda solo en el navegador cada pocos segundos y al cerrar. Al volver a la portada verás «Continuar donde lo dejé».</li>
+<li><b>Deshacer / Rehacer</b>: botones de la barra superior, <kbd>Ctrl</kbd>+<kbd>Z</kbd> y <kbd>Ctrl</kbd>+<kbd>Y</kbd> (o <kbd>Ctrl</kbd>+<kbd>Mayús</kbd>+<kbd>Z</kbd>). Guardan hasta 100 pasos.</li>
+<li><b>Nombre del proyecto</b>: el campo del panel izquierdo da nombre al backup y a los archivos de planos y corte.</li>
+</ul>
+<div class="warnb">El autoguardado vive en <b>este navegador y este equipo</b>. Si cambias de ordenador, borras los datos del navegador o usas ventana privada, lo perderás: descarga siempre un backup con GUARDAR.</div>
+<h3>Trabajar con Copilot</h3>
+<p>Despliega «🤖 Copilot» en el panel izquierdo:</p>
+<ol>
+<li><b>Copiar para Copilot</b> copia tu diseño como texto. Pégalo en Copilot (u otro asistente) y pídele cambios o análisis.</li>
+<li>Pega en el cuadro la respuesta que contenga el JSON del diseño y pulsa <b>Pegar desde Copilot</b>. Acepta el texto aunque venga con explicaciones o bloques de código alrededor.</li>
+</ol>
+</section>
+
+<section class="m-sec" id="agente">
+<h2>Agente de diseño (comandos en español)</h2>
+<p>Escribe una frase en el cuadro del agente y pulsa <kbd>Enter</kbd>: la aplicación interpreta y cambia el diseño. Puedes encadenar varias órdenes separadas por «;». Pulsa <b>ayuda</b> para ver la lista completa y haz clic en cualquier etiqueta para rellenarla.</p>
+<h3>Medidas y estructura</h3>
+<span class="cmd">altura 240 y fondo 60</span><span class="cmd">techo izquierdo 252</span><span class="cmd">ancho total 229</span><span class="cmd">espesor 1.9</span><span class="cmd">zócalo 8</span><span class="cmd">retranqueo del zócalo 5</span><span class="cmd">pon 4 cuerpos</span><span class="cmd">cuerpo 2 ancho 72</span><span class="cmd">reparte igual</span>
+<h3>Pared y registro</h3>
+<span class="cmd">mocheta izquierda ancho 40 fondo 25</span><span class="cmd">mocheta derecha 17.5 x 29.5</span><span class="cmd">registro ancho 32 fondo 19 alto 30</span>
+<h3>Puertas</h3>
+<span class="cmd">correderas una hoja por cuerpo con 3 guías</span><span class="cmd">correderas 4 hojas 2 guías</span><span class="cmd">hojas iguales</span><span class="cmd">libera el cuerpo 2</span><span class="cmd">cierra puertas</span><span class="cmd">2 puertas abatibles en cuerpo 1</span><span class="cmd">enrasadas</span><span class="cmd">sin puertas</span><span class="cmd">puertas sobre el zócalo</span><span class="cmd">puertas hasta el suelo</span><span class="cmd">optimiza correderas</span>
+<h3>Interior</h3>
+<span class="cmd">cuerpo 1 4 cajones</span><span class="cmd">cajón pequeño 12</span><span class="cmd">cuerpo 1 cajonera de 745 mm centrada</span><span class="cmd">cuerpo 2 guías de 600 mm</span><span class="cmd">guías automáticas en todos</span><span class="cmd">baldas en cuerpo 2 a 60, 90</span><span class="cmd">barra a 180</span><span class="cmd">nicho cuerpo 1 con baldas</span><span class="cmd">traseras de 5 mm</span><span class="cmd">sin traseras</span>
+<h3>Accesorios</h3>
+<span class="cmd">añade pantalonero de 800 en cuerpo 2 a 130</span><span class="cmd">tamaño a medida 790 al pantalonero</span><span class="cmd">pon el zapatero del cuerpo 2 a 10 cm del fondo</span><span class="cmd">apila accesorios del cuerpo 2</span><span class="cmd">quita accesorios</span>
+<h3>Salidas y vistas</h3>
+<span class="cmd">plano de corte de la caja</span><span class="cmd">dxf de la caja</span><span class="cmd">dxf de las puertas</span><span class="cmd">dxf de los accesorios</span><span class="cmd">planos del armario</span><span class="cmd">dxf de los planos</span><span class="cmd">pdf de los planos</span><span class="cmd">png de los tableros</span><span class="cmd">tablero 244x183</span><span class="cmd">sierra 4 mm</span><span class="cmd">sin veta</span><span class="cmd">guardar</span><span class="cmd">alzado abajo</span><span class="cmd">planta abajo</span><span class="cmd">vista planta</span><span class="cmd">oculta puertas</span><span class="cmd">optimiza anchos</span><span class="cmd">deshacer</span>
+</section>
+
+<section class="m-sec" id="generales">
+<h2>Dimensiones generales</h2>
+<table class="t">
+<tr><th>Campo</th><th>Para qué sirve</th></tr>
+<tr><td>Alto armario</td><td>Altura total desde el suelo. Debe dejar holgura bajo el techo; si no, aparece un aviso.</td></tr>
+<tr><td>Techo izq. / dcho.</td><td>Altura del techo en cada extremo (admite techos inclinados). El hueco bajo techo se muestra bajo el formulario.</td></tr>
+<tr><td>Espesor tablero</td><td>Grosor de laterales, tabiques, tapas y baldas.</td></tr>
+<tr><td>Fondo (frente)</td><td>Profundidad total del armario hasta el frente.</td></tr>
+<tr><td>Zócalo / base</td><td>Altura de la base elevada. Añade un frente de zócalo al despiece (retranqueable) y sube el interior.</td></tr>
+<tr><td>Tabiques</td><td><b>Doble</b>: cada cuerpo tiene sus propios tabiques (módulos independientes). <b>Único compartido</b>: un solo tabique entre cuerpos.</td></tr>
+<tr><td>Acabado tablero / Intoo</td><td>Color del tablero en pantalla y acabado (blanco o moca/antracita) de los herrajes Intoo, que determina los códigos del pedido.</td></tr>
+<tr><td>Tapas y baldas escalonadas</td><td>Las piezas se recortan siguiendo las mochetas para que ajusten a la pared.</td></tr>
+<tr><td>Remate superior</td><td>Muestra una pieza de cierre hasta el techo (alto variable si el techo es inclinado).</td></tr>
+</table>
+</section>
+
+<section class="m-sec" id="pared">
+<h2>Pared y mochetas</h2>
+<p>La pared se describe como una lista de <b>tramos</b> de izquierda a derecha. Cada tramo tiene un nombre, un ancho y un <b>fondo</b> (saliente respecto a la pared de fondo: 0 = pared lisa; un valor mayor es una mocheta o pilar).</p>
+<ul>
+<li><b>Flex</b>: un tramo flexible absorbe los cambios de ancho de los demás para que el total de la pared se mantenga.</li>
+<li><b>+ Tramo / ✕</b>: añade o quita tramos.</li>
+<li><b>Ancho de pared (total)</b>, <b>Pared dcha. (longitud)</b> y <b>Cota de referencia</b> (una línea de referencia en planta).</li>
+<li>Los números amarillos de la <b>planta</b> también son editables: pulsa uno, escribe y <kbd>Enter</kbd>.</li>
+</ul>
+<h3>Registros y obstáculos</h3>
+<p>Un registro (bajante, cuadro eléctrico…) se define por su posición X, ancho, fondo y alto. Con «Entallar tableros que lo crucen» las piezas se recortan para dejarlo libre, y las traseras también.</p>
+</section>
+
+<section class="m-sec" id="cuerpos">
+<h2>Cuerpos y anchos</h2>
+<ul>
+<li><b>− / +</b> cambia el número de cuerpos (1 a 8) y reparte el ancho.</li>
+<li><b>Ancho total armario</b> y <b>Mantener ancho total al editar</b>: al cambiar un cuerpo, los demás se ajustan para conservar el total.</li>
+<li><b>Fijar este ancho</b> (en cada cuerpo) impide que se reparta.</li>
+<li><b>Repartir igual</b> da el mismo ancho a los cuerpos no fijados.</li>
+<li><b>⚙ Optimizar anchos</b> busca el reparto que cumple los rangos de los accesorios Intoo elegidos, las hojas de puerta y las cajoneras. «Priorizar puertas» y «Priorizar cajoneras» cambian el criterio.</li>
+</ul>
+<div class="note">«Ancho módulo» es la distancia entre ejes de tabiques; «ancho útil» es el hueco libre entre tableros. Los accesorios Intoo dependen del ancho útil.</div>
+</section>
+
+<section class="m-sec" id="puertas">
+<h2>Puertas</h2>
+<h3>Correderas (sistema global)</h3>
+<ul>
+<li><b>Nº de hojas</b>, <b>Nº de guías</b> (2 a 6) y <b>Solape entre hojas</b>.</li>
+<li><b>Una hoja por cuerpo</b>: el ancho de cada hoja sigue al de su cuerpo (solo si el nº de hojas = nº de cuerpos).</li>
+<li><b>Corredera: [selector]</b> (en la vista 3D) abre las hojas para dejar libre un cuerpo concreto. La pestaña «Puertas» indica si cada cuerpo puede quedar totalmente libre.</li>
+<li><b>⚙ Optimizar correderas</b> busca la combinación con menos guías en la que cualquier cuerpo pueda quedar libre; <b>Hojas iguales</b> las hace todas del mismo ancho.</li>
+<li>Las guías ocupan fondo: se descuenta automáticamente del interior.</li>
+</ul>
+<h3>Abatibles (por cuerpo)</h3>
+<ul>
+<li>Tipo: sin puertas / abatibles; 1 o 2 hojas; bisagra a la izquierda o derecha (con 1 hoja).</li>
+<li>Montaje: <b>sobrepuesta</b> (cubre el frente) o <b>enrasada</b> (dentro del hueco, restando fondo).</li>
+<li><b>Aplicar a todos</b>, <b>Mejor nº de hojas</b> e <b>Igualar hojas</b> (ajusta los módulos para que todas las hojas midan lo mismo).</li>
+<li>El deslizador <b>Abatible</b> de la vista 3D las abre para comprobar el barrido; la planta dibuja el arco.</li>
+<li>Avisos si una hoja pasa del ancho máximo o queda por debajo del mínimo.</li>
+</ul>
+<h3>Zócalo y altura de las puertas</h3>
+<p>Con zócalo, por defecto las puertas <b>arrancan encima del zócalo</b>. Marca «Las puertas bajan hasta el suelo y tapan el zócalo» para que lo cubran. Un recuadro indica a qué altura empiezan y cuánto miden. Las holguras (entre hojas, arriba, abajo/sobre el zócalo) se ajustan en el mismo bloque.</p>
+</section>
+
+<section class="m-sec" id="traseras">
+<h2>Traseras</h2>
+<ul>
+<li><b>Colocar traseras</b> y su espesor (típico 5 mm).</li>
+<li><b>Fijación</b>: entre tableros, o sobre el canto trasero.</li>
+<li><b>Con retornos en mochetas</b>: añade piezas que cubren el lateral de cada mocheta.</li>
+<li>Siguen el perfil de la pared y dejan libre el registro. La pestaña «Traseras» lista cada pieza con su apoyo.</li>
+</ul>
+<div class="note">Al activar traseras, el fondo útil se reduce en su espesor.</div>
+</section>
+
+<section class="m-sec" id="cajoneras">
+<h2>Cajoneras</h2>
+<ul>
+<li><b>Cajones</b> (0–12), <b>alto de frente</b> y <b>cajón pequeño</b> (0 = ninguno).</li>
+<li><b>Ancho de cajonera (mm)</b>: 0 = todo el hueco; o cualquier medida (745, 790, 1000…) con alineación izquierda, centrada o derecha. Atajos de anchos habituales.</li>
+<li><b>Guía (fondo)</b>: automática (la mayor que cabe) o fija entre <b>250 y 1000 mm</b> (250–700 de 50 en 50, 800 y 1000). Los fondos 350–550 mm además tienen código de Cajón Slim.</li>
+<li><b>Altura de caja</b>: automática o 80/120/170 mm.</li>
+<li><b>Balda de cierre</b>: cierra la parte superior de la cajonera.</li>
+<li>«Mejores cajoneras posibles aquí» propone anchos y guías según la pared.</li>
+</ul>
+<div class="note">Las guías de 250–700, 800 y 1000 mm salen en el pedido como «FERRETERÍA» (producto genérico; la caja del cajón la montas tú). Con «Cajas de cajón» activado en Corte, sus piezas se añaden al despiece de la fase 3.</div>
+</section>
+
+<section class="m-sec" id="interior">
+<h2>Baldas, barras y nichos</h2>
+<ul>
+<li><b>Baldas</b>: lista de cotas superiores en cm (p. ej. <code>60, 90, 120</code>), desde el suelo.</li>
+<li><b>Barras de colgar</b>: cota en cm de cada barra; avisa si el fondo no permite ropa de frente.</li>
+<li><b>Nicho</b>: aprovecha el espacio que dejan las mochetas por detrás de la ropa colgada con <b>baldas traseras</b> o con una <b>estantería extraíble A010</b>.</li>
+</ul>
+</section>
+
+<section class="m-sec" id="accesorios">
+<h2>Accesorios Intoo / Uniferag</h2>
+<p>Añádelos desde el desplegable de cada cuerpo («+ Añadir») o desde la pestaña <b>Catálogo</b>, que lista cada tamaño con su rango de hueco, medidas y códigos.</p>
+<table class="t">
+<tr><th>Ajuste</th><th>Qué hace</th></tr>
+<tr><td>Cota z</td><td>Altura inferior del accesorio sobre el suelo (también editable en el alzado).</td></tr>
+<tr><td>Tamaño</td><td>Auto (según el hueco), un tamaño estándar (600/700/800/900…) o <b>A medida</b> para cualquier ancho (con alineación y atajos).</td></tr>
+<tr><td>Lado</td><td>Los accesorios laterales (estantería, espejo, perchas…) se pegan a la izquierda, derecha o automático.</td></tr>
+<tr><td>Profundidad</td><td>Al frente, al fondo (pared), a una distancia concreta del fondo, o retranqueado desde el frente; con deslizador y atajos.</td></tr>
+<tr><td>Alto</td><td>El zapatero giratorio es regulable en su rango.</td></tr>
+<tr><td>Ajustar cuerpo</td><td>Cambia el ancho del cuerpo para que el tamaño elegido encaje en su rango.</td></tr>
+<tr><td>Apilar</td><td>Coloca los bastidores uno sobre otro, encima de la cajonera.</td></tr>
+</table>
+<div class="warnb">Si un accesorio no encaja (ancho fuera de rango, fondo insuficiente, solape…), el cuerpo muestra un aviso con la cifra exacta que falta. «A medida» no figura en el catálogo estándar: aparece en el pedido como <b>A MEDIDA</b> y debes consultarlo con el fabricante.</div>
+</section>
+
+<section class="m-sec" id="vistas">
+<h2>Vistas 3D y 2D</h2>
+<h3>Vista 3D</h3>
+<ul>
+<li><b>Mouse</b>: arrastrar gira; <kbd>Mayús</kbd>+arrastrar o clic derecho mueve; rueda hace zoom; doble clic restablece la perspectiva. En táctil: un dedo gira, dos hacen zoom.</li>
+<li><b>Vistas</b>: Perspectiva, Isométrica, Frontal, Planta, Izq. y Dcha.</li>
+<li><b>Interruptores</b>: Muros, Techo, Cotas, Puertas, Interior, Traseras, Medidas acc., Registro, Ref.</li>
+<li><b>Deslizadores</b>: <i>Abatible</i> abre las puertas; <i>Extraer</i> saca cajones y accesorios.</li>
+<li>Los avisos aparecen abajo a la izquierda; pulsa «Minimizar» para ocultarlos.</li>
+</ul>
+<h3>Vista inferior (planta / alzado)</h3>
+<ul>
+<li>Alterna <b>Planta</b> y <b>Alzado</b>.</li>
+<li><b>Cotas amarillas</b>: pulsa, escribe el valor y <kbd>Enter</kbd> (aplicar), <kbd>Tab</kbd> (siguiente cota) o <kbd>Esc</kbd> (cancelar). Sirven para pared, tramos, fondo, cuerpos, techo, altura, zócalo y cota z de accesorios.</li>
+<li><b>📏 Medir</b>: haz tus propias cotas pulsando dos puntos (se enganchan a esquinas y bordes). <b>Ortogonal</b> fuerza líneas horizontales/verticales; <kbd>Mayús</kbd> lo invierte. Clic derecho o <kbd>Esc</kbd> cancela; pulsar una cota verde la borra; «Borrar mis cotas» las elimina todas.</li>
+<li><b>Minimizar</b> la vista inferior deja el 3D a pantalla completa.</li>
+</ul>
+</section>
+
+<section class="m-sec" id="pestanas">
+<h2>Pestañas de información</h2>
+<p>Cámbiate al modo <b>Tablas</b> (o usa los botones de la barra superior) para verlas.</p>
+<table class="t">
+<tr><th>Pestaña</th><th>Contenido</th></tr>
+<tr><td>Resumen</td><td>Medidas útiles de cada cuerpo, puertas, cajones y la lista de avisos.</td></tr>
+<tr><td>Accesorios</td><td>Todos los accesorios colocados con tamaño, posición y estado (✓ / ✗).</td></tr>
+<tr><td>Puertas</td><td>Diagnóstico de hojas: anchos, solapes y si cada cuerpo puede quedar libre.</td></tr>
+<tr><td>Traseras</td><td>Piezas de trasera y de retorno con sus medidas.</td></tr>
+<tr><td>Despiece</td><td>Todas las piezas, agrupadas por fases, con medidas, espesor, unidades y notas.</td></tr>
+<tr><td>✂ Corte</td><td>Optimización de tableros por fase, planos de corte y secuencia de cortes.</td></tr>
+<tr><td>📐 Planos</td><td>Juego de planos de taller con capas, PDF y DXF.</td></tr>
+<tr><td>Pedido</td><td>Herrajes, guías y carriles con referencias y códigos, por fase. Descarga CSV.</td></tr>
+<tr><td>Catálogo</td><td>Catálogo Intoo con tamaños, rangos, medidas y códigos; botón «+ Añadir».</td></tr>
+</table>
+</section>
+
+<section class="m-sec" id="fases">
+<h2>Fabricar por fases: caja, puertas y accesorios</h2>
+<p>El despiece se separa en tres bloques para poder <b>encargar primero la caja</b> y decidir con calma las puertas y los accesorios.</p>
+<table class="t">
+<tr><th>Fase</th><th>Qué incluye</th></tr>
+<tr><td><span class="ph c">1 · CAJA</span></td><td>Laterales, tabiques, tapa superior, base, frente de zócalo, traseras y retornos.</td></tr>
+<tr><td><span class="ph p">2 · PUERTAS Y FRENTES</span></td><td>Puertas abatibles o correderas, frentes de cajón y el juego de carriles.</td></tr>
+<tr><td><span class="ph a">3 · ACCESORIOS</span></td><td>Baldas, barras, baldas de nicho, cajas de cajón (si se activan) y herrajes Intoo.</td></tr>
+</table>
+<p>Las piezas se numeran por fase (<code>C-01</code>, <code>P-01</code>, <code>A-01</code>) y cada fase se <b>optimiza por separado</b>: ningún tablero mezcla fases, así que el primer pedido no depende de decisiones futuras.</p>
+<div class="tip">La balda que cierra la cajonera va por defecto en ACCESORIOS. Si quieres pedirla con la caja, marca «Balda de cierre de cajonera en la CAJA».</div>
+</section>
+
+<section class="m-sec" id="corte">
+<h2>Plano de corte (✂ Corte)</h2>
+<h3>Parámetros</h3>
+<table class="t">
+<tr><th>Parámetro</th><th>Descripción</th></tr>
+<tr><td>Tablero</td><td>Tamaño de la plancha (2440×1220, 2440×1830, 2800×2070…) o medidas personalizadas; las traseras pueden usar otro tablero.</td></tr>
+<tr><td>Sierra / Refilado</td><td>Ancho de corte (típico 4 mm) y recorte inicial por lado.</td></tr>
+<tr><td>Respetar veta</td><td>El largo de la pieza va siempre en el sentido de la veta. Desmárcalo para permitir girar las piezas.</td></tr>
+<tr><td>Puertas / Frentes / Traseras</td><td>Incluye o excluye esos grupos del cálculo.</td></tr>
+<tr><td>Cajas de cajón</td><td>Añade laterales, frente/trasera y fondo de las cajas que te montas con guías de ferretería.</td></tr>
+<tr><td>Ver orden de cortes</td><td>Muestra los cortes numerados sobre cada tablero.</td></tr>
+</table>
+<h3>Resultados</h3>
+<ul>
+<li><b>Resumen por fases</b>: nº de tableros, piezas, aprovechamiento y metros de canto (añade ≈10 % de merma).</li>
+<li><b>Planos de corte</b>: cada tablero con sus piezas etiquetadas, retales y cortes numerados.</li>
+<li><b>Lista de corte</b> y <b>secuencia de cortes</b> a guillotina con las medidas exactas desde el borde.</li>
+<li><b>↻ Otra combinación</b> calcula otra distribución equivalente.</li>
+<li>Avisa si una pieza no cabe en el tablero y sugiere un tamaño que sí sirve.</li>
+</ul>
+<h3>Exportar</h3>
+<ul>
+<li><b>📐 DXF de esta fase</b> / <b>3 DXF</b> (caja, puertas, accesorios por separado): dibujo 2D en mm con capas TABLERO, PIEZAS, ETIQUETAS, CORTES, NUM_CORTES, RETALES, COTAS, TITULOS y LISTA.</li>
+<li><b>⬇ PDF</b>, <b>🖼 PNG de tableros</b> (uno por tablero), <b>⬇ Lista CSV</b>, <b>📋 Copiar lista (Excel)</b>.</li>
+<li><b>👁 Ver plano completo</b> y <b>🖨 Imprimir</b>.</li>
+</ul>
+</section>
+
+<section class="m-sec" id="planos">
+<h2>Planos del armario (📐 Planos)</h2>
+<p>Juego de planos de taller, con cotas en mm y una <b>capa por fase</b>:</p>
+<ul>
+<li>Alzado frontal con puertas cerradas y alzado interior sin puertas.</li>
+<li>Planta, con mochetas, registro, cajones con su guía, accesorios y arcos o carriles de puertas.</li>
+<li>Un alzado interior por cada cuerpo, con las alturas desde el suelo.</li>
+<li>Secciones verticales por cuerpo (zona de pared y zona de mocheta).</li>
+</ul>
+<h3>Capas y selección</h3>
+<ul>
+<li><b>Plano</b>: elige uno concreto o «Todos».</li>
+<li><b>Capas</b>: Muros, Sombreado, CAJA, PUERTAS, ACCESORIOS, Ocultos, Cotas, Símbolos…</li>
+<li><b>Mostrar</b>: atajos «Todo», «Solo 1 · CAJA», «Solo 2 · PUERTAS», «Solo 3 · ACCESORIOS» y «Caja + puertas». El DXF y el PDF respetan lo que esté visible, por eso son ideales para acompañar cada pedido.</li>
+</ul>
+<h3>Salidas</h3>
+<ul>
+<li><b>📐 DXF de los planos</b>: todos los planos en una hoja, a escala 1:1 en mm, con las capas de AutoCAD (MUROS, HATCH, CAJA, PUERTAS, ACCESORIOS, OCULTO, COTAS, SIMBOLOS, MARCO y TEXTOS).</li>
+<li><b>⬇ PDF (A3 a escala)</b>: un plano por página con escala 1:N automática y cajetín.</li>
+</ul>
+</section>
+
+<section class="m-sec" id="autocad">
+<h2>Abrir los DXF en AutoCAD</h2>
+<ol>
+<li>Descarga el DXF desde Corte o Planos y ábrelo con <b>AutoCAD</b>, BricsCAD, LibreCAD, DraftSight u otro programa de CAD. Las unidades son milímetros.</li>
+<li>Para tener un <b>DWG</b>: en AutoCAD usa <b>GUARDARCOMO</b> (SAVEAS) y elige DWG.</li>
+<li>Congela o imprime solo las capas CAJA, PUERTAS o ACCESORIOS según lo que vayas a pedir.</li>
+</ol>
+<div class="note">Los DXF se generan en formato R12 con textos sin tildes, para máxima compatibilidad. Si lo abres desde un visor restringido (vista previa de OneDrive, Teams…), consulta la sección de problemas.</div>
+</section>
+
+<section class="m-sec" id="imagenes">
+<h2>Imágenes y otras descargas</h2>
+<ul>
+<li><b>PNG 3D</b>, <b>PNG planta</b> y <b>PNG alzado</b>: imágenes de alta resolución de la vista actual.</li>
+<li><b>Despiece CSV</b> y <b>Pedido CSV</b>: abren directamente en Excel.</li>
+<li>Si el navegador bloquea la descarga, la aplicación muestra el archivo en una ventana con «Descargar», «Abrir en pestaña» y «Copiar».</li>
+</ul>
+</section>
+
+<section class="m-sec" id="avisos">
+<h2>Cómo leer los avisos</h2>
+<p>Un cuadro amarillo en la vista 3D y la pestaña «Resumen» lista lo que no cuadra, con la cifra exacta. Los más habituales:</p>
+<ul>
+<li><b>Accesorio fuera de rango Intoo</b>: el ancho útil no está en el rango del tamaño elegido. Usa «Ajustar cuerpo», «⚙ Optimizar anchos» o «A medida».</li>
+<li><b>Fondo insuficiente</b> para un accesorio o una guía de cajón: reduce el accesorio, elige una guía menor o cambia la profundidad.</li>
+<li><b>Hoja demasiado ancha/estrecha</b>: cambia el nº de hojas o los anchos de cuerpo.</li>
+<li><b>Cuerpo que no queda libre</b> (correderas): añade guías, cambia hojas o usa «Optimizar correderas».</li>
+<li><b>El armario supera el ancho de pared</b> o no deja holgura bajo el techo.</li>
+<li><b>Pieza que no cabe en el tablero</b> (Corte): cambia el tablero o el refilado.</li>
+</ul>
+</section>
+
+<section class="m-sec" id="atajos">
+<h2>Atajos de teclado</h2>
+<table class="t">
+<tr><th>Tecla</th><th>Acción</th></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Guardar backup</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Deshacer / Rehacer</td></tr>
+<tr><td><kbd>Esc</kbd></td><td>Cierra ventanas, cancela una cota o la medición</td></tr>
+<tr><td><kbd>Enter</kbd> / <kbd>Tab</kbd></td><td>En una cota amarilla: aplicar / pasar a la siguiente</td></tr>
+<tr><td><kbd>Mayús</kbd></td><td>Mover la vista 3D; invertir el modo ortogonal al medir</td></tr>
+</table>
+</section>
+
+<section class="m-sec" id="problemas">
+<h2>Si algo no funciona</h2>
+<table class="t">
+<tr><th>Síntoma</th><th>Solución</th></tr>
+<tr><td>GUARDAR, PDF o DXF no descargan nada</td><td>Estás en un visor restringido (vista previa de OneDrive, Teams, correo…). Abre la web en Edge, Chrome o Firefox. Mientras tanto la aplicación muestra el archivo con «Copiar texto»: pégalo en el Bloc de notas y guárdalo con la extensión correcta.</td></tr>
+<tr><td>«CARGAR» dice que no es un JSON válido</td><td>Elige el backup (<code>.armario.json</code>), no el <code>.html</code> de la aplicación.</td></tr>
+<tr><td>Perdí mi proyecto</td><td>Si el autoguardado sigue en ese navegador, aparece «Continuar donde lo dejé» en la portada. Si no, carga tu último backup.</td></tr>
+<tr><td>Un cuerpo no admite ningún ancho al optimizar</td><td>Los accesorios y la cajonera piden rangos incompatibles. Cambia un tamaño a «A medida» o a «Auto».</td></tr>
+<tr><td>El PDF o la impresión no se abren</td><td>Usa los botones PDF o DXF, que se generan dentro de la aplicación sin necesitar impresora.</td></tr>
+<tr><td>Los números no coinciden con mi medición</td><td>Recuerda: «módulo» = entre ejes de tabiques, «útil» = hueco libre. Revisa también el espesor del tablero y las traseras.</td></tr>
+</table>
+</section>
+
+<section class="m-sec" id="aviso">
+<h2>Antes de fabricar</h2>
+<div class="warnb">Esta herramienta es una ayuda al diseño. Mide siempre la obra in situ (las paredes y techos rara vez son perfectos), verifica los rangos y códigos de los accesorios con el fabricante, y confirma con tu carpintero los detalles de montaje antes de lanzar el pedido.</div>
+<p>Los datos de accesorios Intoo/Uniferag están transcritos del catálogo público del fabricante (2.ª edición). La aplicación no está afiliada al fabricante.</p>
+</section>
+
+    </article>
+  </div>
+  <div class="nores" id="nores">No hay resultados para esa búsqueda.</div>
+</div>
+
+<script>
+(function () {
+'use strict';
+/* ---- datos ---- */
+var APP = 'app.html', KEY = 'armario_v11_auto', PREV = 'armario_v11_prev';
+var SAMPLE = {"S":{"v":11,"H":244,"ceilL":252,"ceilR":254,"t":1.6,"plinth":7,"plinthSet":3,"depth":83.5,"W":229.1,"T":238,"retY":69.5,"refLine":89.5,"fixW":true,"divMode":"double","shelfFit":true,"topFiller":false,"palette":"blanco","fin":"blanco","sys":"slide","slide":{"n":2,"tracks":2,"match":true},"back":{"on":true,"t":0.5,"fix":"inside","ret":true},"profile":[{"n":"Mocheta izquierda","w":40,"y":24.5,"flex":false},{"n":"Pared A","w":116,"y":0,"flex":true},{"n":"Mocheta central (bajante)","w":30.5,"y":22.5,"flex":false},{"n":"Pared B","w":34,"y":0,"flex":true},{"n":"Mocheta derecha","w":17.5,"y":29.5,"flex":false}],"obstacles":[{"name":"Registro bajante","x0":124.1,"x1":156,"y0":0,"y1":19,"z0":0,"z1":30,"notch":true}],"bodies":[{"w":114.6,"lock":false,"door":{"type":"none","leaves":2,"hinge":"L","mount":"overlay"},"shelves":"210","rods":"200","drw":{"n":3,"h":24,"small":10,"w":72,"pos":0,"al":"R","cap":true,"guide":70,"boxH":0},"niche":{"mode":"shelves","shelves":"110, 140,170,","side":"L"},"acc":[{"k":"A010","z":3,"side":"L","sz":-1,"dp":"front","yo":0,"yb":0,"hh":0,"cw":0,"al":"C"},{"k":"A001","z":90,"side":"auto","sz":-2,"dp":"front","yo":0,"yb":0,"hh":0,"cw":70,"al":"R"}]},{"w":114.5,"lock":false,"door":{"type":"none","leaves":2,"hinge":"L","mount":"overlay"},"shelves":"","rods":"","drw":{"n":4,"h":24,"small":10,"w":0,"pos":0,"al":"L","cap":true,"guide":0,"boxH":0},"niche":{"mode":"shelves","shelves":" 140,170,200, 230","side":"R"},"acc":[{"k":"A016","z":149,"side":"auto","sz":-1,"dp":"gap","yo":0,"yb":13.5,"hh":0,"cw":0,"al":"C"},{"k":"A001","z":111,"side":"auto","sz":-2,"dp":"front","yo":0,"yb":0,"hh":0,"cw":100,"al":"L"}]}],"door":{"gap":0.3,"thick":1.8,"top":0.3,"bottom":0.5,"coverPlinth":false,"maxHinged":60,"minLeaf":25,"overlap":3,"open":0,"maxAngle":100,"pull":0,"freeBody":-1},"drawerClear":1.5,"drawerMaxL":100,"hangMin":50,"accGap":1,"dims":[],"cut":{"sheet":[244,122],"sheetBack":[244,122],"kerf":0.4,"trim":0,"grain":true,"incDoors":true,"incFronts":true,"incBacks":true,"boxes":false,"capInBox":false,"seed":1}},"VIEW":{"walls":true,"ceiling":true,"labels":true,"doors":false,"interior":true,"obs":true,"ref":true,"back":true,"acclab":true,"wallAlpha":0.9,"mode":"split","warnMin":false,"pmin":false,"bottom":"plan","ortho":true}};
+var $ = function (s) { return document.querySelector(s); };
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+/* Proyecto nuevo: armario sencillo de 3 cuerpos sobre una pared recta de 240 cm */
+function newProject(name) {
+  var door = { type: 'hinged', leaves: 2, hinge: 'L', mount: 'overlay' };
+  function body(w, o) { return Object.assign({ w: w, lock: false, door: clone(door), shelves: '', rods: '', drw: { n: 0, h: 24, small: 0, w: 0, pos: 0, al: 'L', cap: true, guide: 0, boxH: 0 }, niche: { mode: 'none', shelves: '', side: 'auto' }, acc: [] }, o); }
+  return {
+    S: {
+      v: 11, H: 240, ceilL: 250, ceilR: 250, t: 1.6, plinth: 0, plinthSet: 3, depth: 60, W: 240, T: 240, retY: 60, refLine: 60,
+      fixW: true, divMode: 'double', shelfFit: true, topFiller: false, palette: 'roble', fin: 'blanco',
+      sys: 'body', slide: { n: 3, tracks: 2, match: true }, back: { on: true, t: 0.5, fix: 'inside', ret: true },
+      profile: [{ n: 'Pared', w: 240, y: 0, flex: true }], obstacles: [],
+      bodies: [
+        body(80, { rods: '200', shelves: '215' }),
+        body(80, { shelves: '40, 80, 120, 160, 200' }),
+        body(80, { rods: '200', drw: { n: 3, h: 20, small: 0, w: 0, pos: 0, al: 'L', cap: true, guide: 0, boxH: 0 } })
+      ],
+      door: { gap: 0.3, thick: 1.8, top: 0.3, bottom: 0.5, coverPlinth: false, maxHinged: 60, minLeaf: 25, overlap: 3, open: 0, maxAngle: 100, pull: 0, freeBody: -1 },
+      drawerClear: 1.5, drawerMaxL: 100, hangMin: 50, accGap: 1, dims: [],
+      cut: { sheet: [244, 122], sheetBack: [244, 122], kerf: 0.4, trim: 0, grain: true, incDoors: true, incFronts: true, incBacks: true, boxes: false, capInBox: false, seed: 1 }
+    },
+    VIEW: { mode: 'split' }, name: name
+  };
+}
+
+/* ---- almacenamiento ---- */
+function store() { try { return window.localStorage; } catch (e) { return null; } }
+function readAuto() { var s = store(); if (!s) return null; try { var o = JSON.parse(s.getItem(KEY)); return o && o.S ? o : null; } catch (e) { return null; } }
+function msg(el, t, cls) { el.textContent = t || ''; el.className = 'msg' + (cls ? ' ' + cls : ''); }
+
+/* ---- diálogo de confirmación ---- */
+function confirmReplace(cur) {
+  return new Promise(function (res) {
+    var d = $('#dlg'); $('#dlgP').textContent = 'En este navegador hay un proyecto en curso («' + (cur.currentName || 'sin nombre') + '»). Si continúas, se sustituirá. Si no tienes un backup, cancela y entra con «Continuar donde lo dejé».';
+    d.classList.add('on'); $('#dlgYes').focus();
+    function done(v) { d.classList.remove('on'); $('#dlgYes').onclick = $('#dlgNo').onclick = null; document.removeEventListener('keydown', esc); res(v); }
+    function esc(e) { if (e.key === 'Escape') done(false); }
+    document.addEventListener('keydown', esc);
+    $('#dlgYes').onclick = function () { done(true); }; $('#dlgNo').onclick = function () { done(false); };
+  });
+}
+
+/* ---- abrir la aplicación con un proyecto ---- */
+function launch(proj, errEl) {
+  var s = store();
+  if (!s) { msg(errEl, 'Tu navegador bloquea el almacenamiento local (¿ventana privada o visor restringido?). Abre la web en una pestaña normal.', 'bad'); return; }
+  var cur = readAuto();
+  var go = function () {
+    try {
+      if (cur) s.setItem(PREV, JSON.stringify(cur));
+      s.setItem(KEY, JSON.stringify({ S: proj.S, VIEW: proj.VIEW || {}, currentName: proj.name || '' }));
+    } catch (e) { msg(errEl, 'No se pudo preparar el proyecto en este navegador (almacenamiento lleno o bloqueado).', 'bad'); return; }
+    window.location.href = APP;
+  };
+  if (cur) confirmReplace(cur).then(function (ok) { if (ok) go(); }); else go();
+}
+
+/* ---- tarjetas ---- */
+$('#btnNew').addEventListener('click', function () {
+  var n = $('#projName').value.trim() || 'Mi armario'; launch(newProject(n), $('#globalMsg'));
+});
+$('#projName').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); $('#btnNew').click(); } });
+$('#btnDemo').addEventListener('click', function () { launch({ S: clone(SAMPLE.S), VIEW: clone(SAMPLE.VIEW), name: 'Proyecto de prueba' }, $('#globalMsg')); });
+$('#btnResume').addEventListener('click', function () { window.location.href = APP; });
+
+function parseProject(txt) {
+  txt = String(txt || '').replace(/^\uFEFF/, '').trim();
+  if (/^\s*<!doctype html|^\s*<html/i.test(txt)) throw new Error('Ese archivo es la propia aplicación (.html), no un backup. Elige uno que termine en .armario.json.');
+  var o; try { o = JSON.parse(txt); } catch (e) { var a = txt.indexOf('{'), b = txt.lastIndexOf('}'); if (a >= 0 && b > a) { try { o = JSON.parse(txt.slice(a, b + 1)); } catch (e2) { } } }
+  if (!o || typeof o !== 'object') throw new Error('El archivo no es un JSON válido.');
+  var st = o.S && typeof o.S === 'object' ? o.S : o;
+  if (!(st.bodies || st.profile || st.H)) throw new Error('El archivo no parece un diseño de armario (faltan cuerpos o medidas).');
+  return { S: st, VIEW: o.VIEW || {}, name: o.name || '' };
+}
+function loadFile(f) {
+  var m = $('#loadMsg'); if (!f) return; msg(m, 'Leyendo «' + f.name + '»…');
+  var done = function (txt) {
+    try { var p = parseProject(txt); if (!p.name) p.name = f.name.replace(/(\.armario)?\.(json|txt)$/i, ''); msg(m, ''); launch(p, m); }
+    catch (e) { msg(m, '⚠ ' + e.message, 'bad'); }
+  };
+  if (f.text) f.text().then(done, function () { msg(m, '⚠ No se pudo leer el archivo.', 'bad'); });
+  else { var r = new FileReader(); r.onload = function () { done(r.result); }; r.onerror = function () { msg(m, '⚠ No se pudo leer el archivo.', 'bad'); }; r.readAsText(f); }
+}
+var drop = $('#drop'), fin = $('#fileIn');
+fin.addEventListener('change', function () { if (fin.files && fin.files[0]) loadFile(fin.files[0]); fin.value = ''; });
+drop.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fin.click(); } });
+['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
+['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
+drop.addEventListener('drop', function (e) { var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) loadFile(f); });
+// soltar el archivo en cualquier parte de la portada también vale
+window.addEventListener('dragover', function (e) { if (e.dataTransfer && [].indexOf.call(e.dataTransfer.types || [], 'Files') >= 0) e.preventDefault(); });
+window.addEventListener('drop', function (e) { if (e.defaultPrevented) return; var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) { e.preventDefault(); loadFile(f); } });
+
+/* ---- continuar ---- */
+(function () { var c = readAuto(); if (c) { $('#resName').textContent = c.currentName || 'sin nombre'; $('#resume').style.display = 'flex'; } })();
+
+/* ---- manual: vistas, índice y buscador ---- */
+var home = $('#home'), manual = $('#manual'), toc = $('#toc');
+var secs = [].slice.call(document.querySelectorAll('.m-sec'));
+secs.forEach(function (s) { var h = s.querySelector('h2'); var a = document.createElement('a'); a.href = '#' + s.id; a.textContent = h.textContent; a.dataset.t = s.id; toc.appendChild(a); });
+function route() {
+  var show = location.hash === '#instrucciones' || (location.hash.length > 1 && !!document.getElementById(location.hash.slice(1)) && document.getElementById(location.hash.slice(1)).classList.contains('m-sec'));
+  home.style.display = show ? 'none' : 'flex'; manual.style.display = show ? 'block' : 'none';
+  document.title = show ? 'Manual · Diseñador de armarios' : 'Diseñador de armarios';
+  if (show) { var id = location.hash.slice(1); if (id && id !== 'instrucciones') { var el = document.getElementById(id); if (el) setTimeout(function () { el.scrollIntoView(); }, 0); } else window.scrollTo(0, 0); }
+}
+window.addEventListener('hashchange', route); route();
+$('#btnBack').addEventListener('click', function () { history.pushState('', document.title, location.pathname + location.search); route(); window.scrollTo(0, 0); });
+$('#btnPrint').addEventListener('click', function () { try { window.print(); } catch (e) { } });
+$('#q').addEventListener('input', function () {
+  var q = this.value.trim().toLowerCase(), n = 0;
+  secs.forEach(function (s) { var ok = !q || s.textContent.toLowerCase().indexOf(q) >= 0; s.classList.toggle('hide', !ok); toc.querySelector('[data-t="' + s.id + '"]').classList.toggle('hide', !ok); if (ok) n++; });
+  $('#nores').style.display = n ? 'none' : 'block';
+});
+if ('IntersectionObserver' in window) {
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { [].forEach.call(toc.querySelectorAll('a'), function (a) { a.classList.toggle('on', a.dataset.t === e.target.id); }); } }); }, { rootMargin: '-15% 0px -75% 0px' });
+  secs.forEach(function (s) { io.observe(s); });
+}
+})();
+</script>
+</body>
+</html>
