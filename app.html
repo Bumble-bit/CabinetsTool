@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Diseñador de armario v11</title>
+<title>Diseñador de armario v12</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;font-family:"Segoe UI",Arial,sans-serif;font-size:13px;color:#1f2430;background:#f3f4f7}
@@ -11,11 +11,10 @@ html,body{margin:0;height:100%;font-family:"Segoe UI",Arial,sans-serif;font-size
 #side{overflow-y:auto;background:#fff;border-right:1px solid #d9dce3;padding:8px 10px 40px}
 main{display:flex;flex-direction:column;min-width:0;height:100vh}
 #embBanner{display:none;background:#fff3cd;border-bottom:1px solid #e3c36a;color:#5a4300;padding:6px 12px;font-size:12px}
-#embBanner button{float:right;padding:0 7px}
 #topbar{display:flex;align-items:center;gap:8px;padding:5px 10px;background:#fff;border-bottom:1px solid #d9dce3;flex-wrap:wrap}
 #topbar h1{font-size:14px;margin:0 8px 0 0;color:#14306b}
 #projTitle{color:#4a5570;font-weight:600}
-#status{margin-left:auto;color:#667;font-size:11.5px;max-width:38%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#status{margin-left:auto;color:#667;font-size:11.5px;max-width:34%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .seg2{display:flex;border:1px solid #b9c0cf;border-radius:7px;overflow:hidden}
 .seg2 button{border:none;border-radius:0;border-right:1px solid #d3d9e6;background:#f6f8fc}
 .seg2 button:last-child{border-right:none}
@@ -34,6 +33,7 @@ main{display:flex;flex-direction:column;min-width:0;height:100vh}
 #planHead .tiny2{display:flex;align-items:center;gap:3px;font-size:12px}
 #planHead .spacer{flex:1}
 #planHead button.on{background:#0a7a3c;color:#fff;border-color:#0a7a3c}
+#planHead #btnThk.on{background:#d9730d;border-color:#d9730d}
 #planTip{font-size:11.5px;color:#5a4300;background:rgba(255,246,207,.95);border:1px solid #e3c36a;border-radius:6px;padding:2px 8px;overflow:hidden;text-overflow:ellipsis;min-width:0}
 #planCv{flex:1;min-height:0;position:relative}
 #planWrap.min #planCv{display:none}
@@ -57,6 +57,15 @@ button.pri{background:#2a4aa8;color:#fff;border-color:#2a4aa8}button.pri:hover{b
 .helpbox{position:absolute;right:10px;bottom:8px;font-size:11px;color:#55607a;background:rgba(255,255,255,.8);padding:3px 8px;border-radius:6px}
 #planInput{position:absolute;display:none;width:84px;font:700 14px "Segoe UI",Arial;padding:3px 6px;border:2px solid #2a4aa8;border-radius:6px;background:#fff;color:#111;z-index:5}
 #planLabel{position:absolute;display:none;font-size:11px;background:#2a4aa8;color:#fff;border-radius:5px;padding:2px 7px;z-index:5;pointer-events:none;max-width:320px}
+/* ----- popup de espesores ----- */
+#thkPop{position:absolute;display:none;z-index:6;width:330px;max-height:80%;overflow:auto;background:#fff;border:2px solid #d9730d;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.28);padding:6px 8px}
+#thkPop .thk-h{display:flex;align-items:center;justify-content:space-between;color:#8a4a06;margin-bottom:2px}
+#thkPop .thk-s{font-size:10.5px;color:#7a6a58;margin-bottom:4px}
+#thkPop .thk-r{display:grid;grid-template-columns:1fr 62px auto auto;gap:5px;align-items:center;padding:3px 0;border-top:1px solid #f0e6da}
+#thkPop .thk-r.ov{background:#fff7e8}
+#thkPop .thk-r .nm{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#thkPop .thk-r input{width:62px;font:inherit;font-weight:700;padding:2px 4px;border:1.5px solid #d9730d;border-radius:5px}
+#thkPop .thk-r small{color:#7a6a58}
 #infoWrap{background:#fff;display:flex;flex-direction:column}
 .tabs{display:flex;gap:2px;padding:4px 8px 0;border-bottom:1px solid #e1e4ea;flex-wrap:wrap}
 .tab{border:1px solid transparent;border-bottom:none;border-radius:6px 6px 0 0;background:transparent;padding:5px 12px}
@@ -69,6 +78,12 @@ th{background:#f3f5fa;position:sticky;top:-8px}
 tr.rowbad td{background:#fff0e0}
 tr.rowcustom td{background:#f1f9f3}
 tr.phrow td{background:#eef2fb}
+table.mt{margin:4px 10px;width:calc(100% - 20px);font-size:11.5px}
+table.mt th{position:static}
+table.mt td{padding:2px 4px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+table.mt input{width:62px;font:inherit;padding:2px 3px;border:1px solid #bcc4d6;border-radius:4px}
+input.ovin{background:#fff3cd;border-color:#e3b341!important;font-weight:700}
+.ovrow{display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center;margin:3px 10px;font-size:12px}
 .warnbox{background:#fff8e1;border:1px solid #e3c36a;border-radius:6px;padding:5px 8px;margin:6px 0;color:#6a4a00;font-size:12px}
 .badbox{background:#ffe9e5;border:1px solid #e0907f;border-radius:6px;padding:5px 8px;margin:6px 0;color:#7a2a1a;font-size:12px}
 .okbox{background:#eaf7ee;border:1px solid #9fd3ae;border-radius:6px;padding:4px 8px;margin:5px 0;color:#1d5a30;font-size:12px}
@@ -113,6 +128,7 @@ details.card{background:#fff;border-color:#c8d2ea}
 .obs{border-top:1px dashed #ccd;margin-top:4px;padding-top:3px}
 .obs .nm{font:inherit;padding:3px 5px;border:1px solid #bcc4d6;border-radius:5px;width:100%}
 .hint,.note{font-size:11.5px;color:#58627b;margin:5px 10px}
+.pane>.hint{margin:5px 0}
 .muted{color:#8a90a2}
 .calc{margin:6px 10px 8px;font-size:12px;background:#f5f8ff;border:1px solid #dbe4fa;border-radius:6px;padding:5px 8px}
 .calc .kv{margin:2px 0}.calc .opt{margin-top:4px;border-top:1px dashed #c3cfee;padding-top:3px}.calc .oh{font-weight:600;color:#14306b}
@@ -216,15 +232,15 @@ svg.drsvg{width:100%;height:auto;max-height:78vh;display:block;background:#fff}
     <div id="agentBox">
       <h2>🤖 Agente de diseño <button class="mini" data-act="agenthelp">ayuda</button></h2>
       <div id="agentLog"></div>
-      <div id="agentRow"><input id="agentIn" type="text" placeholder="Escribe: «zócalo 8», «dxf de la caja», «planos del armario»…" autocomplete="off"><button class="pri" data-act="agentrun">Enviar</button></div>
+      <div id="agentRow"><input id="agentIn" type="text" placeholder="Escribe: «costados de 16 mm», «dxf de la caja»…" autocomplete="off"><button class="pri" data-act="agentrun">Enviar</button></div>
       <div id="chips"></div>
     </div>
     <div id="sideBody"></div>
   </aside>
   <main>
-    <div id="embBanner"><button data-act="embclose">✕</button>⚠ <b>Estás en un visor restringido (vista previa de OneDrive/SharePoint)</b>: no puede descargar archivos ni abrir pestañas. Pulsa «Download» arriba, guarda el .html en una carpeta y ábrelo con doble clic en Edge/Chrome (la dirección empezará por <code>file:///</code>). Entretanto, cada archivo se entrega en una ventana con «Copiar texto».</div>
+    <div id="embBanner">⚠ <b>Estás en un visor restringido</b>: no puede descargar archivos. Abre la aplicación en Edge o Chrome desde su dirección web.</div>
     <div id="topbar">
-      <h1>Armario v11</h1><span id="projTitle"></span>
+      <h1>Armario v12</h1><span id="projTitle"></span>
       <button id="btnUndo" data-act="undo" title="Ctrl+Z">↶ Deshacer</button><button id="btnRedo" data-act="redo" title="Ctrl+Y">↷ Rehacer</button>
       <div class="seg2"><button data-act="mode" data-v="split">3D + Vista inferior</button><button data-act="mode" data-v="3d">3D</button><button data-act="mode" data-v="plan">Solo inferior</button><button data-act="mode" data-v="tables">Tablas</button></div>
       <button data-act="png">PNG 3D</button><button data-act="pngp">PNG planta</button><button data-act="pnga">PNG alzado</button>
@@ -249,6 +265,7 @@ svg.drsvg{width:100%;height:auto;max-height:78vh;display:block;background:#fff}
         <div id="planHead">
           <div class="seg2"><button data-act="bottom" data-v="plan">Planta</button><button data-act="bottom" data-v="front">Alzado</button></div>
           <button id="btnMeasure" data-act="measure">📏 Medir</button>
+          <button id="btnThk" data-act="thktool" title="Haz clic en cualquier tablero de la planta o del alzado para ver y cambiar su espesor">🧱 Espesores</button>
           <label class="tiny2"><input type="checkbox" id="chkOrtho" checked> Ortogonal</label>
           <button id="btnClearDims" data-act="cleardims" class="mini">Borrar mis cotas (0)</button>
           <span id="planTip"></span>
@@ -258,11 +275,12 @@ svg.drsvg{width:100%;height:auto;max-height:78vh;display:block;background:#fff}
         <div id="planCv">
           <canvas id="cvplan"></canvas>
           <input id="planInput" type="text" inputmode="decimal" autocomplete="off"><div id="planLabel"></div>
+          <div id="thkPop"></div>
         </div>
       </section>
       <section id="infoWrap">
-        <div class="tabs"><button class="tab on" data-act="tab" data-v="res">Resumen</button><button class="tab" data-act="tab" data-v="acc">Accesorios</button><button class="tab" data-act="tab" data-v="door">Puertas</button><button class="tab" data-act="tab" data-v="back">Traseras</button><button class="tab" data-act="tab" data-v="bom">Despiece</button><button class="tab" data-act="tab" data-v="cut">✂ Corte (fases)</button><button class="tab" data-act="tab" data-v="plans">📐 Planos</button><button class="tab" data-act="tab" data-v="int">Pedido</button><button class="tab" data-act="tab" data-v="cat">Catálogo</button></div>
-        <div class="pane on" id="pane-res"></div><div class="pane" id="pane-acc"></div><div class="pane" id="pane-door"></div><div class="pane" id="pane-back"></div><div class="pane" id="pane-bom"></div><div class="pane" id="pane-cut"></div><div class="pane" id="pane-plans"></div><div class="pane" id="pane-int"></div><div class="pane" id="pane-cat"></div>
+        <div class="tabs"><button class="tab on" data-act="tab" data-v="res">Resumen</button><button class="tab" data-act="tab" data-v="acc">Accesorios</button><button class="tab" data-act="tab" data-v="door">Puertas</button><button class="tab" data-act="tab" data-v="back">Traseras</button><button class="tab" data-act="tab" data-v="cost">Costados</button><button class="tab" data-act="tab" data-v="bom">Despiece</button><button class="tab" data-act="tab" data-v="cut">✂ Corte (fases)</button><button class="tab" data-act="tab" data-v="plans">📐 Planos</button><button class="tab" data-act="tab" data-v="int">Pedido</button><button class="tab" data-act="tab" data-v="cat">Catálogo</button></div>
+        <div class="pane on" id="pane-res"></div><div class="pane" id="pane-acc"></div><div class="pane" id="pane-door"></div><div class="pane" id="pane-back"></div><div class="pane" id="pane-cost"></div><div class="pane" id="pane-bom"></div><div class="pane" id="pane-cut"></div><div class="pane" id="pane-plans"></div><div class="pane" id="pane-int"></div><div class="pane" id="pane-cat"></div>
       </section>
     </div>
   </main>
@@ -283,7 +301,8 @@ svg.drsvg{width:100%;height:auto;max-height:78vh;display:block;background:#fff}
 <script>
 'use strict';
 /* =====================================================================
-   NÚCLEO v11: estado, catálogo Intoo/Uniferag, guías de cajón 250–1000 mm, zócalo y puertas,
+   NÚCLEO v12: estado, catálogo Intoo/Uniferag, guías de cajón 250–1000 mm, zócalo y puertas,
+   COSTADOS de mocheta (aparte de las traseras), espesor individual por tablero,
    despiece en 3 FASES (caja · puertas · accesorios), geometría y optimizadores
    Unidades: cm.  X = ancho (izq→der, mirando de frente), Y = fondo (0 = pared del fondo, +Y hacia la habitación), Z = altura
    ===================================================================== */
@@ -302,11 +321,9 @@ const PALETTES = {
   verde:  { board: [150, 170, 150], door: [166, 186, 166], inner: [130, 150, 130], back: [210, 224, 210], name: 'Verde salvia' }
 };
 
-/* ---------------------------------------------------------------------
-   FASES DE FABRICACIÓN: 1 caja · 2 puertas y frentes · 3 accesorios
-   --------------------------------------------------------------------- */
+/* FASES DE FABRICACIÓN: 1 caja · 2 puertas y frentes · 3 accesorios */
 const PHASES = [
-  { id: 'caja', n: 1, short: 'CAJA', pre: 'C', label: '1 · CAJA (carcasa)', desc: 'Laterales, tabiques, tapa, base, zócalo y traseras: lo primero que se encarga.' },
+  { id: 'caja', n: 1, short: 'CAJA', pre: 'C', label: '1 · CAJA (carcasa)', desc: 'Laterales, tabiques, costados, tapa, base, zócalo y traseras: lo primero que se encarga.' },
   { id: 'puertas', n: 2, short: 'PUERTAS', pre: 'P', label: '2 · PUERTAS Y FRENTES', desc: 'Puertas (abatibles o correderas), frentes de cajón y carriles.' },
   { id: 'acc', n: 3, short: 'ACCESORIOS', pre: 'A', label: '3 · ACCESORIOS', desc: 'Baldas, barras, cajas de cajón y herrajes Intoo.' }
 ];
@@ -314,9 +331,7 @@ const PH_TAG = { all: 'todo', caja: '1-caja', puertas: '2-puertas', acc: '3-acce
 const bomGrp = (name, capInBox) => /^(Puerta|Frente de cajón)/.test(name) ? 'puertas' : /^Juego de carriles/.test(name) ? 'puertas'
   : /^Balda sobre cajonera/.test(name) ? (capInBox ? 'caja' : 'acc') : /^(Balda|Barra|Caja de cajón|Fondo de caja)/.test(name) ? 'acc' : 'caja';
 
-/* ---------------------------------------------------------------------
-   CATÁLOGO INTOO (Uniferag) – transcrito de 02_CATALOGO_INTOO.pdf (2ª edición)
-   --------------------------------------------------------------------- */
+/* CATÁLOGO INTOO (Uniferag) – transcrito de 02_CATALOGO_INTOO.pdf (2ª edición) */
 const huRange = (hu, exact) => { const lo = hu / 10 - 3.6; return [r1(lo * 10) / 10, exact ? r1((lo + 0.8) * 10) / 10 : r1((lo + 5) * 10) / 10]; };
 const CAT = {
   A001:  { name: 'Joyero (cajón organizador)', ref: 'INT-A001', mode: 'frame', h: 8,  f: 47.5, hu: [600, 700, 800, 900], col: [196, 170, 130], pg: 7,  look: 'organizer',
@@ -402,13 +417,17 @@ function defaultBody(w, kind) {
   if (kind === 'niche') b.niche = { mode: 'shelves', shelves: '140, 170, 200', side: 'auto' };
   return b;
 }
-/* PROYECTO POR DEFECTO — door.coverPlinth: false = puertas sobre el zócalo · true = hasta el suelo */
+/* PROYECTO POR DEFECTO — door.coverPlinth: false = puertas sobre el zócalo · true = hasta el suelo
+   cost  = COSTADOS de mocheta: on, t (cm, 0 = igual al espesor general), addBack (suma el espesor de trasera al fondo), dep (fondo propio por costado, cm)
+   ov    = espesores individuales por tablero { id: cm } */
 const DEFAULT = {
-  v: 11,
+  v: 12,
   H: 244, ceilL: 252, ceilR: 254, t: 1.6, plinth: 0, plinthSet: 3, depth: 83.5, W: 229.1, T: 238, retY: 69.5, refLine: 89.5,
   fixW: true, divMode: 'double', shelfFit: true, topFiller: false, palette: 'roble', fin: 'blanco',
   sys: 'slide', slide: { n: 2, tracks: 2, match: true },
   back: { on: true, t: 0.5, fix: 'inside', ret: true },
+  cost: { on: true, t: 0, addBack: false, dep: {} },
+  ov: {},
   profile: [
     { n: 'Mocheta izquierda', w: 40,   y: 24.5, flex: false },
     { n: 'Pared A',           w: 116,  y: 0,    flex: true },
@@ -451,13 +470,19 @@ function normalize(S) {
   }
   const out = Object.assign(D, src);
   if (S && (!src.v || src.v < 7)) { if (!src.drawerMaxL || src.drawerMaxL === 55) out.drawerMaxL = 100; }
-  out.v = 11;
+  out.v = 12;
   out.plinth = Math.max(0, num(out.plinth)); out.plinthSet = src.plinthSet === undefined ? 3 : Math.max(0, num(src.plinthSet));
   out.cut = Object.assign(clone(DEFAULT.cut), src.cut || {});
   { const c = out.cut, d = DEFAULT.cut; const sh = (v, dv) => Array.isArray(v) && v.length === 2 && v[0] > 20 && v[1] > 20 ? [num(v[0]), num(v[1])] : dv.slice(); c.sheet = sh(c.sheet, d.sheet); c.sheetBack = sh(c.sheetBack, d.sheetBack); c.kerf = clamp(num(c.kerf), 0, 2); c.trim = clamp(num(c.trim), 0, 5); c.grain = !!c.grain; c.incDoors = c.incDoors !== false; c.incFronts = c.incFronts !== false; c.incBacks = c.incBacks !== false; c.boxes = !!c.boxes; c.capInBox = !!c.capInBox; c.seed = Math.max(1, Math.round(num(c.seed)) || 1); }
   out.door = Object.assign(clone(DEFAULT.door), src.door || {}); out.door.coverPlinth = !!out.door.coverPlinth;
   out.slide = Object.assign(clone(DEFAULT.slide), src.slide || {});
   out.back = Object.assign(clone(DEFAULT.back), src.back || {});
+  // Costados de mocheta (antes «retornos» dentro de las traseras). En proyectos antiguos se heredan de back.ret.
+  { const cs = src.cost; const legacyOn = src.back ? (src.back.on !== false && src.back.ret !== false) : false;
+    out.cost = { on: cs ? cs.on !== false : (S ? legacyOn : true), t: cs ? Math.max(0, num(cs.t)) : 0, addBack: !!(cs && cs.addBack), dep: {} };
+    if (cs && cs.dep && typeof cs.dep === 'object') Object.keys(cs.dep).forEach(k => { const v = num(cs.dep[k]); if (v >= 1 && v <= 300) out.cost.dep[k] = v; }); }
+  // Espesores individuales por tablero
+  out.ov = {}; if (src.ov && typeof src.ov === 'object') Object.keys(src.ov).forEach(k => { const v = num(src.ov[k]); if (v >= 0.2 && v <= 10) out.ov[k] = v; });
   out.profile = (src.profile || D.profile).map(p => ({ n: p.n || 'Tramo', w: Math.max(1, num(p.w)), y: Math.max(0, num(p.y)), flex: !!p.flex }));
   out.obstacles = (src.obstacles || D.obstacles).map(o => Object.assign({ name: 'Obstáculo', x0: 0, x1: 20, y0: 0, y1: 15, z0: 0, z1: 20, notch: true }, o));
   out.dims = (Array.isArray(src.dims) ? src.dims : []).filter(d => d && (d.v === 'plan' || d.v === 'front') && Array.isArray(d.a) && Array.isArray(d.b) && [...d.a, ...d.b].every(x => isFinite(x))).map(d => ({ v: d.v, a: [+d.a[0], +d.a[1]], b: [+d.b[0], +d.b[1]] }));
@@ -484,6 +509,19 @@ function normalize(S) {
   out.W = r1(out.bodies.reduce((s, b) => s + b.w, 0));
   syncZones(out);
   return out;
+}
+
+/* ---------------------------------------------------------------------
+   Espesores: general (S.t), costados (S.cost.t) y por tablero (S.ov[id])
+   --------------------------------------------------------------------- */
+const costT = S => (S.cost && S.cost.t > 0 ? S.cost.t : S.t);
+const tk = (S, id, def) => { const v = S.ov && S.ov[id]; return v > 0 ? v : def; };
+// Espesor de los tableros que cierran el cuerpo i por la izquierda (l) y por la derecha (r)
+function edgeT(S, i) {
+  const n = S.bodies.length, dbl = S.divMode === 'double', t = S.t;
+  const l = i === 0 ? tk(S, 'L', t) : (dbl ? tk(S, 'T' + i + 'b', t) : tk(S, 'T' + i, t) / 2);
+  const r = i === n - 1 ? tk(S, 'R', t) : (dbl ? tk(S, 'T' + (i + 1) + 'a', t) : tk(S, 'T' + (i + 1), t) / 2);
+  return { l, r };
 }
 
 /* Paredes / perfil */
@@ -526,7 +564,7 @@ function rectSub(r, h) {
 
 /* Puertas */
 function doorZ(S) { const D = S.door; const z0 = (D.coverPlinth ? 0 : S.plinth) + D.bottom; return { z0, h: S.H - D.top - z0 }; }
-function pitchOff(S, i) { const n = S.bodies.length, t = S.t; if (S.divMode === 'double') return 2 * t; if (n === 1) return 2 * t; return (i === 0 || i === n - 1) ? 1.5 * t : t; }
+function pitchOff(S, i) { const e = edgeT(S, i); return e.l + e.r; }
 const clearOf = (S, i, pitch) => pitch - pitchOff(S, i);
 function leafInfo(S, i, pitch, b) {
   b = b || S.bodies[i]; if (S.sys === 'slide' || b.door.type !== 'hinged') return null;
@@ -540,8 +578,8 @@ function leafCoef(S, i, b) {
 function slideTracks(S) { const n = Math.round(S.slide.n); const T = Math.round(S.slide.tracks); return n <= 1 ? 1 : clamp(Math.min(T, n), 2, 6); }
 function slideDepth(S) { const T = slideTracks(S); return 1.9 + T * S.door.thick + (T - 1) * 1.5; }
 function slideDoorList(S, c, W) {
-  const t = S.t, D = S.door, sl = S.slide, nB = S.bodies.length; const n = clamp(Math.round(sl.n), 1, 8); const T = slideTracks(S);
-  const xi0 = t + D.gap / 2, xi1 = W - t - D.gap / 2, ovl = D.overlap; const match = !!sl.match && n === nB;
+  const D = S.door, sl = S.slide, nB = S.bodies.length; const n = clamp(Math.round(sl.n), 1, 8); const T = slideTracks(S);
+  const xi0 = tk(S, 'L', S.t) + D.gap / 2, xi1 = W - tk(S, 'R', S.t) - D.gap / 2, ovl = D.overlap; const match = !!sl.match && n === nB;
   const doors = [];
   for (let j = 0; j < n; j++) {
     let lo, hi;
@@ -582,57 +620,95 @@ function build(S) {
   const t = S.t, F = S.depth, H = S.H, dbl = S.divMode === 'double', n = S.bodies.length, D = S.door;
   const capInBox = !!(S.cut && S.cut.capInBox);
   const slideSys = S.sys === 'slide'; const slD = slideSys ? slideDepth(S) : 0; const bt = btOf(S); const backOn = bt > 0;
+  const cost = S.cost || { on: false, t: 0, addBack: false, dep: {} };
   const gapAcc = S.accGap === undefined ? 2.5 : S.accGap;
   const maxG = S.drawerMaxL > 0 ? S.drawerMaxL : 100;
   const DZ = doorZ(S);
-  const P = [], planR = [], bomRaw = [], warns = [], intoo = [], accList = [], backs = [];
+  const P = [], planR = [], bomRaw = [], warns = [], intoo = [], accList = [], backs = [], costs = [];
   const pal = PALETTES[S.palette] || PALETTES.roble;
   const c = [0]; S.bodies.forEach(b => c.push(c[c.length - 1] + b.w));
   const W = c[n];
   const fin = S.fin === 'moca' ? 'moca' : 'blanco';
   const fc = fin === 'moca' ? [92, 72, 58] : [238, 238, 240];
   const pull = clamp((D.pull || 0) / 100, 0, 1);
-  const addBom = (name, a, b, th, note, qty = 1, fe = 0) => bomRaw.push({ name, L: Math.max(a, b), W: Math.min(a, b), T: th, note: note || '', qty, fe, grp: bomGrp(name, capInBox) });
-  const GP = { side: 'caja', back: 'caja', plinth: 'caja', filler: 'caja', door: 'puertas', drwfront: 'puertas', rod: 'acc', drwbody: 'acc', acc: 'acc', nsh: 'acc', obs: 'obs' };
+  // Registro de espesores editables: id → { label, t (efectivo), def, ov, glob }
+  const thk = {};
+  const th = (id, def, label) => { const ov = !!(S.ov && S.ov[id] > 0); const v = ov ? S.ov[id] : def; thk[id] = { id, label, t: v, def, ov }; return v; };
+  if (backOn) thk.bk = { id: 'bk', label: 'Traseras (todas)', t: bt, def: DEFAULT.back.t, ov: Math.abs(bt - DEFAULT.back.t) > 1e-9, glob: 'back.t' };
+  thk.dr = { id: 'dr', label: 'Puertas (todas)', t: D.thick, def: DEFAULT.door.thick, ov: Math.abs(D.thick - DEFAULT.door.thick) > 1e-9, glob: 'door.thick' };
+  const addBom = (name, a, b, th2, note, qty = 1, fe = 0) => bomRaw.push({ name, L: Math.max(a, b), W: Math.min(a, b), T: Math.round(th2 * 1000) / 1000, note: note || '', qty, fe, grp: bomGrp(name, capInBox) });
+  const GP = { side: 'caja', back: 'caja', plinth: 'caja', filler: 'caja', costado: 'caja', door: 'puertas', drwfront: 'puertas', rod: 'acc', drwbody: 'acc', acc: 'acc', nsh: 'acc', obs: 'obs' };
   const piece = (o) => { P.push(Object.assign({ col: pal.board, alpha: 1, kind: 'board' }, o, { grp: o.grp || GP[o.tag] || 'caja' })); };
   const addIntoo = (name, ref, code, note, qty = 1) => intoo.push({ name, ref, code, note: note || '', qty, grp: 'acc' });
 
-  // --- Tableros verticales ---
-  const boards = [{ x0: 0, x1: t, name: 'Lateral izquierdo' }];
+  // --- Tableros verticales (laterales y tabiques) con espesor individual ---
+  const E = S.bodies.map((b, i) => edgeT(S, i));
+  const tL = th('L', t, 'Lateral izquierdo'), tR = th('R', t, 'Lateral derecho');
+  const boards = [{ id: 'L', x0: 0, x1: tL, name: 'Lateral izquierdo' }];
   for (let i = 1; i < n; i++) {
-    if (dbl) boards.push({ x0: c[i] - t, x1: c[i], name: 'Tabique ' + i + ' (cara izq.)' }, { x0: c[i], x1: c[i] + t, name: 'Tabique ' + i + ' (cara der.)' });
-    else boards.push({ x0: c[i] - t / 2, x1: c[i] + t / 2, name: 'Tabique ' + i + ' (único)' });
+    if (dbl) {
+      const ta = th('T' + i + 'a', t, 'Tabique ' + i + ' · cara izq.'), tb = th('T' + i + 'b', t, 'Tabique ' + i + ' · cara dcha.');
+      boards.push({ id: 'T' + i + 'a', x0: c[i] - ta, x1: c[i], name: 'Tabique ' + i + ' (cara izq.)' }, { id: 'T' + i + 'b', x0: c[i], x1: c[i] + tb, name: 'Tabique ' + i + ' (cara der.)' });
+    } else { const tt = th('T' + i, t, 'Tabique ' + i + ' (único)'); boards.push({ id: 'T' + i, x0: c[i] - tt / 2, x1: c[i] + tt / 2, name: 'Tabique ' + i + ' (único)' }); }
   }
-  boards.push({ x0: W - t, x1: W, name: 'Lateral derecho' });
+  boards.push({ id: 'R', x0: W - tR, x1: W, name: 'Lateral derecho' });
   boards.forEach(bd => {
+    const bth = bd.x1 - bd.x0;
     const y0 = S.back && S.back.fix === 'inside' ? minYraw(S, bd.x0, bd.x1) : minY(S, bd.x0, bd.x1);
     let rects = [{ a0: y0, a1: F, b0: 0, b1: H }]; let notched = false;
     for (const o of S.obstacles) if (o.notch && o.x1 > bd.x0 + 1e-6 && o.x0 < bd.x1 - 1e-6) { rects = rects.flatMap(r => rectSub(r, { a0: o.y0, a1: o.y1, b0: o.z0, b1: o.z1 })); notched = true; }
-    rects.forEach(r => piece({ x0: bd.x0, x1: bd.x1, y0: r.a0, y1: r.a1, z0: r.b0, z1: r.b1, tag: 'side' }));
-    addBom(bd.name.startsWith('Lateral') ? 'Lateral' : 'Tabique', H, F - y0, t, (notched ? 'Muesca registro. ' : '') + 'Recortar fondo según pared', 1, H);
-    planR.push({ type: 'board', x0: bd.x0, x1: bd.x1, y0, y1: F });
+    rects.forEach(r => piece({ x0: bd.x0, x1: bd.x1, y0: r.a0, y1: r.a1, z0: r.b0, z1: r.b1, tag: 'side', pid: bd.id }));
+    addBom(bd.name.startsWith('Lateral') ? 'Lateral' : 'Tabique', H, F - y0, bth, (notched ? 'Muesca registro. ' : '') + 'Recortar fondo según pared', 1, H);
+    planR.push({ type: 'board', x0: bd.x0, x1: bd.x1, y0, y1: F, id: bd.id });
   });
 
-  // --- Frente de zócalo ---
+  // --- Frente de zócalo (por cuerpo, retranqueado) ---
   if (S.plinth > 0.5) {
-    const ys = Math.min(F - t, Math.max(0, S.plinthSet || 0)); const yf1 = F - ys, yf0 = yf1 - t;
     for (let i = 0; i < n; i++) {
-      const xa = i === 0 ? t : c[i] + (dbl ? t : t / 2), xb = i === n - 1 ? W - t : c[i + 1] - (dbl ? t : t / 2);
-      piece({ x0: xa, x1: xb, y0: yf0, y1: yf1, z0: 0, z1: S.plinth, tag: 'plinth', col: pal.inner });
-      addBom('Frente de zócalo', xb - xa, S.plinth, t, 'Retranqueado ' + fmt(ys) + ' cm respecto al frente', 1, xb - xa);
+      const xa = (i === 0 ? 0 : c[i]) + E[i].l, xb = c[i + 1] - E[i].r;
+      const tp = th('pl' + i, t, 'Frente de zócalo · cuerpo ' + (i + 1));
+      const ys = Math.min(F - tp, Math.max(0, S.plinthSet || 0)); const yf1 = F - ys, yf0 = yf1 - tp;
+      piece({ x0: xa, x1: xb, y0: yf0, y1: yf1, z0: 0, z1: S.plinth, tag: 'plinth', col: pal.inner, pid: 'pl' + i });
+      addBom('Frente de zócalo', xb - xa, S.plinth, tp, 'Retranqueado ' + fmt(ys) + ' cm respecto al frente', 1, xb - xa);
     }
   }
 
   // --- Cuerpos ---
   const bodies = S.bodies.map((b, i) => {
-    const x0 = i === 0 ? t : c[i] + (dbl ? t : t / 2);
-    const x1 = i === n - 1 ? W - t : c[i + 1] - (dbl ? t : t / 2);
+    const e = E[i];
+    const x0 = (i === 0 ? 0 : c[i]) + e.l;
+    const x1 = c[i + 1] - e.r;
     const dt = slideSys ? 'none' : b.door.type;
     const Fint = slideSys ? F - slD : (dt === 'hinged' && b.door.mount === 'inset' ? F - D.thick - 0.2 : F);
-    const zb = S.plinth + t, zt = H - t;
-    const info = { i, pitch: b.w, x0, x1, wClear: x1 - x0, hClear: zt - zb, Fint, zb, zt, segs: segs(S, x0, x1), warn: [], note: [], door: null, drawers: [], accs: [], niche: [], options: [], blockTop: zb, rodsList: parseList(b.rods) };
+    const tBase = th('base' + i, t, 'Base · cuerpo ' + (i + 1)), tTop = th('top' + i, t, 'Tapa superior · cuerpo ' + (i + 1));
+    const zb = S.plinth + tBase, zt = H - tTop;
+    const info = { i, pitch: b.w, x0, x1, wClear: x1 - x0, hClear: zt - zb, Fint, zb, zt, tl: e.l, tr: e.r, tBase, tTop, segs: segs(S, x0, x1), warn: [], note: [], door: null, drawers: [], accs: [], niche: [], options: [], blockTop: zb, rodsList: parseList(b.rods), costs: [] };
     info.depthMax = Math.max(...info.segs.map(s => Fint - s.y)); info.depthMin = Math.min(...info.segs.map(s => Fint - s.y));
     const clear = x1 - x0;
+
+    // ---------- COSTADOS: cierran el lateral de cada mocheta (independientes de las traseras) ----------
+    const costFoot = [];
+    if (cost.on) {
+      const rsC = mergeSegs(segsRaw(S, x0, x1));
+      for (let k = 0; k < rsC.length - 1; k++) {
+        const A = rsC[k], B = rsC[k + 1]; const dy = A.y - B.y; if (Math.abs(dy) < 1e-6) continue;
+        const xs = A.x1, deeperLeft = dy > 0, sh = deeperLeft ? B : A, dp = deeperLeft ? A : B;
+        const zi = S.zones.findIndex(z => Math.abs(z.x1 - xs) < 1e-4); const cid = 'co' + (zi >= 0 ? zi : r1(xs));
+        const step = Math.abs(dy); const base = step + (cost.addBack && backOn ? bt : 0);
+        const depOv = !!(cost.dep && cost.dep[cid] > 0); const dep = depOv ? cost.dep[cid] : base;
+        const nm = dp.nm || 'mocheta';
+        const label = 'Costado ' + (deeperLeft ? 'dcho.' : 'izq.') + ' de «' + nm + '» · salto ' + fmt(step);
+        const tc = th(cid, costT(S), label);
+        const cx0 = deeperLeft ? xs : xs - tc, cx1 = cx0 + tc, cy0 = sh.y, cy1 = sh.y + dep;
+        if (sh.x1 - sh.x0 < tc + 0.5) info.warn.push(`${label}: la zona de pared contigua (${fmt(sh.x1 - sh.x0)} cm) es casi tan estrecha como el costado (${fmt(tc * 10, 0)} mm).`);
+        const ch = zt - zb;
+        piece({ x0: cx0, x1: cx1, y0: cy0, y1: cy1, z0: zb, z1: zt, col: pal.board, tag: 'costado', pid: cid });
+        planR.push({ type: 'costado', x0: cx0, x1: cx1, y0: cy0, y1: cy1, id: cid });
+        addBom('Costado (mocheta)', ch, dep, tc, 'Salto ' + fmt(step) + ' cm · lateral de «' + nm + '»', 1, ch);
+        const rec = { id: cid, body: i, x0: cx0, x1: cx1, y0: cy0, y1: cy1, xs, h: ch, t: tc, dep, base, step, name: nm, label, side: deeperLeft ? 'dcho.' : 'izq.', ov: thk[cid].ov, depOv };
+        info.costs.push(rec); costs.push(rec); costFoot.push({ a0: cx0, a1: cx1, b0: cy0, b1: cy1 });
+      }
+    }
 
     const accIn = (b.acc || []).map(a => ({ ...a }));
     if (b.niche && b.niche.mode === 'tower') accIn.push({ k: 'A010', z: zb, side: b.niche.side || 'auto', sz: -1, dp: 'front', yo: 0, yb: 0, hh: 0, cw: 0, al: 'C', virtual: true });
@@ -699,27 +775,29 @@ function build(S) {
     });
     const sideAt = (zlo, zhi, side) => placed.filter(p => p.d.mode === 'side' && p.side === side && p.z1 > zlo + 1e-6 && p.z0 < zhi - 1e-6).reduce((s, p) => Math.max(s, p.d.w), 0);
     const exclusions = placed.filter(p => p.d.mode === 'side').map(p => ({ a0: p.x0, a1: p.x1, b0: p.y0, b1: p.y1, z0: p.z0, z1: p.z1 }));
-    for (let a = 0; a < placed.length; a++) for (let e = a + 1; e < placed.length; e++) {
-      const A = placed[a], B = placed[e]; if (!(A.z1 > B.z0 + 1e-6 && B.z1 > A.z0 + 1e-6)) continue;
+    for (let a = 0; a < placed.length; a++) for (let e2 = a + 1; e2 < placed.length; e2++) {
+      const A = placed[a], B = placed[e2]; if (!(A.z1 > B.z0 + 1e-6 && B.z1 > A.z0 + 1e-6)) continue;
       const xo = A.x1 > B.x0 + 1e-6 && B.x1 > A.x0 + 1e-6; const yo = A.y1 > B.y0 + 1e-6 && B.y1 > A.y0 + 1e-6;
       if (xo && yo) info.warn.push(`${A.d.name} y ${B.d.name} se solapan (z ${fmt(Math.max(A.z0, B.z0))}–${fmt(Math.min(A.z1, B.z1))}; fondo ${fmt(Math.max(A.y0, B.y0))}–${fmt(Math.min(A.y1, B.y1))}).`);
     }
 
-    const horiz = (zA, zB, name, yf, extra) => {
+    const horiz = (zA, zB, name, yf, extra, pid) => {
       const grp = bomGrp(name, capInBox);
       const sg = S.shelfFit ? segs(S, x0, x1) : [{ x0, x1, y: backY(S, x0, x1) }];
-      let rects = sg.map(s => ({ a0: s.x0, a1: s.x1, b0: s.y, b1: yf })); let notched = false, clipped = false;
+      let rects = sg.map(s => ({ a0: s.x0, a1: s.x1, b0: s.y, b1: yf })); let notched = false, clipped = false, costClip = false;
       for (const o of S.obstacles) if (o.z1 > zA + 1e-6 && o.z0 < zB - 1e-6 && o.x1 > x0 && o.x0 < x1) { rects = rects.flatMap(r => rectSub(r, { a0: o.x0, a1: o.x1, b0: o.y0, b1: o.y1 })); notched = true; }
-      for (const e of exclusions) if (e.z1 > zA + 1e-6 && e.z0 < zB - 1e-6) { rects = rects.flatMap(r => rectSub(r, { a0: e.a0, a1: e.a1, b0: e.b0, b1: e.b1 })); clipped = true; }
-      rects.forEach(r => piece({ x0: r.a0, x1: r.a1, y0: r.b0, y1: r.b1, z0: zA, z1: zB, tag: 'hz', shelf: !!extra, grp }));
+      for (const ex of exclusions) if (ex.z1 > zA + 1e-6 && ex.z0 < zB - 1e-6) { rects = rects.flatMap(r => rectSub(r, { a0: ex.a0, a1: ex.a1, b0: ex.b0, b1: ex.b1 })); clipped = true; }
+      if (zA >= zb - 1e-6 && zB <= zt + 1e-6) for (const f of costFoot) { const nr = rects.flatMap(r => rectSub(r, f)); if (nr.length !== rects.length || nr.some((q, qi) => q !== rects[qi])) costClip = true; rects = nr; }
+      rects.forEach(r => piece({ x0: r.a0, x1: r.a1, y0: r.b0, y1: r.b1, z0: zA, z1: zB, tag: 'hz', shelf: !!extra, grp, pid }));
       const my = minY(S, x0, x1);
-      addBom(name, x1 - x0, yf - my, t, (S.shelfFit && sg.length > 1 ? 'Recorte escalonado. ' : '') + (notched ? 'Muesca registro. ' : '') + (clipped ? 'Recorte por accesorio. ' : ''), 1, x1 - x0);
+      addBom(name, x1 - x0, yf - my, zB - zA, (S.shelfFit && sg.length > 1 ? 'Recorte escalonado. ' : '') + (notched ? 'Muesca registro. ' : '') + (clipped ? 'Recorte por accesorio. ' : '') + (costClip ? 'Recorte por costado. ' : ''), 1, x1 - x0);
     };
-    horiz(zt, H, 'Tapa superior', F);
-    horiz(S.plinth, S.plinth + t, 'Base', F);
+    horiz(zt, H, 'Tapa superior', F, false, 'top' + i);
+    horiz(S.plinth, S.plinth + tBase, 'Base', F, false, 'base' + i);
 
     const dr = b.drw;
     const nReg = Math.max(0, Math.round(dr.n)), hs = dr.small > 0 ? dr.small : 0;
+    let capT = tk(S, 'cap' + i, t);
     const lwS = sideAt(zb, blockTop, 'L'), rwS = sideAt(zb, blockTop, 'R'), availW0 = clear - lwS - rwS;
     if (nReg + hs > 0 && availW0 < 15) info.warn.push(`Cajonera: los accesorios laterales dejan solo ${fmt(Math.max(0, availW0))} cm de ancho (mín. 15 cm); no se dibujan los cajones.`);
     if (nReg + hs > 0 && availW0 >= 15) {
@@ -772,15 +850,16 @@ function build(S) {
       if (Lmax > 0) planR.push({ type: 'drawer', x0: ux0, x1: ux1, y0: Fint - 1.8 - Lmin, y1: Fint, L: Lmin });
       info.drawerBlock = { x0: ux0, x1: ux1, w, L: Lmin === 999 ? 0 : Lmin, z0: zb, z1: blockTop };
       if (blockTop > zt) info.warn.push('La cajonera (' + fmt(blockTop - zb) + ' cm) supera la altura útil.');
-      if (dr.cap) horiz(blockTop, blockTop + t, 'Balda sobre cajonera', Fint - 0.2, true);
+      if (dr.cap) { capT = th('cap' + i, t, 'Balda de cierre cajonera · cuerpo ' + (i + 1)); horiz(blockTop, blockTop + capT, 'Balda sobre cajonera', Fint - 0.2, true, 'cap' + i); }
     }
-    info.blockTopCap = nReg + hs > 0 && dr.cap ? blockTop + t : blockTop;
+    info.blockTopCap = nReg + hs > 0 && dr.cap ? blockTop + capT : blockTop;
 
     const shelves = parseList(b.shelves);
     shelves.forEach(z => {
-      if (z - t < zb - 1e-6 || z > zt + 1e-6) { info.warn.push('Balda a ' + fmt(z) + ' cm fuera de rango útil (' + fmt(zb + t) + '–' + fmt(zt) + ').'); return; }
-      if (z - t < info.blockTopCap - 1e-6 && z > zb && (nReg + hs > 0)) info.warn.push('Balda a ' + fmt(z) + ' cm se cruza con la cajonera (termina en ' + fmt(info.blockTopCap) + ').');
-      horiz(z - t, z, 'Balda', Fint - 0.2, true);
+      const sid = 'sh' + i + '@' + r1(z); const ts = th(sid, t, 'Balda ' + fmt(z) + ' · cuerpo ' + (i + 1));
+      if (z - ts < zb - 1e-6 || z > zt + 1e-6) { info.warn.push('Balda a ' + fmt(z) + ' cm fuera de rango útil (' + fmt(zb + ts) + '–' + fmt(zt) + ').'); return; }
+      if (z - ts < info.blockTopCap - 1e-6 && z > zb && (nReg + hs > 0)) info.warn.push('Balda a ' + fmt(z) + ' cm se cruza con la cajonera (termina en ' + fmt(info.blockTopCap) + ').');
+      horiz(z - ts, z, 'Balda', Fint - 0.2, true, sid);
     });
     info.shelves = shelves;
 
@@ -803,10 +882,16 @@ function build(S) {
       const zs = parseList(b.niche.shelves);
       if (!regs.length) info.note.push('Este cuerpo no tiene nicho trasero aprovechable (la pared es uniforme).');
       regs.forEach(r => zs.forEach(z => {
-        if (z - t < info.blockTopCap - 1e-6 && (nReg + hs > 0)) { info.warn.push('Balda de nicho a ' + fmt(z) + ' cm dentro de la zona de cajones.'); return; }
+        const nid = 'ns' + i + '@' + r1(z); const tn = th(nid, t, 'Balda trasera de nicho ' + fmt(z) + ' · cuerpo ' + (i + 1));
+        if (z - tn < info.blockTopCap - 1e-6 && (nReg + hs > 0)) { info.warn.push('Balda de nicho a ' + fmt(z) + ' cm dentro de la zona de cajones.'); return; }
         if (z > zt) { info.warn.push('Balda de nicho a ' + fmt(z) + ' cm fuera de altura.'); return; }
-        piece({ x0: r.x0, x1: r.x1, y0: r.y0, y1: r.y1, z0: z - t, z1: z, col: pal.inner, tag: 'nsh', kind: 'board', shelf: true });
-        addBom('Balda trasera de nicho', r.x1 - r.x0, r.y1 - r.y0, t, 'Detrás de la ropa colgada', 1, r.x1 - r.x0);
+        let rr = [{ a0: r.x0, a1: r.x1, b0: r.y0, b1: r.y1 }]; let cclip = false;
+        for (const f of costFoot) { const nr = rr.flatMap(q => rectSub(q, f)); if (nr.length !== rr.length || nr.some((q, qi) => q !== rr[qi])) cclip = true; rr = nr; }
+        rr.forEach(q => {
+          if (q.a1 - q.a0 < 1 || q.b1 - q.b0 < 1) return;
+          piece({ x0: q.a0, x1: q.a1, y0: q.b0, y1: q.b1, z0: z - tn, z1: z, col: pal.inner, tag: 'nsh', kind: 'board', shelf: true, pid: nid });
+          addBom('Balda trasera de nicho', q.a1 - q.a0, q.b1 - q.b0, tn, 'Detrás de la ropa colgada' + (cclip ? '. Recorte por costado' : ''), 1, q.a1 - q.a0);
+        });
         if (z === zs[0]) planR.push({ type: 'nsh', x0: r.x0, x1: r.x1, y0: r.y0, y1: r.y1 });
       }));
     }
@@ -918,6 +1003,7 @@ function build(S) {
       }
     }
 
+    // ---------- TRASERAS (solo paneles; los costados van aparte) ----------
     if (backOn) {
       const over = S.back.fix === 'over';
       const px0 = over ? (i === 0 ? 0 : c[i]) : x0, px1 = over ? (i === n - 1 ? W : c[i + 1]) : x1;
@@ -925,13 +1011,13 @@ function build(S) {
       const rs = mergeSegs(segsRaw(S, px0, px1)); info.backs = [];
       rs.forEach((s, k) => {
         let a0 = s.x0, a1 = s.x1;
-        if (S.back.ret) {
-          if (k > 0) { const Lp = rs[k - 1]; if (Lp.y > s.y + 1e-6) { backs.push({ body: i, kind: 'retorno', w: r1(Lp.y + bt - s.y), h: zB - zA, y: s.y, x: s.x0, note: 'Cubre el lateral de ' + (Lp.nm || 'mocheta') }); piece({ x0: s.x0, x1: s.x0 + bt, y0: s.y, y1: Lp.y + bt, z0: zA, z1: zB, col: pal.back, tag: 'back', kind: 'back' }); planR.push({ type: 'back', x0: s.x0, x1: s.x0 + bt, y0: s.y, y1: Lp.y + bt }); addBom('Trasera · retorno de mocheta', zB - zA, Lp.y + bt - s.y, bt, 'Cubre el lateral de la mocheta', 1); a0 = s.x0 + bt; } }
-          if (k < rs.length - 1) { const Rp = rs[k + 1]; if (Rp.y > s.y + 1e-6) { backs.push({ body: i, kind: 'retorno', w: r1(Rp.y + bt - s.y), h: zB - zA, y: s.y, x: s.x1 - bt, note: 'Cubre el lateral de ' + (Rp.nm || 'mocheta') }); piece({ x0: s.x1 - bt, x1: s.x1, y0: s.y, y1: Rp.y + bt, z0: zA, z1: zB, col: pal.back, tag: 'back', kind: 'back' }); planR.push({ type: 'back', x0: s.x1 - bt, x1: s.x1, y0: s.y, y1: Rp.y + bt }); addBom('Trasera · retorno de mocheta', zB - zA, Rp.y + bt - s.y, bt, 'Cubre el lateral de la mocheta', 1); a1 = s.x1 - bt; } }
+        if (cost.on) {
+          if (k > 0 && rs[k - 1].y > s.y + 1e-6) { const cc = info.costs.find(q => Math.abs(q.x0 - s.x0) < 1e-4); if (cc) a0 = s.x0 + cc.t; }
+          if (k < rs.length - 1 && rs[k + 1].y > s.y + 1e-6) { const cc = info.costs.find(q => Math.abs(q.x1 - s.x1) < 1e-4); if (cc) a1 = s.x1 - cc.t; }
         }
         let rects = [{ a0, a1, b0: zA, b1: zB }]; let cut = '';
         for (const o of S.obstacles) if (o.notch && o.x1 > a0 + 1e-6 && o.x0 < a1 - 1e-6 && o.y0 < s.y + bt && o.y1 > s.y) { rects = rects.flatMap(r => rectSub(r, { a0: o.x0, a1: o.x1, b0: o.z0, b1: o.z1 })); cut = 'Recorte ' + o.name + '. '; }
-        rects.forEach(r => piece({ x0: r.a0, x1: r.a1, y0: s.y, y1: s.y + bt, z0: r.b0, z1: r.b1, col: pal.back, tag: 'back', kind: 'back' }));
+        rects.forEach(r => piece({ x0: r.a0, x1: r.a1, y0: s.y, y1: s.y + bt, z0: r.b0, z1: r.b1, col: pal.back, tag: 'back', kind: 'back', pid: 'bk' }));
         planR.push({ type: 'back', x0: a0, x1: a1, y0: s.y, y1: s.y + bt });
         const wdt = a1 - a0; backs.push({ body: i, kind: 'panel', w: r1(wdt), h: zB - zA, y: s.y, x: a0, note: (s.y > 0 ? 'Sobre ' + (s.nm || 'mocheta') + ' (a ' + fmt(s.y) + ' cm de la pared)' : 'Sobre pared de fondo') + (cut ? ' · ' + cut.trim() : '') });
         addBom('Trasera', zB - zA, wdt, bt, (s.y > 0 ? 'Sobre mocheta a ' + fmt(s.y) + ' cm. ' : 'Pared de fondo. ') + cut + (over ? 'Sobrepuesta al canto trasero' : 'Entre tableros'), 1, 0);
@@ -950,7 +1036,7 @@ function build(S) {
         const lx0 = xa + j * (lw + D.gap), lx1 = lx0 + lw;
         const hingeL = k === 1 ? dd.hinge === 'L' : j === 0;
         const rot = { px: hingeL ? lx0 : lx1, py: y1, ang: hingeL ? ang : -ang };
-        piece({ x0: lx0, x1: lx1, y0, y1, z0: DZ.z0, z1: DZ.z0 + lh, col: pal.door, alpha: 0.92, tag: 'door', kind: 'door', rot: D.open > 0 ? rot : null });
+        piece({ x0: lx0, x1: lx1, y0, y1, z0: DZ.z0, z1: DZ.z0 + lh, col: pal.door, alpha: 0.92, tag: 'door', kind: 'door', rot: D.open > 0 ? rot : null, pid: 'dr' });
         addBom('Puerta abatible', lw, lh, D.thick, 'Bisagras: ' + (lh > 200 ? '5' : lh > 160 ? '4' : '3') + ' (ref.)' + (S.plinth > 0 && !D.coverPlinth ? ' · sobre zócalo' : ''), 1, 2 * (lw + lh));
         planR.push({ type: 'hinged', hx: hingeL ? lx0 : lx1, hy: y1, w: lw, left: hingeL, x0: lx0, x1: lx1, i });
       }
@@ -986,7 +1072,7 @@ function build(S) {
     const fb = D.freeBody; const useFree = fb >= 0 && fb < n && res[fb].ok; const lh = DZ.h;
     Ls.doors.forEach((d, j) => {
       const lo = useFree ? res[fb].pos[j] : d.lo; const yb = F - 0.5 - D.thick - d.tr * (D.thick + 1.5);
-      piece({ x0: lo, x1: lo + d.w, y0: yb, y1: yb + D.thick, z0: DZ.z0, z1: DZ.z0 + lh, col: pal.door, alpha: 0.9, tag: 'door', kind: 'door' });
+      piece({ x0: lo, x1: lo + d.w, y0: yb, y1: yb + D.thick, z0: DZ.z0, z1: DZ.z0 + lh, col: pal.door, alpha: 0.9, tag: 'door', kind: 'door', pid: 'dr' });
       addBom('Puerta corredera', d.w, lh, D.thick, 'Guía ' + (d.tr + 1) + (Ls.match ? ' · cuerpo ' + (j + 1) : '') + (S.plinth > 0 && !D.coverPlinth ? ' · sobre zócalo' : ''), 1, 2 * (d.w + lh));
       planR.push({ type: 'sliding', x0: lo, x1: lo + d.w, y: yb + D.thick / 2, tr: d.tr });
       if (d.w > 120) warns.push(`Corredera: hoja ${j + 1} de ${fmt(d.w)} cm (muy ancha; revisa peso/sistema).`);
@@ -1024,8 +1110,7 @@ function build(S) {
     if (lws.length > 1) { const mn = Math.min(...lws), mx = Math.max(...lws); if (mx - mn > 1.0) doorDiag.push({ level: 'warn', text: `Hojas desiguales (de ${fmt(mn)} a ${fmt(mx)} cm): usa «Igualar hojas» para que todas midan lo mismo.` }); }
   }
 
-  const backPanels = backs.filter(b => b.kind === 'panel'), backRet = backs.filter(b => b.kind === 'retorno');
-  const backInfo = { on: backOn, t: bt, fix: S.back.fix, panels: backPanels, returns: backRet };
+  const backInfo = { on: backOn, t: bt, fix: S.back.fix, panels: backs.filter(b => b.kind === 'panel'), returns: [] };
 
   const agg = new Map();
   bomRaw.forEach(r => { const key = [r.name, r.L.toFixed(1), r.W.toFixed(1), r.T, r.note].join('|'); const e = agg.get(key); if (e) e.qty += r.qty; else agg.set(key, { ...r }); });
@@ -1036,7 +1121,7 @@ function build(S) {
   const ia = new Map();
   intoo.forEach(r => { const key = r.code + '|' + r.name + '|' + r.note; const e = ia.get(key); if (e) e.qty += r.qty; else ia.set(key, { ...r }); });
   const intooAgg = [...ia.values()].sort((a, b) => String(a.name).localeCompare(b.name));
-  return { P, planR, bodies, bom, intoo: intooAgg, area, areaBack, c, W, warns, pal, F, H, doorDiag, gapRight: S.T - W, slide, backInfo, accList, doorZ: DZ };
+  return { P, planR, bodies, bom, intoo: intooAgg, area, areaBack, c, W, warns, pal, F, H, doorDiag, gapRight: S.T - W, slide, backInfo, accList, doorZ: DZ, costs, thk };
 }
 
 /* Reparto de anchos de módulo */
@@ -1107,7 +1192,7 @@ function allowedClear(S, b) {
   return ints;
 }
 function accOk(a, clear) { const rs = accRanges(a); if (!rs) return true; return rs.some(r => clear >= r[0] - 0.05 && clear <= r[1] + 0.05); }
-function bodyRange(S, i, c) { const n = S.bodies.length, t = S.t, dbl = S.divMode === 'double'; return { x0: i === 0 ? t : c[i] + (dbl ? t : t / 2), x1: i === n - 1 ? c[n] - t : c[i + 1] - (dbl ? t : t / 2) }; }
+function bodyRange(S, i, c) { const e = edgeT(S, i); return { x0: (i === 0 ? 0 : c[i]) + e.l, x1: c[i + 1] - e.r }; }
 function drawerAreaEst(S, i, c, b) {
   const r = bodyRange(S, i, c); const dr = b.drw; const nz = Math.max(0, Math.round(dr.n)) * dr.h + (dr.small || 0); if (nz <= 0) return 0;
   const Fint = S.sys === 'slide' ? S.depth - slideDepth(S) : (b.door.type === 'hinged' && b.door.mount === 'inset' ? S.depth - S.door.thick - 0.2 : S.depth);
@@ -1458,6 +1543,8 @@ function renderPlan(ctx, w, h, S, M, opt) {
   M.planR.forEach(r => { if (r.type === 'nsh') { ctx.setLineDash([3, 3]); ctx.strokeStyle = '#2d7d46'; ctx.fillStyle = 'rgba(60,160,90,0.18)'; ctx.lineWidth = 1; ctx.fillRect(X(r.x0), Y(r.y0), (r.x1 - r.x0) * sc, (r.y1 - r.y0) * sc); ctx.strokeRect(X(r.x0), Y(r.y0), (r.x1 - r.x0) * sc, (r.y1 - r.y0) * sc); ctx.setLineDash([]); ctx.fillStyle = '#1f6a38'; ctx.font = fnt(9, '500'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('balda trasera', X((r.x0 + r.x1) / 2), Y((r.y0 + r.y1) / 2)); } });
   M.planR.forEach(r => { if (r.type === 'board') { ctx.fillStyle = 'rgba(190,150,100,0.9)'; ctx.strokeStyle = '#6b4b2a'; ctx.lineWidth = 1; ctx.fillRect(X(r.x0), Y(r.y0), (r.x1 - r.x0) * sc, (r.y1 - r.y0) * sc); ctx.strokeRect(X(r.x0), Y(r.y0), (r.x1 - r.x0) * sc, (r.y1 - r.y0) * sc); } });
   M.planR.forEach(r => { if (r.type === 'back') { ctx.fillStyle = '#26262b'; ctx.fillRect(X(r.x0), Y(r.y0), Math.max(1.6, (r.x1 - r.x0) * sc), Math.max(1.6, (r.y1 - r.y0) * sc)); } });
+  // Costados de mocheta: tablero propio, distinto de la trasera (naranja con borde oscuro)
+  M.planR.forEach(r => { if (r.type === 'costado') { const cw = Math.max(3, (r.x1 - r.x0) * sc); const cx = X((r.x0 + r.x1) / 2) - cw / 2; ctx.fillStyle = 'rgba(214,128,40,0.96)'; ctx.strokeStyle = '#7a3f08'; ctx.lineWidth = 1.3; ctx.fillRect(cx, Y(r.y0), cw, (r.y1 - r.y0) * sc); ctx.strokeRect(cx, Y(r.y0), cw, (r.y1 - r.y0) * sc); } });
   M.planR.forEach(r => { if (r.type === 'drawer') { ctx.setLineDash([4, 3]); ctx.strokeStyle = '#a05a00'; ctx.fillStyle = 'rgba(230,150,40,0.22)'; ctx.lineWidth = 1.1; ctx.fillRect(X(r.x0), Y(r.y0), (r.x1 - r.x0) * sc, (r.y1 - r.y0) * sc); ctx.strokeRect(X(r.x0), Y(r.y0), (r.x1 - r.x0) * sc, (r.y1 - r.y0) * sc); ctx.setLineDash([]); ctx.fillStyle = '#7a3b00'; ctx.font = fnt(10, '600'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('guía ' + fmt(r.L * 10, 0) + ' · ' + fmt((r.x1 - r.x0) * 10, 0) + ' mm', X((r.x0 + r.x1) / 2), Y((r.y0 + r.y1) / 2)); } });
   M.planR.forEach(r => { if (r.type === 'acc') { ctx.setLineDash([2, 2]); ctx.strokeStyle = '#6b3fa0'; ctx.fillStyle = 'rgba(130,80,190,0.16)'; ctx.lineWidth = 1.1; ctx.fillRect(X(r.x0), Y(r.y0), (r.x1 - r.x0) * sc, (r.y1 - r.y0) * sc); ctx.strokeRect(X(r.x0), Y(r.y0), (r.x1 - r.x0) * sc, (r.y1 - r.y0) * sc); ctx.setLineDash([]); ctx.fillStyle = '#4b2a78'; ctx.font = fnt(9, '600'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(r.name, X((r.x0 + r.x1) / 2), Y((r.y0 + r.y1) / 2)); } });
   if (opt.doors) M.planR.forEach(r => {
@@ -1492,7 +1579,7 @@ function renderPlan(ctx, w, h, S, M, opt) {
   if (M.W < S.T - 0.05) { ctx.fillStyle = '#666'; ctx.font = fnt(10, '500'); ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('holgura dcha. ' + fmt(S.T - M.W), X(M.W) + 6, Y(yW)); }
 
   zs.forEach(z => { snaps.push([z.x0, z.y], [z.x1, z.y], [z.x0, 0], [z.x1, 0]); }); snaps.push([S.T, S.retY], [0, M.F], [M.W, M.F], [S.T, 0]);
-  M.planR.forEach(r => { if (['board', 'acc', 'drawer', 'obs', 'nsh', 'back'].includes(r.type)) snaps.push([r.x0, r.y0], [r.x1, r.y0], [r.x0, r.y1], [r.x1, r.y1]); if (r.type === 'body') { snaps.push([r.c0, M.F], [r.c1, M.F]); } if (r.type === 'sliding') snaps.push([r.x0, r.y], [r.x1, r.y]); });
+  M.planR.forEach(r => { if (['board', 'acc', 'drawer', 'obs', 'nsh', 'back', 'costado'].includes(r.type)) snaps.push([r.x0, r.y0], [r.x1, r.y0], [r.x0, r.y1], [r.x1, r.y1]); if (r.type === 'body') { snaps.push([r.c0, M.F], [r.c1, M.F]); } if (r.type === 'sliding') snaps.push([r.x0, r.y], [r.x1, r.y]); });
   drawUserLayer(ctx, hits, opt, 'plan', S, toPx);
   return { hits, sc, ox, oy, view: 'plan', toPx, inv, snaps };
 }
@@ -1520,8 +1607,8 @@ function renderElev(ctx, w, h, S, M, opt) {
     const col = p.col || [200, 200, 200]; let a = p.alpha === undefined ? 1 : p.alpha; if (p.tag === 'door') a = 0.26; else if (p.kind === 'acc') a = Math.min(a, 0.85);
     const x = X(p.x0), y = Z(zt), ww = Math.max(0.8, (p.x1 - p.x0) * sc), hh = Math.max(0.8, (zt - p.z0) * sc);
     ctx.fillStyle = `rgba(${col[0] | 0},${col[1] | 0},${col[2] | 0},${a})`; ctx.fillRect(x, y, ww, hh);
-    ctx.strokeStyle = p.tag === 'door' ? 'rgba(150,110,50,0.8)' : p.kind === 'acc' ? 'rgba(60,40,90,0.35)' : 'rgba(60,40,20,0.5)'; ctx.lineWidth = p.tag === 'door' ? 1 : 0.6; ctx.strokeRect(x, y, ww, hh);
-    if (['side', 'hz', 'rod', 'drwfront', 'back', 'door', 'plinth'].includes(p.tag)) snaps.push([p.x0, p.z0], [p.x1, p.z0], [p.x0, zt], [p.x1, zt]);
+    ctx.strokeStyle = p.tag === 'door' ? 'rgba(150,110,50,0.8)' : p.kind === 'acc' ? 'rgba(60,40,90,0.35)' : p.tag === 'costado' ? 'rgba(122,63,8,0.9)' : 'rgba(60,40,20,0.5)'; ctx.lineWidth = p.tag === 'door' ? 1 : p.tag === 'costado' ? 1.2 : 0.6; ctx.strokeRect(x, y, ww, hh);
+    if (['side', 'hz', 'rod', 'drwfront', 'back', 'door', 'plinth', 'costado'].includes(p.tag)) snaps.push([p.x0, p.z0], [p.x1, p.z0], [p.x0, zt], [p.x1, zt]);
   });
   M.accList.forEach(a => snaps.push([a.x0, a.z0], [a.x1, a.z0], [a.x0, a.z1], [a.x1, a.z1]));
   snaps.push([0, 0], [T, 0], [0, S.ceilL], [T, S.ceilR], [0, S.H], [M.W, S.H], [M.W, 0]);
@@ -1727,7 +1814,7 @@ function cutSummaryHTML(plan, ph) {
     h += `<tr class="phrow"><td><b>${escH(p.label)}</b></td><td></td><td><b>${p.pieces}</b></td><td><b>${p.nSheets}</b></td><td></td><td><b>${fmt(p.eff * 100, 1)} %</b></td><td><b>${fmt(p.edgeM, 1)}</b></td></tr>`;
     p.groups.forEach(g => h += `<tr><td>&nbsp;&nbsp;${escH(g.label)}</td><td>${sheetName(g.sheet)}</td><td>${g.pieces}</td><td>${g.nSheets}</td><td>${g.lowerBound}</td><td>${fmt(g.eff * 100, 1)} %</td><td>${g.edgeM ? fmt(g.edgeM, 1) : '—'}</td></tr>`);
   });
-  h += `</table><div class="hint2">Cinta de canto estimada (canto frontal de laterales, tabiques, tapas, baldas y zócalo + perímetro de puertas y frentes). Añade ≈10 % de merma.</div></div>`;
+  h += `</table><div class="hint2">Cinta de canto estimada (canto frontal de laterales, tabiques, costados, tapas, baldas y zócalo + perímetro de puertas y frentes). Añade ≈10 % de merma.</div></div>`;
   return h;
 }
 function cutSheetsHTML(plan, showCuts, uidBase, ph) {
@@ -1874,6 +1961,7 @@ function drItems(d, S, M, bi, lab) {
   drMerge(M.P.filter(p => p.tag === 'hz' && inB(p)), p => p.z0.toFixed(2) + '|' + p.z1.toFixed(2) + '|' + p.grp, p => p.x0, p => p.x1)
     .forEach(m => d.r(GL[m.it.grp] || 'CAJA', m.lo * k, m.it.z0 * k, (m.hi - m.lo) * k, (m.it.z1 - m.it.z0) * k, { f: 1 }));
   M.P.filter(p => p.tag === 'plinth' && inB(p)).forEach(p => d.r('CAJA', p.x0 * k, p.z0 * k, (p.x1 - p.x0) * k, (p.z1 - p.z0) * k, { f: 1 }));
+  M.P.filter(p => p.tag === 'costado' && inB(p)).forEach(p => d.r('CAJA', p.x0 * k, p.z0 * k, (p.x1 - p.x0) * k, (p.z1 - p.z0) * k, { f: 1 }));
   drMerge(M.P.filter(p => p.tag === 'nsh' && inB(p)), p => p.z0.toFixed(2), p => p.x0, p => p.x1).forEach(m => d.r('ACCESORIOS', m.lo * k, m.it.z0 * k, (m.hi - m.lo) * k, (m.it.z1 - m.it.z0) * k, { d: 1 }));
   M.P.filter(p => p.tag === 'rod' && inB(p)).forEach(p => { d.r('ACCESORIOS', p.x0 * k, p.z0 * k, (p.x1 - p.x0) * k, (p.z1 - p.z0) * k, { f: 1 }); if (lab) d.t('ACCESORIOS', p.x0 * k + 30, (p.z0 + p.z1) / 2 * k + 40, 'barra z ' + mmT((p.z0 + p.z1) / 2 * k), 28, 'l'); });
   M.P.filter(p => p.tag === 'drwfront' && inB(p)).forEach(p => d.r('PUERTAS', p.x0 * k, p.z0 * k, (p.x1 - p.x0) * k, (p.z1 - p.z0) * k, { f: 1 }));
@@ -1896,7 +1984,7 @@ function drElevOpen(S, M) {
   drEnv(d, S);
   M.planR.filter(r => r.type === 'board').forEach(r => d.r('CAJA', r.x0 * k, 0, (r.x1 - r.x0) * k, H, { f: 1 }));
   drItems(d, S, M, null, false);
-  M.bodies.forEach(b => d.t('TEXTOS', (b.x0 + b.x1) / 2 * k, (S.H - S.t - 60) * k, 'CUERPO ' + (b.i + 1), 40, 'c'));
+  M.bodies.forEach(b => d.t('TEXTOS', (b.x0 + b.x1) / 2 * k, (S.H - b.tTop - 60) * k, 'CUERPO ' + (b.i + 1), 40, 'c'));
   drDimsElev(d, S, M, 'open'); return d;
 }
 function drElevClosed(S, M) {
@@ -1916,7 +2004,8 @@ function drPlan(S, M) {
   S.zones.forEach(z => d.hatch(z.x0 * k, -z.y * k, (z.x1 - z.x0) * k, z.y * k + 130, 50));
   const pts = [[0, -F - 150]]; S.zones.forEach(z => pts.push([z.x0 * k, -z.y * k], [z.x1 * k, -z.y * k])); pts.push([T, -S.retY * k]); d.pl('MUROS', pts, false);
   S.obstacles.forEach(o => { d.r('OCULTO', o.x0 * k, -o.y1 * k, (o.x1 - o.x0) * k, o.y1 * k, { d: 1 }); d.t('OCULTO', (o.x0 + o.x1) / 2 * k, -o.y1 * k / 2, o.name, 28, 'c'); });
-  M.planR.filter(r => r.type === 'board' || r.type === 'back').forEach(r => d.r('CAJA', r.x0 * k, -r.y1 * k, (r.x1 - r.x0) * k, (r.y1 - r.y0) * k, { f: 1 }));
+  M.planR.filter(r => r.type === 'board' || r.type === 'back' || r.type === 'costado').forEach(r => d.r('CAJA', r.x0 * k, -r.y1 * k, (r.x1 - r.x0) * k, (r.y1 - r.y0) * k, { f: 1 }));
+  M.planR.filter(r => r.type === 'costado').forEach(r => d.t('CAJA', (r.x0 + r.x1) / 2 * k + 40, -(r.y0 + r.y1) / 2 * k, 'costado ' + mmT((r.y1 - r.y0) * k) + ' x ' + mmT((r.x1 - r.x0) * k), 24, 'l', 90));
   if (S.plinth > 0.5) d.l('OCULTO', 0, -(S.depth - S.plinthSet) * k, M.W * k, -(S.depth - S.plinthSet) * k, 1);
   M.planR.filter(r => r.type === 'nsh').forEach(r => { d.r('ACCESORIOS', r.x0 * k, -r.y1 * k, (r.x1 - r.x0) * k, (r.y1 - r.y0) * k, { d: 1 }); d.t('ACCESORIOS', (r.x0 + r.x1) / 2 * k, -(r.y0 + r.y1) / 2 * k, 'balda trasera', 26, 'c'); });
   M.planR.filter(r => r.type === 'drawer').forEach(r => { d.r('ACCESORIOS', r.x0 * k, -r.y1 * k, (r.x1 - r.x0) * k, (r.y1 - r.y0) * k, { d: 1 }); d.t('ACCESORIOS', (r.x0 + r.x1) / 2 * k, -(r.y0 + r.y1) / 2 * k, 'cajones · guia ' + mmT(r.L * k) + ' · ancho ' + mmT((r.x1 - r.x0) * k), 30, 'c'); });
@@ -1946,12 +2035,12 @@ function levelsOf(S, M, bi) {
   return { chain: merge(all, 0.6), tags: merge(key, 2.5) };
 }
 function drInterior(S, M, bi) {
-  const k = DK, b = M.bodies[bi], H = S.H * k, t = S.t * k;
+  const k = DK, b = M.bodies[bi], H = S.H * k;
   const d = new Dr('int-' + (bi + 1), `ALZADO INTERIOR · CUERPO ${bi + 1}`, `Hueco útil ${mmT(b.wClear * k)} × ${mmT(b.hClear * k)} mm · módulo ${mmT(b.pitch * k)} mm · cotas de altura desde el suelo`, 10);
-  d.r('CAJA', (b.x0 - S.t) * k, 0, t, H, { f: 1 }); d.r('CAJA', b.x1 * k, 0, t, H, { f: 1 });
+  d.r('CAJA', (b.x0 - b.tl) * k, 0, b.tl * k, H, { f: 1 }); d.r('CAJA', b.x1 * k, 0, b.tr * k, H, { f: 1 });
   drItems(d, S, M, bi, true);
   if (b.drawerBlock && b.drawers.length) { const db = b.drawerBlock; const L0 = b.drawers.find(x => x.L > 0); d.t('PUERTAS', (db.x0 + db.x1) / 2 * k, (b.zb + 4) * k, `${b.drawers.length} cajones · guia ${L0 ? mmT(L0.L * k) : '-'} · ancho ${mmT(db.w * k)}`, 32, 'c'); }
-  const lv = levelsOf(S, M, bi), xl = (b.x0 - S.t) * k, xr = (b.x1 + S.t) * k;
+  const lv = levelsOf(S, M, bi), xl = (b.x0 - b.tl) * k, xr = (b.x1 + b.tr) * k;
   for (let i = 0; i < lv.chain.length - 1; i++) if (lv.chain[i + 1] - lv.chain[i] >= 3) d.dimV(lv.chain[i] * k, lv.chain[i + 1] * k, xl, -170);
   lv.tags.forEach(z => { if (z > 0.01) { d.l('COTAS', xr, z * k, xr + 120, z * k); d.t('COTAS', xr + 135, z * k, 'z ' + mmT(z * k), 30, 'l'); } });
   d.dimH(b.x0 * k, b.x1 * k, H, 170, 'util ' + mmT(b.wClear * k));
@@ -1966,7 +2055,7 @@ function drSection(S, M, bi, xc, tag) {
   d.l('MUROS', wy * k, 0, wy * k, ceil); d.l('MUROS', -260, 0, F + 300, 0); d.l('MUROS', -260, ceil, F + 300, ceil);
   S.obstacles.filter(o => xc >= o.x0 && xc <= o.x1).forEach(o => { d.r('OCULTO', 0, 0, o.y1 * k, o.z1 * k, { d: 1 }); d.t('OCULTO', o.y1 * k / 2, o.z1 * k + 40, o.name, 28, 'c'); });
   drMerge(M.P.filter(p => p.tag === 'hz' && has(p)), p => p.z0.toFixed(2) + '|' + p.z1.toFixed(2) + '|' + p.grp, p => p.y0, p => p.y1).forEach(m => d.r(GL[m.it.grp] || 'CAJA', m.lo * k, m.it.z0 * k, (m.hi - m.lo) * k, (m.it.z1 - m.it.z0) * k, { f: 1 }));
-  M.P.filter(p => ['back', 'plinth', 'door', 'drwfront', 'drwbody', 'rod', 'nsh'].includes(p.tag) && has(p)).forEach(p => d.r(GL[p.grp] || 'CAJA', p.y0 * k, p.z0 * k, (p.y1 - p.y0) * k, (p.z1 - p.z0) * k, { f: 1, d: p.tag === 'nsh' ? 1 : 0 }));
+  M.P.filter(p => ['back', 'plinth', 'door', 'drwfront', 'drwbody', 'rod', 'nsh', 'costado'].includes(p.tag) && has(p)).forEach(p => d.r(GL[p.grp] || 'CAJA', p.y0 * k, p.z0 * k, (p.y1 - p.y0) * k, (p.z1 - p.z0) * k, { f: 1, d: p.tag === 'nsh' ? 1 : 0 }));
   M.accList.filter(a => a.body === bi && xc >= a.x0 - 1e-6 && xc <= a.x1 + 1e-6).forEach(a => { d.r('ACCESORIOS', a.y0 * k, a.z0 * k, (a.y1 - a.y0) * k, (a.z1 - a.z0) * k, { d: 1 }); d.t('ACCESORIOS', a.y0 * k + 20, a.z0 * k + 36, accLabel(a), 26, 'l'); });
   d.l('SIMBOLOS', b.Fint * k, 0, b.Fint * k, H, 1); d.t('SIMBOLOS', b.Fint * k - 28, H * 0.5, 'limite interior de las puertas', 26, 'c', 90);
   const L0 = b.drawers.find(x => x.L > 0); if (L0 && b.drawerBlock && xc >= b.drawerBlock.x0 && xc <= b.drawerBlock.x1) d.t('ACCESORIOS', (b.Fint - L0.L / 2) * k, (b.zb + 3) * k, 'guia ' + mmT(L0.L * k), 28, 'c');
@@ -2374,7 +2463,8 @@ async function xAction(a, f, url) {
 const AGENT_EXAMPLES = [
   'pon 4 cuerpos', 'altura 240 y fondo 60', 'zócalo 8', 'puertas sobre el zócalo', 'puertas hasta el suelo',
   'mocheta izquierda ancho 40 fondo 25', 'cuerpo 2 ancho 72', 'correderas una hoja por cuerpo con 3 guías', 'libera el cuerpo 2',
-  'traseras de 5 mm', 'cuerpo 1 cajonera de 745 mm centrada', 'cuerpo 2 guías de 600 mm', 'guías automáticas en todos',
+  'traseras de 5 mm', 'costados de 16 mm', 'sin costados', 'espesor del lateral izquierdo 19 mm', 'tapa del cuerpo 1 espesor 22 mm',
+  'cuerpo 1 cajonera de 745 mm centrada', 'cuerpo 2 guías de 600 mm', 'guías automáticas en todos',
   'añade pantalonero de 800 en cuerpo 2 a 130', 'pon el pantalonero del cuerpo 2 a 10 cm del fondo',
   'alzado abajo', 'planta abajo', 'minimiza el panel inferior',
   'plano de corte de la caja', 'dxf de la caja', 'dxf de las puertas', 'dxf de los accesorios', 'planos del armario', 'dxf de los planos',
@@ -2388,7 +2478,9 @@ const AGENT_HELP = `Puedo hacer, por ejemplo:
 • Cuerpos: «pon 4 cuerpos», «cuerpo 2 ancho 72», «reparte igual»
 • Correderas: «correderas una hoja por cuerpo con 3 guías», «correderas 4 hojas 2 guías», «hojas iguales», «optimiza correderas», «libera el cuerpo 1», «cierra puertas»
 • Abatibles: «2 puertas abatibles en cuerpo 1», «enrasadas», «sin puertas»
-• Traseras: «con traseras de 5 mm», «sin traseras», «traseras sobrepuestas / entre tableros», «sin retornos»
+• Traseras: «con traseras de 5 mm», «sin traseras», «traseras sobrepuestas / entre tableros»
+• Costados de mocheta (aparte de las traseras): «costados de 16 mm», «costados igual que el tablero», «sin costados», «con costados», «costados sumando la trasera»
+• Espesor de un tablero concreto: «espesor del lateral izquierdo 19 mm», «espesor del tabique 1 22 mm», «tapa del cuerpo 1 espesor 22 mm», «base del cuerpo 2 espesor 19 mm», «zócalo del cuerpo 1 espesor 19 mm», «quita los espesores personalizados». También puedes pulsar 🧱 Espesores sobre la planta o el alzado y hacer clic en cualquier tablero.
 • Cajoneras: «cuerpo 1 4 cajones», «cajón pequeño 12», «alto cajón 22», «cuerpo 1 cajonera de 745 mm centrada», «cuerpo 2 guías de 600 mm», «guías automáticas»
 • Interior: «baldas en cuerpo 2 a 60, 90», «barra a 180», «nicho cuerpo 1 con baldas»
 • Accesorios Intoo: «añade pantalonero de 800 en cuerpo 2 a 120», «tamaño a medida 790 al pantalonero», «pon el zapatero del cuerpo 2 a 10 cm del fondo», «apila accesorios del cuerpo 2»
@@ -2415,6 +2507,7 @@ const RET1 = /retranque\w*\s*(?:de|a|=|:)?\s*(\d+(?:\.\d+)?)/;
 const RET2 = /(\d+(?:\.\d+)?)\s*(?:cm)?\s*(?:hacia (?:el )?fondo|hacia dentro|desde el frente|del frente)/;
 const CW1 = /\b(?:a medida|medida especial|ancho(?: de)?|anchura)\s*(\d+(?:\.\d+)?)\s*(mm|cm)?/;
 const toCm = (v, u) => { v = Number(v); return u === 'mm' ? v / 10 : u === 'cm' ? v : (v >= 200 ? v / 10 : v); };
+const thkCm = (v, u) => { v = Number(v); return u === 'mm' ? v / 10 : u === 'cm' ? v : (v >= 3.5 ? v / 10 : v); };
 const guideCm = (v, u) => { v = Number(v); if (u === 'mm') return v / 10; if (u === 'cm') return v; return v > 100 ? v / 10 : v; };
 const GUIDE_LIST = () => GUIDES.map(g => g * 10).join(', ');
 const phaseOf = s => /\b(caja|carcasa|carcas)\b/.test(s) ? 'caja' : /\b(puertas?|frentes?)\b/.test(s) ? 'puertas' : /\b(accesorios?|baldas?)\b/.test(s) ? 'acc' : 'all';
@@ -2483,6 +2576,7 @@ function agentRun(S, text, api) {
   const n0 = () => S.bodies.length;
   const slideSummary = () => { const sc = slideCheck(S, S.bodies.map(b => b.w)); return `${S.slide.n} hojas / ${slideTracks(S)} guías (${S.slide.match && S.slide.n === S.bodies.length ? 'una por cuerpo' : 'iguales'}) · ` + (sc.bad ? `⚠ ${sc.bad} cuerpo(s) no quedan libres` : 'todos los cuerpos pueden quedar libres ✓') + ` · fondo ocupado ${fmt(slideDepth(S))} cm`; };
   const PHN = { all: 'todas las fases', caja: 'fase 1 · CAJA', puertas: 'fase 2 · PUERTAS', acc: 'fase 3 · ACCESORIOS' };
+  const setOvA = (id, cm) => { if (!S.ov) S.ov = {}; if (cm >= 0.2 && cm <= 10) { S.ov[id] = cm; return true; } return false; };
 
   for (const s0 of clauses) {
     let s = s0.replace(/^(por favor|oye|quiero que|quiero|necesito que|necesito|me gustaria|puedes|podrias)\s+/, '');
@@ -2491,7 +2585,7 @@ function agentRun(S, text, api) {
     if (/^(ayuda|help|que puedes|comandos|que sabes)/.test(s)) { info(AGENT_HELP); continue; }
     if (/^(deshaz|deshacer|undo|atras|vuelve atras)/.test(s)) { if (api && api.undo && api.undo()) ok('Cambio deshecho.'); else bad('No hay nada que deshacer.'); continue; }
     if (/^(rehaz|rehacer|redo)/.test(s)) { if (api && api.redo && api.redo()) ok('Cambio rehecho.'); else bad('No hay nada que rehacer.'); continue; }
-    if (/^(reinicia|resetea|restablece|vuelve al plano|plano original)/.test(s)) { const D = normalize(); Object.keys(S).forEach(k => delete S[k]); Object.assign(S, D); ok('Diseño restablecido al proyecto por defecto.'); continue; }
+    if (/^(reinicia|resetea|restablece|vuelve al plano|plano original)/.test(s) && !/espesor/.test(s)) { const D = normalize(); Object.keys(S).forEach(k => delete S[k]); Object.assign(S, D); ok('Diseño restablecido al proyecto por defecto.'); continue; }
 
     if (/^(guarda\w*|backup|copia de seguridad|exporta\w*)\b/.test(s) && !/\b(pdf|png|dxf|dwg)\b/.test(s)) { if (api && api.backup) { api.backup(); ok('Backup del proyecto generado (.json). Cárgalo después con «CARGAR».'); } continue; }
     if (/^(carga\w*|abre\w* (el |un )?(archivo|backup|proyecto)|importa\w*)\b/.test(s)) { if (api && api.load) { api.load(); info('Elige el archivo .json con «📂 CARGAR» (o arrástralo encima de la app).'); } continue; }
@@ -2533,6 +2627,38 @@ function agentRun(S, text, api) {
       if (did.length) { if (api && api.openCut) api.openCut(); ok('Corte: ' + did.join(', ') + '.'); continue; }
     }
 
+    // ---- espesores por tablero ----
+    if (/\b(quita|elimina|borra|restablece|resetea|limpia|olvida)\w*\b.*\bespesores?\b/.test(s)) { const k = Object.keys(S.ov || {}).length + Object.keys((S.cost && S.cost.dep) || {}).length; S.ov = {}; if (S.cost) S.cost.dep = {}; ok(k ? 'Espesores personalizados eliminados (' + k + ').' : 'No había espesores personalizados.'); continue; }
+
+    // ---- costados de mocheta (aparte de las traseras) ----
+    if (/\bcostados?\b/.test(s)) {
+      const did = []; let mm;
+      if (/\b(sin|quita\w*|elimina\w*|desactiva\w*|no (?:pongas|coloques|quiero))\b/.test(s)) { S.cost.on = false; did.push('desactivados'); }
+      else {
+        S.cost.on = true;
+        if (/\b(igual|mismo)\b.*\b(tablero|espesor|general)\b|\bigual que (?:el )?tablero\b/.test(s)) { S.cost.t = 0; did.push('mismo espesor que el tablero (' + fmt(S.t * 10, 1) + ' mm)'); }
+        else { const s2 = s.replace(/\bcuerpos?\s*\d+/g, ' '); if ((mm = s2.match(new RegExp(NUM + '\\s*(mm|cm)?')))) { const v = thkCm(mm[1], mm[2]); if (v >= 0.2 && v <= 10) { S.cost.t = v; did.push('espesor ' + fmt(v * 10, 1) + ' mm'); } else bad('Espesor de costado no válido (entre 2 y 100 mm).'); } }
+        if (/\b(sumando|suma\w*|con)\b.*\btrasera\b/.test(s)) { S.cost.addBack = true; did.push('fondo + espesor de trasera'); }
+        else if (/\bsin (?:sumar|la) trasera\b|\bsolo el salto\b/.test(s)) { S.cost.addBack = false; did.push('fondo = salto de mocheta'); }
+        if (!did.length) did.push('activados');
+      }
+      ok('Costados de mocheta: ' + did.join(', ') + '.'); continue;
+    }
+    {
+      const thkRe = /\b(lateral(?:es)? (izq\w*|der\w*)|tabique\s*(\d+)|tapa(?: superior)?|base|zocalo|balda de cierre|cierre de cajonera)\b/;
+      if (/\b(espesor|grosor)\b|\b\d+(?:\.\d+)?\s*mm\b/.test(s) && (m = s.match(thkRe)) && !/trasera|puerta|nicho|accesorio|cajon(?!era)/.test(s) && !/\b(sierra|refilado|tablero \d|guia|caja de)\b/.test(s)) {
+        const s2 = s.replace(/tabique\s*\d+/g, ' ').replace(/cuerpos?\s*\d+(?:\s*(?:,|y|a|-)\s*\d+)*/g, ' ').replace(/\b(primer|primero|primera|segundo|segunda|tercer|tercero|tercera|cuarto|cuarta)\b/g, ' ');
+        const mv = s2.match(new RegExp(NUM + '\\s*(mm|cm)?'));
+        if (!mv) { bad('Indica el espesor (p. ej. «espesor del lateral izquierdo 19 mm»).'); continue; }
+        const v = thkCm(mv[1], mv[2]); if (!(v >= 0.2 && v <= 10)) { bad('Espesor no válido (entre 2 y 100 mm).'); continue; }
+        const kw = m[1]; const ids = []; let lab = '';
+        if (/^lateral/.test(kw)) { ids.push(/izq/.test(kw) ? 'L' : 'R'); lab = /izq/.test(kw) ? 'lateral izquierdo' : 'lateral derecho'; }
+        else if (/^tabique/.test(kw)) { const i = Number(m[3]); if (!(i >= 1 && i < S.bodies.length)) { bad('Ese tabique no existe (hay ' + (S.bodies.length - 1) + ').'); continue; } if (S.divMode === 'double') ids.push('T' + i + 'a', 'T' + i + 'b'); else ids.push('T' + i); lab = 'tabique ' + i; }
+        else { const tg = agentTargets(s, n0()); const idx = tg.idx || S.bodies.map((_, i) => i); const pre = /^tapa/.test(kw) ? 'top' : /^base/.test(kw) ? 'base' : /^zocalo/.test(kw) ? 'pl' : 'cap'; idx.forEach(i => ids.push(pre + i)); lab = (/^tapa/.test(kw) ? 'tapa' : /^base/.test(kw) ? 'base' : /^zocalo/.test(kw) ? 'frente de zócalo' : 'balda de cierre') + ' (cuerpo' + (idx.length > 1 ? 's ' : ' ') + idx.map(i => i + 1).join(', ') + ')'; }
+        ids.forEach(id => setOvA(id, v)); ok('Espesor de ' + lab + ': ' + fmt(v * 10, 1) + ' mm.'); continue;
+      }
+    }
+
     if (/\bpuertas?\b.*\b(sobre|encima del?|por encima del?|desde el)\s+(el )?zocalo\b|\bno cubr\w* (el )?zocalo\b/.test(s)) { S.door.coverPlinth = false; const dz = doorZ(S); ok(`Puertas sobre el zócalo: arrancan a ${fmt(dz.z0)} cm y miden ${fmt(dz.h)} cm de alto.`); continue; }
     if (/\bpuertas?\b.*\b(hasta el suelo|a ras de suelo|cubr\w* (el )?zocalo|tapan? (el )?zocalo)\b/.test(s)) { S.door.coverPlinth = true; const dz = doorZ(S); ok(`Puertas hasta el suelo (tapan el zócalo): ${fmt(dz.h)} cm de alto.`); continue; }
     if ((m = s.match(new RegExp('retranque\\w*\\s*(?:del|de)?\\s*zocalo\\s*(?:de|a|=|:)?\\s*' + NUM)))) { S.plinthSet = Number(m[1]); ok('Frente del zócalo retranqueado ' + fmt(S.plinthSet) + ' cm.'); continue; }
@@ -2553,14 +2679,13 @@ function agentRun(S, text, api) {
     if (/\btrasera|\bretornos?\b/.test(s) && !/\bdel fondo|\bde la trasera/.test(s)) {
       const did = [];
       const off = /\bsin\b.*trasera|quita\w* (las )?trasera|elimina\w* (las )?trasera|desactiva\w* (las )?trasera/.test(s);
-      if (/retorno/.test(s) && /sin|quita/.test(s)) { S.back.ret = false; did.push('sin retornos en mochetas'); }
+      if (/retorno/.test(s)) { S.cost.on = !/sin|quita/.test(s); did.push(S.cost.on ? 'costados de mocheta activados' : 'sin costados de mocheta'); }
       else if (off) { S.back.on = false; did.push('sin traseras'); }
       else {
         S.back.on = true; did.push('traseras activadas');
         let mm; if ((mm = s.match(new RegExp(NUM + '\\s*mm')))) { S.back.t = r1(Number(mm[1]) / 10); did.push('espesor ' + fmt(S.back.t * 10) + ' mm'); }
         if (/sobrepuest|sobre el canto|por detras/.test(s)) { S.back.fix = 'over'; did.push('sobrepuestas al canto trasero'); }
         if (/entre tableros|encajad|entre laterales/.test(s)) { S.back.fix = 'inside'; did.push('entre tableros'); }
-        if (/con retorno/.test(s)) { S.back.ret = true; did.push('con retornos'); }
       }
       ok('Traseras: ' + did.join(', ') + '.'); continue;
     }
@@ -2719,13 +2844,14 @@ function agentRun(S, text, api) {
 }
 
 /* =====================================================================
-   UI v11  ·  corte por FASES (caja · puertas · accesorios) + pestaña PLANOS del armario
+   UI v12  ·  costados de mocheta + espesor individual por tablero (herramienta 🧱 Espesores)
    ===================================================================== */
 let S = normalize();
 let VIEW = { walls: true, ceiling: true, labels: true, doors: true, interior: true, obs: true, ref: true, back: true, acclab: true, wallAlpha: 0.9, mode: 'split', warnMin: false, pmin: false, bottom: 'plan', ortho: true };
 let CAM = { yaw: 0.55, pitch: 0.28, dist: 560, target: [119, 40, 118], fov: 38, ortho: false, orthoSize: 150 };
 let M = null, planHits = [], planHover = null, planEdit = null, currentName = '', infoTab = 'res', PL = null;
 let UIS = { tool: false, pend: null, hover: null, snapped: false, shift: false };
+let THK = { on: false, ids: [], px: 0, py: 0, hover: [] };
 let CUT = { plan: null, sig: '', timer: null, showCuts: true, note: '', ph: 'all' };
 let DRW = { views: null, sig: '', timer: null, sel: 'all', vis: null, note: '' };
 const $ = (s, r = document) => r.querySelector(s);
@@ -2748,6 +2874,7 @@ function redo() { commitNow(); if (!redoStack.length) return false; undoStack.pu
 function updHistBtns() { const u = $('#btnUndo'), r = $('#btnRedo'); if (u) u.disabled = !undoStack.length; if (r) r.disabled = !redoStack.length; }
 
 const nI = (p, label, step = 0.1, extra = '') => `<label class="f"><span>${label}</span><input type="number" step="${step}" data-p="${p}" ${extra}></label>`;
+const nIm = (p, label, step = 1, extra = '') => `<label class="f"><span>${label}</span><input type="number" step="${step}" data-mm="${p}" ${extra}></label>`;
 const tI = (p, label, ph = '', extra = '') => `<label class="f wide"><span>${label}</span><input type="text" placeholder="${ph}" data-p="${p}" ${extra}></label>`;
 const sel = (p, label, opts, extra = '') => `<label class="f"><span>${label}</span><select data-p="${p}" ${extra}>${opts.map(o => `<option value="${o[0]}">${o[1]}</option>`).join('')}</select></label>`;
 const chk = (p, label, extra = '') => `<label class="chk"><input type="checkbox" data-p="${p}" ${extra}> ${label}</label>`;
@@ -2834,7 +2961,7 @@ function renderSide() {
   side0.innerHTML = `
   <details open><summary>Dimensiones generales</summary>
     <div class="grid2">
-      ${nI('H', 'Alto armario', 0.5)}${nI('t', 'Espesor tablero', 0.1)}
+      ${nI('H', 'Alto armario', 0.5)}${nI('t', 'Espesor tablero (general)', 0.1)}
       ${nI('ceilL', 'Techo izq.', 0.5)}${nI('ceilR', 'Techo dcho.', 0.5)}
       ${nI('depth', 'Fondo (frente)', 0.5)}${nI('plinth', 'Zócalo / base (cm)', 0.5, 'min="0"')}
       ${S.plinth > 0 ? nI('plinthSet', 'Retranqueo frente zócalo', 0.5, 'min="0"') : ''}
@@ -2879,8 +3006,19 @@ function renderSide() {
     <div class="grid2">${nI('door.gap', 'Holgura entre hojas', 0.1)}${nI('door.thick', 'Espesor puerta', 0.1)}${nI('door.top', 'Holgura arriba', 0.1)}${nI('door.bottom', S.plinth > 0 && !S.door.coverPlinth ? 'Holgura sobre el zócalo' : 'Holgura abajo', 0.1)}${nI('door.maxHinged', 'Ancho máx. hoja abatible', 1)}${nI('door.minLeaf', 'Ancho mín. hoja', 1)}</div>
   </details>
   <details open><summary>Traseras</summary>
+    <div class="hint">Paneles finos del fondo (p. ej. 5–10 mm). Los cierres laterales de las mochetas son <b>costados</b> y se definen en la sección siguiente.</div>
     ${chk('back.on', 'Colocar traseras')}
-    <div class="grid3">${nI('back.t', 'Espesor (cm)', 0.1, 'min="0.1" max="3"')}${sel('back.fix', 'Fijación', [['inside', 'Entre tableros'], ['over', 'Sobre el canto trasero']])}${chk('back.ret', 'Con retornos en mochetas')}</div>
+    <div class="grid2">${nI('back.t', 'Espesor trasera (cm)', 0.1, 'min="0.1" max="3"')}${sel('back.fix', 'Fijación', [['inside', 'Entre tableros'], ['over', 'Sobre el canto trasero']])}</div>
+  </details>
+  <details open><summary>Costados (cierres de mocheta)</summary>
+    <div class="hint">Un costado es el tablero que cierra el lateral de cada mocheta o pilar. Se define <b>aparte de las traseras</b>: tiene su propio espesor y se pide con la caja (fase 1).</div>
+    ${chk('cost.on', 'Colocar costados en los saltos de mocheta')}
+    <div class="grid2">${nIm('cost.t', 'Espesor (mm) · vacío = igual al tablero', 1, 'min="0" placeholder="' + Math.round(S.t * 10) + '"')}${chk('cost.addBack', 'Sumar el espesor de la trasera al fondo')}</div>
+    <div id="costList"></div>
+  </details>
+  <details><summary>Espesores personalizados</summary>
+    <div class="hint">Pulsa «🧱 Espesores» sobre la planta o el alzado y haz clic en cualquier tablero para cambiar su espesor (laterales, tabiques, tapas, bases, baldas, zócalo, costados…).</div>
+    <div id="ovList"></div>
   </details>
   <div id="bodies">${bodiesHTML}</div>
   <details><summary>Criterios de cajones, accesorios y barras</summary>
@@ -2896,6 +3034,7 @@ function syncInputs() {
     const v = getP(S, el.dataset.p);
     if (el.type === 'checkbox') el.checked = !!v; else el.value = (v === undefined ? '' : (typeof v === 'number' ? Math.round(v * 100) / 100 : v));
   });
+  $$('#sideBody [data-mm]').forEach(el => { if (el === document.activeElement) return; const v = getP(S, el.dataset.mm); el.value = v > 0 ? Math.round(v * 100) / 10 : ''; });
   const nb = $('#nbtxt'); if (nb) nb.textContent = S.bodies.length + ' cuerpos';
 }
 
@@ -2904,18 +3043,90 @@ function logOpt(r, title) {
   if (!r.ok) { pushLog('⚠ ' + r.msg, 'bad'); return; }
   const f = (a, k, d = 1) => a.map(x => x[k] === null || x[k] === undefined ? '–' : fmt(x[k], d)).join(' / ');
   const lines = ['✔ ' + title];
-  if (r.before && r.before.length && r.after && r.after.length) { lines.push('   Módulos: ' + f(r.before, 'pitch') + '  →  ' + f(r.after, 'pitch')); }
+  if (r.before && r.before.length && r.after && r.after.length) lines.push('   Módulos: ' + f(r.before, 'pitch') + '  →  ' + f(r.after, 'pitch'));
   pushLog(lines, 'ok');
+}
+
+/* ---------- espesores por tablero ---------- */
+function setOv(id, cm) {
+  const r = M && M.thk && M.thk[id];
+  if (r && r.glob) { setP(S, r.glob, clamp(cm >= 0.1 ? cm : r.def, 0.1, 10)); return; }
+  if (!S.ov) S.ov = {};
+  const def = r ? r.def : S.t;
+  if (!(cm >= 0.2) || Math.abs(cm - def) < 1e-6) delete S.ov[id]; else S.ov[id] = Math.min(10, cm);
+}
+function resetOv(id) { const r = M && M.thk && M.thk[id]; if (r && r.glob) setP(S, r.glob, r.def); else if (S.ov) delete S.ov[id]; if (S.cost && S.cost.dep) delete S.cost.dep[id]; }
+function renderCostList() {
+  const cl = $('#costList'); if (!cl || !M) return;
+  if (cl.contains(document.activeElement) && document.activeElement.tagName === 'INPUT') return;
+  if (!S.cost.on) { cl.innerHTML = '<div class="muted">Desactivados: las mochetas no llevan costado.</div>'; return; }
+  const cs = M.costs; if (!cs.length) { cl.innerHTML = '<div class="muted">No hay saltos de mocheta dentro de los cuerpos.</div>'; return; }
+  let h = '<table class="mt"><tr><th>Costado</th><th>Salto</th><th>Espesor mm</th><th>Fondo mm</th><th></th></tr>';
+  cs.forEach(c => { h += `<tr><td title="${esc(c.label)}">${esc(c.label)}</td><td>${fmt(c.step * 10, 0)}</td><td><input type="number" step="1" min="2" data-ovmm="${c.id}" value="${Math.round(c.t * 100) / 10}" class="${c.ov ? 'ovin' : ''}"></td><td><input type="number" step="1" min="10" data-covdep="${c.id}" value="${Math.round(c.dep * 100) / 10}" class="${c.depOv ? 'ovin' : ''}"></td><td><button class="mini" data-act="ovreset" data-id="${c.id}" ${c.ov || c.depOv ? '' : 'disabled'} title="Volver a los valores por defecto">↺</button></td></tr>`; });
+  cl.innerHTML = h + '</table>';
+}
+function renderOvList() {
+  const ol = $('#ovList'); if (!ol || !M) return;
+  const keys = Object.keys(S.ov || {}), dk = Object.keys((S.cost && S.cost.dep) || {});
+  if (!keys.length && !dk.length) { ol.innerHTML = '<div class="muted" style="margin:4px 10px">Ninguno: todos los tableros usan el espesor general.</div>'; return; }
+  let h = '';
+  keys.forEach(id => { const r = M.thk[id]; h += `<div class="ovrow"><span>${esc(r ? r.label : id)}</span><b>${fmt(S.ov[id] * 10, 1)} mm</b><button class="mini" data-act="ovreset" data-id="${id}" title="Volver al espesor por defecto">↺</button></div>`; });
+  dk.forEach(id => { const r = M.thk[id]; h += `<div class="ovrow"><span>${esc(r ? r.label : id)} · fondo</span><b>${fmt(S.cost.dep[id] * 10, 1)} mm</b><button class="mini" data-act="ovreset" data-id="${id}" title="Volver al fondo por defecto">↺</button></div>`; });
+  h += '<div class="rowbtn"><button class="mini" data-act="ovclear">Quitar todos</button></div>';
+  ol.innerHTML = h;
+}
+function pieceBox(p, front) { return front ? [p.x0, p.x1, p.z0, Math.max(p.z1, p.zt0 === undefined ? p.z1 : p.zt0, p.zt1 === undefined ? p.z1 : p.zt1)] : [p.x0, p.x1, p.y0, p.y1]; }
+function thkCandidates(u, v) {
+  if (!M || !PL) return []; const front = PL.view === 'front'; const tol = 7 / (PL.sc || 3); const best = new Map();
+  M.P.forEach(p => {
+    if (!p.pid || p.rot || !M.thk[p.pid]) return; if (!VIEW.doors && p.tag === 'door') return; if (!VIEW.back && p.tag === 'back') return;
+    const bx = pieceBox(p, front); const dx = Math.max(bx[0] - u, 0, u - bx[1]), dy = Math.max(bx[2] - v, 0, v - bx[3]); const d = Math.hypot(dx, dy); if (d > tol) return;
+    const area = (bx[1] - bx[0]) * (bx[3] - bx[2]); const cur = best.get(p.pid);
+    if (!cur) best.set(p.pid, { pid: p.pid, d, area }); else { cur.d = Math.min(cur.d, d); cur.area = Math.min(cur.area, area); }
+  });
+  return [...best.values()].sort((a, b) => ((a.d > 1e-4) - (b.d > 1e-4)) || a.area - b.area).slice(0, 14);
+}
+function renderThkPop() {
+  const pop = $('#thkPop'); if (!pop || !M) return;
+  const rows = THK.ids.filter(id => M.thk[id]);
+  if (!THK.on || !rows.length) { pop.style.display = 'none'; return; }
+  if (pop.contains(document.activeElement) && document.activeElement.tagName === 'INPUT') return;
+  let h = `<div class="thk-h"><b>Espesor de tableros</b><button class="mini" data-act="thkclose" title="Cerrar">✕</button></div><div class="thk-s">Tableros en este punto. Cambia el valor y pulsa Enter; ↺ vuelve al valor por defecto.</div>`;
+  rows.forEach(id => { const r = M.thk[id]; const mod = r.glob ? Math.abs(r.t - r.def) > 1e-9 : r.ov; h += `<div class="thk-r${mod ? ' ov' : ''}"><span class="nm" title="${esc(r.label)}">${esc(r.label)}</span><input type="number" step="1" min="1" max="100" value="${Math.round(r.t * 100) / 10}" data-thk="${id}"><small>mm</small><button class="mini" data-act="ovreset" data-id="${id}" ${mod ? '' : 'disabled'} title="Valor por defecto: ${fmt(r.def * 10, 1)} mm">↺</button></div>`; });
+  pop.innerHTML = h; pop.style.display = 'block';
+  const cv = $('#planCv'); const W = cv.clientWidth, Hh = cv.clientHeight, pw = pop.offsetWidth, ph = pop.offsetHeight;
+  pop.style.left = Math.max(4, Math.min(THK.px + 14, W - pw - 4)) + 'px'; pop.style.top = Math.max(4, Math.min(THK.py - 10, Hh - ph - 4)) + 'px';
+}
+function pickThk(e) {
+  if (!PL) return; const p = planPos(e); const m = PL.inv(p.x, p.y); const c = thkCandidates(m[0], m[1]);
+  if (!c.length) { THK.ids = []; renderThkPop(); requestDraw(); return; }
+  THK.ids = c.map(x => x.pid); THK.px = p.x; THK.py = p.y; THK.hover = []; renderThkPop(); requestDraw();
+}
+function drawThkHL(c2) {
+  if (!PL || !M) return; const front = PL.view === 'front'; const ids = THK.ids.length ? THK.ids : THK.hover; if (!ids.length) return;
+  c2.save(); c2.lineWidth = 2; c2.strokeStyle = '#ff7a00'; c2.fillStyle = 'rgba(255,140,0,0.22)';
+  M.P.forEach(p => {
+    if (!p.pid || p.rot || !ids.includes(p.pid)) return; const bx = pieceBox(p, front);
+    const a = PL.toPx(bx[0], front ? bx[3] : bx[2]), b = PL.toPx(bx[1], front ? bx[2] : bx[3]);
+    let x0 = Math.min(a[0], b[0]), x1 = Math.max(a[0], b[0]), y0 = Math.min(a[1], b[1]), y1 = Math.max(a[1], b[1]);
+    if (x1 - x0 < 4) { const cx = (x0 + x1) / 2; x0 = cx - 2; x1 = cx + 2; } if (y1 - y0 < 4) { const cy = (y0 + y1) / 2; y0 = cy - 2; y1 = cy + 2; }
+    c2.fillRect(x0, y0, x1 - x0, y1 - y0); c2.strokeRect(x0, y0, x1 - x0, y1 - y0);
+  });
+  c2.restore();
+}
+function setThkTool(on) {
+  THK.on = !!on;
+  if (on) { if (UIS.tool) setMeasure(false); closePlanEditor(); if (VIEW.pmin) { VIEW.pmin = false; applyMode(); } }
+  else { THK.ids = []; THK.hover = []; const pop = $('#thkPop'); if (pop) pop.style.display = 'none'; }
+  applyBottom(); requestDraw();
 }
 
 /* ---------- GUARDAR / CARGAR / COPILOT ---------- */
 function backupName() { const d = new Date(); const ds = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); return ((currentName || $('#projName').value.trim() || 'armario').replace(/[^\w\-áéíóúñÁÉÍÓÚÑ ]+/g, '_').trim().replace(/\s+/g, '_') || 'armario') + '_' + ds + '.armario.json'; }
 function saveBackup() {
   commitNow(); const nm = $('#projName').value.trim() || currentName || 'Armario'; currentName = nm;
-  const obj = { app: 'armario3d', v: 11, name: nm, ts: new Date().toISOString(), S: clone(S), VIEW: clone(VIEW) };
-  const txt = JSON.stringify(obj, null, 1);
-  deliver(mkFile(backupName(), 'text', txt, 'application/json'), 'Backup del proyecto (.json)');
-  if (EMBEDDED && navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(() => pushLog('✔ Además, el backup se ha copiado al portapapeles: pégalo en el Bloc de notas y guárdalo como .json.', 'ok'), () => { });
+  const obj = { app: 'armario3d', v: 12, name: nm, ts: new Date().toISOString(), S: clone(S), VIEW: clone(VIEW) };
+  deliver(mkFile(backupName(), 'text', JSON.stringify(obj, null, 1), 'application/json'), 'Backup del proyecto (.json)');
   pushLog('✔ Backup generado: ' + backupName() + '. Para recuperarlo usa «📂 CARGAR».', 'ok'); refreshProjTitle();
 }
 function parseProjectText(txt) {
@@ -2926,7 +3137,7 @@ function parseProjectText(txt) {
   throw new Error('no es un JSON válido');
 }
 function loadProjectText(txt, srcName) {
-  if (/^\s*<!DOCTYPE html|^\s*<html/i.test(String(txt))) { pushLog('⚠ «' + (srcName || 'ese archivo') + '» es la propia aplicación (.html), no un backup. Elige un archivo que termine en .armario.json.', 'bad'); setStatus('⚠ Eso es la app, no un backup'); return false; }
+  if (/^\s*<!DOCTYPE html|^\s*<html/i.test(String(txt))) { pushLog('⚠ «' + (srcName || 'ese archivo') + '» es la propia aplicación (.html), no un backup. Elige un archivo que termine en .armario.json.', 'bad'); return false; }
   let o; try { o = parseProjectText(txt); } catch (e) { pushLog('⚠ No he podido leer ' + (srcName ? '«' + srcName + '»' : 'el texto') + ': ' + e.message + '.', 'bad'); setStatus('⚠ Archivo no válido'); return false; }
   const st = o && o.S ? o.S : o;
   if (!st || typeof st !== 'object' || !(st.bodies || st.profile || st.H)) { pushLog('⚠ El JSON no parece un diseño de armario (faltan cuerpos/medidas).', 'bad'); return false; }
@@ -2941,7 +3152,7 @@ function loadFile(file) {
 }
 function loadProjectObj(o, name) {
   const st = o && o.S ? o.S : o; commitNow(); const n = normalize(st); Object.keys(S).forEach(k => delete S[k]); Object.assign(S, n);
-  if (o && o.VIEW) VIEW = Object.assign(VIEW, o.VIEW); currentName = name || ''; $('#projName').value = currentName; lastSnap = JSON.stringify(S); undoStack = []; redoStack = []; UIS.pend = null;
+  if (o && o.VIEW) VIEW = Object.assign(VIEW, o.VIEW); currentName = name || ''; $('#projName').value = currentName; lastSnap = JSON.stringify(S); undoStack = []; redoStack = []; UIS.pend = null; THK.ids = []; THK.hover = [];
   renderSide(); syncView(); applyMode(); refreshProjTitle(); update(true); setView('persp'); updHistBtns();
 }
 function refreshProjTitle() { const t = $('#projTitle'); if (t) t.textContent = currentName ? '📁 ' + currentName : ''; }
@@ -2968,6 +3179,7 @@ document.addEventListener('input', e => {
   }
   if (el.dataset.cwmm !== undefined) { const a = S.bodies[+el.dataset.i].acc[+el.dataset.j]; if (!a) return; a.sz = -2; a.cw = Math.max(0, num(el.value)) / 10; update(); commitSoon(); return; }
   if (el.dataset.dmm !== undefined) { S.bodies[+el.dataset.i].drw.w = Math.max(0, num(el.value)) / 10; update(); commitSoon(); return; }
+  if (el.dataset.mm) { setP(S, el.dataset.mm, el.value === '' ? 0 : Math.max(0, num(el.value)) / 10); update(); commitSoon(); return; }
   if (!el.dataset.p) return;
   if (el.dataset.act === 'bw' || el.dataset.act === 'totalW' || el.dataset.act === 'segw' || el.dataset.act === 'setT') return;
   let v; if (el.type === 'checkbox') v = el.checked; else if (el.type === 'number') { v = num(el.value); if (el.dataset.int) v = Math.round(v); } else v = el.value;
@@ -2987,6 +3199,10 @@ document.addEventListener('input', e => {
 document.addEventListener('change', e => {
   const el = e.target; if (!el || !el.dataset) return;
   if (el.id === 'file') { if (el.files && el.files[0]) loadFile(el.files[0]); el.value = ''; return; }
+  if (el.dataset.thk) { setOv(el.dataset.thk, num(el.value) / 10); renderSide(); update(); commitNow(); return; }
+  if (el.dataset.ovmm) { setOv(el.dataset.ovmm, num(el.value) / 10); renderSide(); update(); commitNow(); return; }
+  if (el.dataset.covdep) { const id = el.dataset.covdep; const v = num(el.value) / 10; const c = M && M.costs.find(q => q.id === id); if (!S.cost.dep) S.cost.dep = {}; if (v >= 1 && !(c && Math.abs(v - c.base) < 1e-6)) S.cost.dep[id] = v; else delete S.cost.dep[id]; update(); commitNow(); return; }
+  if (el.dataset.mm) { commitNow(); return; }
   if (el.dataset.depth || el.dataset.cwmm !== undefined || el.dataset.dmm !== undefined) { commitNow(); return; }
   if (el.dataset.act === 'bw') { rebalance(S, parseInt(el.dataset.i), num(el.value)); syncInputs(); update(); commitNow(); }
   else if (el.dataset.act === 'totalW') { setTotalW(S, Math.max(60, num(el.value))); syncInputs(); update(); commitNow(); }
@@ -2998,6 +3214,9 @@ document.addEventListener('change', e => {
   if (el.dataset.cut) applyCutSetting(el);
   if (el.dataset.lay) { DRW.vis[el.dataset.lay] = el.checked; renderPlansPane(); }
   if (el.id === 'drSel') { DRW.sel = el.value; renderPlansPane(); }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target && e.target.dataset && (e.target.dataset.thk || e.target.dataset.ovmm || e.target.dataset.covdep)) { e.preventDefault(); e.target.blur(); }
 });
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b || b.tagName === 'INPUT' || b.tagName === 'SELECT') return;
@@ -3023,6 +3242,11 @@ document.addEventListener('click', e => {
   else if (a === 'stack') { const k = stackAccs(S, i); pushLog(k ? `✔ Cuerpo ${i + 1}: ${k} accesorio(s) apilados.` : 'ℹ No hay bastidores que apilar.', k ? 'ok' : ''); struct = true; }
   else if (a === 'delacc') { S.bodies[i].acc.splice(j, 1); struct = true; }
   else if (a === 'applyopt') { const bd = S.bodies[i]; if (bd.drw.n < 1) bd.drw.n = 3; bd.drw.w = r1(num(b.dataset.w)); bd.drw.pos = r1(num(b.dataset.pos)); bd.drw.al = 'L'; struct = true; }
+  /* espesores por tablero */
+  else if (a === 'thktool') { setThkTool(!THK.on); doCommit = false; }
+  else if (a === 'thkclose') { THK.ids = []; const pop = $('#thkPop'); if (pop) pop.style.display = 'none'; requestDraw(); doCommit = false; }
+  else if (a === 'ovreset') { resetOv(b.dataset.id); struct = true; }
+  else if (a === 'ovclear') { S.ov = {}; if (S.cost) S.cost.dep = {}; struct = true; }
   /* archivo */
   else if (a === 'bsave') { saveBackup(); doCommit = false; }
   else if (a === 'pcopy') { copyForCopilot(); doCommit = false; }
@@ -3067,7 +3291,6 @@ document.addEventListener('click', e => {
   else if (a === 'agentrun') { runAgentFromUI(); doCommit = false; }
   else if (a === 'agenthelp') { pushLog(AGENT_HELP, 'help'); doCommit = false; }
   else if (a === 'chip') { const inp = $('#agentIn'); inp.value = b.dataset.t; inp.focus(); doCommit = false; }
-  else if (a === 'embclose') { $('#embBanner').style.display = 'none'; doCommit = false; }
   else return;
   if (struct) renderSide();
   update(); if (doCommit) commitNow();
@@ -3234,20 +3457,21 @@ function openPlansTab() { VIEW.mode = 'tables'; infoTab = 'plans'; applyMode(); 
 /* ---------- paneles ---------- */
 function setWarnMin(v) { VIEW.warnMin = !!v; applyWarn(); save(); }
 function applyWarn() { const w = $('#warns'); if (!w) return; w.classList.toggle('min', !!VIEW.warnMin); const bt = $('#warnBtn'); if (bt) bt.textContent = VIEW.warnMin ? '▴ Ver' : '▾ Minimizar'; }
-function setPmin(v) { VIEW.pmin = !!v; if (VIEW.pmin) { closePlanEditor(); if (UIS.tool) setMeasure(false); } applyMode(); save(); }
-function setBottom(v) { VIEW.bottom = v === 'front' ? 'front' : 'plan'; UIS.pend = null; UIS.hover = null; closePlanEditor(); if (VIEW.pmin) VIEW.pmin = false; applyMode(); save(); }
-function setMeasure(on) { UIS.tool = !!on; UIS.pend = null; UIS.hover = null; if (on) { closePlanEditor(); if (VIEW.pmin) { VIEW.pmin = false; applyMode(); } } applyBottom(); requestDraw(); }
+function setPmin(v) { VIEW.pmin = !!v; if (VIEW.pmin) { closePlanEditor(); if (UIS.tool) setMeasure(false); if (THK.on) setThkTool(false); } applyMode(); save(); }
+function setBottom(v) { VIEW.bottom = v === 'front' ? 'front' : 'plan'; UIS.pend = null; UIS.hover = null; THK.ids = []; THK.hover = []; const pop = $('#thkPop'); if (pop) pop.style.display = 'none'; closePlanEditor(); if (VIEW.pmin) VIEW.pmin = false; applyMode(); save(); }
+function setMeasure(on) { UIS.tool = !!on; UIS.pend = null; UIS.hover = null; if (on) { closePlanEditor(); if (THK.on) setThkTool(false); if (VIEW.pmin) { VIEW.pmin = false; applyMode(); } } applyBottom(); requestDraw(); }
 function applyBottom() {
   const min = VIEW.pmin && VIEW.mode === 'split';
   const pw = $('#planWrap'); if (pw) pw.classList.toggle('min', min);
   $$('[data-act="bottom"]').forEach(b => b.classList.toggle('on', b.dataset.v === VIEW.bottom));
   const bm = $('#btnMeasure'); if (bm) bm.classList.toggle('on', UIS.tool);
+  const bt = $('#btnThk'); if (bt) bt.classList.toggle('on', THK.on);
   const bp = $('#btnPmin'); if (bp) { bp.textContent = min ? '▴ Restaurar' : '▾ Minimizar'; bp.style.display = VIEW.mode === 'split' ? '' : 'none'; }
   const oc = $('#chkOrtho'); if (oc) oc.checked = !!VIEW.ortho;
   const nt = (S.dims || []).length;
   const bc = $('#btnClearDims'); if (bc) { bc.textContent = 'Borrar mis cotas (' + nt + ')'; bc.disabled = !nt; }
-  const tip = $('#planTip'); if (tip) tip.textContent = UIS.tool ? (UIS.pend ? '📏 Clic en el segundo punto · Mayús = ortogonal · Esc = cancelar' : '📏 Clic en el primer punto · clic en una cota verde = borrar · Esc = salir') : '✏ Pulsa una cota amarilla para editarla';
-  const cv = $('#cvplan'); if (cv) cv.style.cursor = UIS.tool ? 'crosshair' : 'default';
+  const tip = $('#planTip'); if (tip) tip.textContent = UIS.tool ? (UIS.pend ? '📏 Clic en el segundo punto · Mayús = ortogonal · Esc = cancelar' : '📏 Clic en el primer punto · clic en una cota verde = borrar · Esc = salir') : THK.on ? '🧱 Haz clic en un tablero para ver y editar su espesor · Esc = salir' : '✏ Pulsa una cota amarilla para editarla';
+  const cv = $('#cvplan'); if (cv) cv.style.cursor = UIS.tool ? 'crosshair' : THK.on ? 'cell' : 'default';
 }
 
 /* ---------- agente ---------- */
@@ -3308,6 +3532,7 @@ function draw() {
     const p = resizeCanvas(pc), c2 = pc.getContext('2d'); c2.setTransform(p.dpr, 0, 0, p.dpr, 0, 0);
     const opt = { doors: VIEW.doors, hover: planHover, user: { tool: UIS.tool, pend: UIS.pend, hover: UIS.hover, snapped: UIS.snapped, ep: UIS.pend && UIS.hover ? endpoint(UIS.hover) : null } };
     PL = VIEW.bottom === 'front' ? renderElev(c2, p.w, p.h, S, M, opt) : renderPlan(c2, p.w, p.h, S, M, opt); planHits = PL.hits;
+    if (THK.on) drawThkHL(c2);
   }
 }
 const depthLabel = a => a.mode === 'back' ? 'al fondo' : a.mode === 'gap' ? 'a ' + fmt(a.gapBack) + ' cm del fondo' : a.setback > 0.05 ? 'retranqueo ' + fmt(a.setback) + ' cm' : 'al frente';
@@ -3336,7 +3561,7 @@ function refreshInfo() {
       if (yt) yt.textContent = 'recorrido 0–' + fmt(mx) + ' cm';
       if (cwi && document.activeElement !== cwi) cwi.value = Math.round(num(S.bodies[b.i].acc[a.ai].cw) * 100) / 10;
       const el = $('#ai-' + k); if (!el) return;
-      el.innerHTML = `Medidas: <b>${fmt(a.x1 - a.x0)} × ${fmt(a.hgt)} × ${fmt(a.d.f)}</b> · z ${fmt(a.z0)}–${fmt(a.z1)} · <b>${depthLabel(a)}</b> · ` + (a.fit ? '<span class="okt">encaja ✓</span>' : '<span class="bad">no encaja ✗</span>');
+      el.innerHTML = `Medidas: <b>${fmt(a.x1 - a.x0)} × ${fmt(a.h)} × ${fmt(a.f)}</b> · z ${fmt(a.z0)}–${fmt(a.z1)} · <b>${depthLabel(a)}</b> · ` + (a.fit ? '<span class="okt">encaja ✓</span>' : '<span class="bad">no encaja ✗</span>');
     });
     const el = $('#calc-' + b.i); if (!el) return;
     let h = `<div class="kv"><b>Útil:</b> ${fmt(b.wClear)} × ${fmt(b.hClear)} cm · <b>Fondo útil:</b> ` + b.segs.map(s => `${fmt(b.Fint - s.y)} (${fmt(s.x1 - s.x0)} cm)`).join(' | ') + '</div>';
@@ -3355,10 +3580,13 @@ function refreshInfo() {
   $('#pane-acc').innerHTML = M.accList.length ? `<table><tr><th>Cuerpo</th><th>Ref.</th><th>Accesorio</th><th>Tamaño</th><th>Ancho × alto × fondo</th><th>Altura z</th><th>Posición</th><th>Estado</th></tr>` + M.accList.map(a => `<tr class="${a.fit ? '' : 'rowbad'}"><td>${a.body + 1}</td><td>${esc(a.ref)}</td><td>${esc(a.name)}</td><td>${a.sizeLabel || 'único'}</td><td>${fmt(a.w)} × ${fmt(a.h)} × ${fmt(a.f)}</td><td>${fmt(a.z0)}–${fmt(a.z1)}</td><td>${depthLabel(a)}</td><td>${a.fit ? '✓' : '✗'}</td></tr>`).join('') + '</table>' : '<div class="muted">Sin accesorios.</div>';
   $('#pane-door').innerHTML = M.doorDiag.map(d => `<div class="${d.level === 'ok' ? 'okbox' : d.level === 'warn' ? 'warnbox' : 'badbox'}">${d.level === 'ok' ? '✓' : '⚠'} ${esc(d.text)}</div>`).join('') || '<div class="muted">No hay puertas.</div>';
   const BI = M.backInfo;
-  $('#pane-back').innerHTML = !BI.on ? '<div class="warnbox">Traseras desactivadas.</div>' : `<table><tr><th>Cuerpo</th><th>Pieza</th><th>Ancho</th><th>Alto</th><th>Apoyo</th></tr>` + [...BI.panels, ...BI.returns].sort((a, b) => a.body - b.body || a.x - b.x).map(p => `<tr><td>${p.body + 1}</td><td>${p.kind === 'panel' ? 'Trasera' : 'Retorno de mocheta'}</td><td><b>${fmt(p.w, 1)}</b></td><td>${fmt(p.h, 1)}</td><td>${esc(p.note)}</td></tr>`).join('') + '</table>';
+  $('#pane-back').innerHTML = !BI.on ? '<div class="warnbox">Traseras desactivadas.</div>' : `<div class="hint">Traseras: paneles de ${fmt(BI.t * 10, 1)} mm (global). Los cierres laterales de las mochetas son <b>costados</b> y están en la pestaña «Costados».</div><table><tr><th>Cuerpo</th><th>Pieza</th><th>Ancho</th><th>Alto</th><th>Apoyo</th></tr>` + BI.panels.slice().sort((a, b) => a.body - b.body || a.x - b.x).map(p => `<tr><td>${p.body + 1}</td><td>Trasera</td><td><b>${fmt(p.w, 1)}</b></td><td>${fmt(p.h, 1)}</td><td>${esc(p.note)}</td></tr>`).join('') + '</table>';
+  $('#pane-cost').innerHTML = !S.cost.on ? '<div class="warnbox">Costados desactivados (sección «Costados» del panel izquierdo).</div>' : (M.costs.length ? `<div class="hint">Cada costado cierra el lateral de una mocheta. Espesor por defecto: <b>${fmt(costT(S) * 10, 1)} mm</b> (${S.cost.t > 0 ? 'propio de los costados' : 'igual al tablero general'}). Puedes cambiar el espesor y el fondo de cualquiera en el panel izquierdo, o pulsando «🧱 Espesores» sobre la planta.</div><table><tr><th>Cuerpo</th><th>Costado</th><th>Salto de mocheta (mm)</th><th>Alto (mm)</th><th>Fondo (mm)</th><th>Espesor (mm)</th><th>Posición x (mm)</th></tr>` + M.costs.map(c => `<tr><td>${c.body + 1}</td><td>${esc(c.label)}</td><td>${fmt(c.step * 10, 0)}</td><td>${fmt(c.h * 10, 0)}</td><td>${fmt(c.dep * 10, 0)}${c.depOv ? ' ✎' : ''}</td><td>${fmt(c.t * 10, 1)}${c.ov ? ' ✎' : ''}</td><td>${fmt(c.x0 * 10, 0)}</td></tr>`).join('') + '</table>' : '<div class="muted">No hay saltos de mocheta dentro de los cuerpos: no se necesitan costados.</div>');
   let q = `<table><tr><th>Fase</th><th>Pieza</th><th>Largo</th><th>Ancho</th><th>Esp.</th><th>Uds</th><th>Notas</th></tr>`;
   PHASES.forEach(ph => { const rows = M.bom.filter(r => r.grp === ph.id); if (!rows.length) return; q += `<tr class="phrow"><td colspan="7"><b>${esc(ph.label)}</b> <span class="muted">· ${esc(ph.desc)}</span></td></tr>`; rows.forEach(r => q += `<tr><td>${phTag(r.grp)}</td><td>${esc(r.name)}</td><td>${fmt(r.L)}</td><td>${r.W ? fmt(r.W) : '—'}</td><td>${r.T ? fmt(r.T) : '—'}</td><td>${r.qty}</td><td>${esc(r.note)}</td></tr>`); });
-  $('#pane-bom').innerHTML = q + `</table><div class="hint">Superficie de tablero (sin traseras) ≈ <b>${fmt(M.area, 2)} m²</b>. <button class="mini" data-act="csv">Descargar CSV</button></div>`;
+  $('#pane-bom').innerHTML = q + `</table><div class="hint">Medidas en cm. Superficie de tablero (sin traseras) ≈ <b>${fmt(M.area, 2)} m²</b>. <button class="mini" data-act="csv">Descargar CSV</button></div>`;
+  const ct = $('[data-mm="cost.t"]'); if (ct) ct.placeholder = String(Math.round(S.t * 10));
+  renderCostList(); renderOvList(); renderThkPop();
   scheduleCut(); schedulePlans();
   let iq = `<table><tr><th>Ref.</th><th>Descripción</th><th>Código</th><th>Uds</th><th>Notas</th></tr>`;
   M.intoo.forEach(r => iq += `<tr class="${String(r.code) === '—' ? 'rowbad' : r.code === 'A MEDIDA' || r.code === 'FERRETERÍA' ? 'rowcustom' : ''}"><td>${esc(r.ref)}</td><td>${esc(r.name)}</td><td><b>${r.code}</b></td><td>${r.qty}</td><td>${esc(r.note)}</td></tr>`);
@@ -3375,7 +3603,7 @@ function renderCatalog() {
   $('#pane-cat').innerHTML = t + '</table>';
 }
 
-/* ---------- vista inferior editable + medición ---------- */
+/* ---------- vista inferior editable + medición + espesores ---------- */
 function planPos(e) { const cv = $('#cvplan'); const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
 function hitAt(p) { for (let k = planHits.length - 1; k >= 0; k--) { const h = planHits[k]; if (p.x >= h.x && p.x <= h.x + h.w && p.y >= h.y && p.y <= h.y + h.h) return h; } return null; }
 function openPlanEditor(h) {
@@ -3411,10 +3639,14 @@ function initPlan() {
   cv.addEventListener('mousemove', e => {
     const h = hitAt(planPos(e)); const k = h ? h.key : null;
     if (UIS.tool) { measurePoint(e); cv.style.cursor = h && h.user ? 'pointer' : 'crosshair'; requestDraw(); }
+    else if (THK.on) {
+      cv.style.cursor = h ? 'pointer' : 'cell';
+      if (!THK.ids.length && PL && !h) { const p = planPos(e); const m = PL.inv(p.x, p.y); const ids = thkCandidates(m[0], m[1]).slice(0, 3).map(x => x.pid); if (ids.join() !== THK.hover.join()) { THK.hover = ids; requestDraw(); } }
+    }
     else cv.style.cursor = h ? 'pointer' : 'default';
     if (k !== planHover) { planHover = k; requestDraw(); }
   });
-  cv.addEventListener('mouseleave', () => { planHover = null; UIS.hover = null; requestDraw(); });
+  cv.addEventListener('mouseleave', () => { planHover = null; UIS.hover = null; if (THK.hover.length) THK.hover = []; requestDraw(); });
   cv.addEventListener('contextmenu', e => { if (UIS.tool) { e.preventDefault(); if (UIS.pend) { UIS.pend = null; applyBottom(); requestDraw(); } else setMeasure(false); } });
   cv.addEventListener('click', e => {
     const h = hitAt(planPos(e));
@@ -3425,7 +3657,9 @@ function initPlan() {
       else { const ep = endpoint(pt); if (Math.hypot(ep[0] - UIS.pend[0], ep[1] - UIS.pend[1]) > 0.05) { S.dims.push({ v: VIEW.bottom, a: [UIS.pend[0], UIS.pend[1]], b: [ep[0], ep[1]] }); commitNow(); update(); } UIS.pend = null; }
       applyBottom(); requestDraw(); return;
     }
-    if (planEdit) commitPlanEdit(); if (h) openPlanEditor(h);
+    if (planEdit) commitPlanEdit();
+    if (h) { openPlanEditor(h); return; }
+    if (THK.on) pickThk(e);
   });
   inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); commitPlanEdit(); } else if (e.key === 'Escape') { e.preventDefault(); closePlanEditor(); } else if (e.key === 'Tab') { e.preventDefault(); commitPlanEdit(e.shiftKey ? -1 : 1); } });
   inp.addEventListener('blur', () => { setTimeout(() => { if (planEdit && document.activeElement !== inp) commitPlanEdit(); }, 120); });
@@ -3465,6 +3699,7 @@ window.addEventListener('keydown', e => {
     const mb = $('#manualBox'); if (mb.classList.contains('on')) { mb.classList.remove('on'); return; }
     const xm = $('#exportModal'); if (xm.classList.contains('on')) { closeExport(); return; }
     const ov = $('#cutOverlay'); if (ov.classList.contains('on')) { closeCutViewer(); return; }
+    if (THK.on && !planEdit) { if (THK.ids.length) { THK.ids = []; const pop = $('#thkPop'); if (pop) pop.style.display = 'none'; requestDraw(); } else setThkTool(false); return; }
     if (!planEdit) { if (UIS.pend) { UIS.pend = null; applyBottom(); requestDraw(); } else if (UIS.tool) setMeasure(false); }
   }
   if (e.key === 'Shift' && UIS.tool) { UIS.shift = true; requestDraw(); }
@@ -3476,14 +3711,14 @@ window.addEventListener('DOMContentLoaded', () => {
   lastSnap = JSON.stringify(S); $('#projName').value = currentName;
   $('#chips').innerHTML = AGENT_EXAMPLES.map(t => `<button class="chip" data-act="chip" data-t="${esc(t)}">${esc(t)}</button>`).join('');
   $('#agentIn').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); runAgentFromUI(); } });
-  if (EMBEDDED) $('#embBanner').style.display = 'block';
+  if (EMBEDDED) { const eb = $('#embBanner'); if (eb) eb.style.display = 'block'; }
   renderSide(); window.__initCam(); initPlan(); syncView(); renderCatalog(); refreshProjTitle(); applyMode(); applyTabs(); applyWarn();
   $$('[data-v-opt]').forEach(el => el.addEventListener('input', () => { VIEW[el.dataset.vOpt] = el.type === 'checkbox' ? el.checked : num(el.value); requestDraw(); save(); }));
   const op = $('#openr'); op.addEventListener('input', () => { S.door.open = num(op.value); $('#opentxt').textContent = Math.round(S.door.open) + '%'; update(); });
   op.value = S.door.open; $('#opentxt').textContent = Math.round(S.door.open) + '%';
   const pr = $('#pullr'); pr.addEventListener('input', () => { S.door.pull = num(pr.value); $('#pulltxt').textContent = Math.round(S.door.pull) + '%'; update(); });
   update(); setView('persp'); updHistBtns();
-  pushLog(EMBEDDED ? 'Hola 👋 Estás en un visor restringido: GUARDAR, DXF y PDF no pueden descargar directamente. Descarga el .html (botón «Download» de arriba) y ábrelo con doble clic en Edge/Chrome; entretanto, los archivos se entregan en una ventana con «Copiar texto».' : 'Hola 👋 v11: corte por FASES (1 caja · 2 puertas · 3 accesorios) con su DXF cada una, y pestaña 📐 Planos con DXF/PDF del armario.', 'help');
+  pushLog(EMBEDDED ? 'Hola 👋 Estás en un visor restringido: GUARDAR, DXF y PDF no pueden descargar directamente. Abre la web en Edge/Chrome desde su dirección o como archivo local.' : 'Hola 👋 v12: los costados de mocheta son tableros aparte de las traseras y puedes cambiar el espesor de cualquier tablero con 🧱 Espesores (planta o alzado).', 'help');
 });
 
 
