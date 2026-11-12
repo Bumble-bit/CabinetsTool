@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Diseñador de armario v12</title>
+<title>Diseñador de armario v13</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;font-family:"Segoe UI",Arial,sans-serif;font-size:13px;color:#1f2430;background:#f3f4f7}
@@ -240,7 +240,7 @@ svg.drsvg{width:100%;height:auto;max-height:78vh;display:block;background:#fff}
   <main>
     <div id="embBanner">⚠ <b>Estás en un visor restringido</b>: no puede descargar archivos. Abre la aplicación en Edge o Chrome desde su dirección web.</div>
     <div id="topbar">
-      <h1>Armario v12</h1><span id="projTitle"></span>
+      <h1>Armario v13</h1><span id="projTitle"></span>
       <button id="btnUndo" data-act="undo" title="Ctrl+Z">↶ Deshacer</button><button id="btnRedo" data-act="redo" title="Ctrl+Y">↷ Rehacer</button>
       <div class="seg2"><button data-act="mode" data-v="split">3D + Vista inferior</button><button data-act="mode" data-v="3d">3D</button><button data-act="mode" data-v="plan">Solo inferior</button><button data-act="mode" data-v="tables">Tablas</button></div>
       <button data-act="png">PNG 3D</button><button data-act="pngp">PNG planta</button><button data-act="pnga">PNG alzado</button>
@@ -301,7 +301,7 @@ svg.drsvg{width:100%;height:auto;max-height:78vh;display:block;background:#fff}
 <script>
 'use strict';
 /* =====================================================================
-   NÚCLEO v12: estado, catálogo Intoo/Uniferag, guías de cajón 250–1000 mm, zócalo y puertas,
+   NÚCLEO v13: estado, catálogo Intoo/Uniferag, guías de cajón 250–1000 mm, zócalo y puertas,
    COSTADOS de mocheta (aparte de las traseras), espesor individual por tablero,
    despiece en 3 FASES (caja · puertas · accesorios), geometría y optimizadores
    Unidades: cm.  X = ancho (izq→der, mirando de frente), Y = fondo (0 = pared del fondo, +Y hacia la habitación), Z = altura
@@ -323,7 +323,7 @@ const PALETTES = {
 
 /* FASES DE FABRICACIÓN: 1 caja · 2 puertas y frentes · 3 accesorios */
 const PHASES = [
-  { id: 'caja', n: 1, short: 'CAJA', pre: 'C', label: '1 · CAJA (carcasa)', desc: 'Laterales, tabiques, costados, tapa, base, zócalo y traseras: lo primero que se encarga.' },
+  { id: 'caja', n: 1, short: 'CAJA', pre: 'C', label: '1 · CAJA (carcasa)', desc: 'Costados, tabiques, tapa, base, zócalo y traseras: lo primero que se encarga.' },
   { id: 'puertas', n: 2, short: 'PUERTAS', pre: 'P', label: '2 · PUERTAS Y FRENTES', desc: 'Puertas (abatibles o correderas), frentes de cajón y carriles.' },
   { id: 'acc', n: 3, short: 'ACCESORIOS', pre: 'A', label: '3 · ACCESORIOS', desc: 'Baldas, barras, cajas de cajón y herrajes Intoo.' }
 ];
@@ -418,15 +418,16 @@ function defaultBody(w, kind) {
   return b;
 }
 /* PROYECTO POR DEFECTO — door.coverPlinth: false = puertas sobre el zócalo · true = hasta el suelo
-   cost  = COSTADOS de mocheta: on, t (cm, 0 = igual al espesor general), addBack (suma el espesor de trasera al fondo), dep (fondo propio por costado, cm)
+   cost  = COSTADOS (exteriores y de mocheta): on (los de mocheta), t (cm, 0 = igual al espesor general), onBack (el costado de mocheta se monta ENTRE las traseras: fondo = salto − trasera), dep (fondo propio por costado, cm)
+   capFit = tapas y bases: 'notch' (una pieza con escotadura en las mochetas) | 'rect' (una pieza rectangular, hasta la mocheta más saliente)
    ov    = espesores individuales por tablero { id: cm } */
 const DEFAULT = {
-  v: 12,
+  v: 13,
   H: 244, ceilL: 252, ceilR: 254, t: 1.6, plinth: 0, plinthSet: 3, depth: 83.5, W: 229.1, T: 238, retY: 69.5, refLine: 89.5,
-  fixW: true, divMode: 'double', shelfFit: true, topFiller: false, palette: 'roble', fin: 'blanco',
+  fixW: true, divMode: 'double', shelfFit: true, capFit: 'notch', topFiller: false, palette: 'roble', fin: 'blanco',
   sys: 'slide', slide: { n: 2, tracks: 2, match: true },
   back: { on: true, t: 0.5, fix: 'inside', ret: true },
-  cost: { on: true, t: 0, addBack: false, dep: {} },
+  cost: { on: true, t: 0, onBack: true, dep: {} },
   ov: {},
   profile: [
     { n: 'Mocheta izquierda', w: 40,   y: 24.5, flex: false },
@@ -470,7 +471,8 @@ function normalize(S) {
   }
   const out = Object.assign(D, src);
   if (S && (!src.v || src.v < 7)) { if (!src.drawerMaxL || src.drawerMaxL === 55) out.drawerMaxL = 100; }
-  out.v = 12;
+  out.v = 13;
+  out.capFit = src.capFit === 'rect' ? 'rect' : src.capFit === 'notch' ? 'notch' : (S && src.shelfFit === false ? 'rect' : 'notch');
   out.plinth = Math.max(0, num(out.plinth)); out.plinthSet = src.plinthSet === undefined ? 3 : Math.max(0, num(src.plinthSet));
   out.cut = Object.assign(clone(DEFAULT.cut), src.cut || {});
   { const c = out.cut, d = DEFAULT.cut; const sh = (v, dv) => Array.isArray(v) && v.length === 2 && v[0] > 20 && v[1] > 20 ? [num(v[0]), num(v[1])] : dv.slice(); c.sheet = sh(c.sheet, d.sheet); c.sheetBack = sh(c.sheetBack, d.sheetBack); c.kerf = clamp(num(c.kerf), 0, 2); c.trim = clamp(num(c.trim), 0, 5); c.grain = !!c.grain; c.incDoors = c.incDoors !== false; c.incFronts = c.incFronts !== false; c.incBacks = c.incBacks !== false; c.boxes = !!c.boxes; c.capInBox = !!c.capInBox; c.seed = Math.max(1, Math.round(num(c.seed)) || 1); }
@@ -479,7 +481,7 @@ function normalize(S) {
   out.back = Object.assign(clone(DEFAULT.back), src.back || {});
   // Costados de mocheta (antes «retornos» dentro de las traseras). En proyectos antiguos se heredan de back.ret.
   { const cs = src.cost; const legacyOn = src.back ? (src.back.on !== false && src.back.ret !== false) : false;
-    out.cost = { on: cs ? cs.on !== false : (S ? legacyOn : true), t: cs ? Math.max(0, num(cs.t)) : 0, addBack: !!(cs && cs.addBack), dep: {} };
+    out.cost = { on: cs ? cs.on !== false : (S ? legacyOn : true), t: cs ? Math.max(0, num(cs.t)) : 0, onBack: cs ? cs.onBack !== false : true, dep: {} };
     if (cs && cs.dep && typeof cs.dep === 'object') Object.keys(cs.dep).forEach(k => { const v = num(cs.dep[k]); if (v >= 1 && v <= 300) out.cost.dep[k] = v; }); }
   // Espesores individuales por tablero
   out.ov = {}; if (src.ov && typeof src.ov === 'object') Object.keys(src.ov).forEach(k => { const v = num(src.ov[k]); if (v >= 0.2 && v <= 10) out.ov[k] = v; });
@@ -518,9 +520,9 @@ const costT = S => (S.cost && S.cost.t > 0 ? S.cost.t : S.t);
 const tk = (S, id, def) => { const v = S.ov && S.ov[id]; return v > 0 ? v : def; };
 // Espesor de los tableros que cierran el cuerpo i por la izquierda (l) y por la derecha (r)
 function edgeT(S, i) {
-  const n = S.bodies.length, dbl = S.divMode === 'double', t = S.t;
-  const l = i === 0 ? tk(S, 'L', t) : (dbl ? tk(S, 'T' + i + 'b', t) : tk(S, 'T' + i, t) / 2);
-  const r = i === n - 1 ? tk(S, 'R', t) : (dbl ? tk(S, 'T' + (i + 1) + 'a', t) : tk(S, 'T' + (i + 1), t) / 2);
+  const n = S.bodies.length, dbl = S.divMode === 'double', t = S.t, tc = costT(S);
+  const l = i === 0 ? tk(S, 'L', tc) : (dbl ? tk(S, 'T' + i + 'b', t) : tk(S, 'T' + i, t) / 2);
+  const r = i === n - 1 ? tk(S, 'R', tc) : (dbl ? tk(S, 'T' + (i + 1) + 'a', t) : tk(S, 'T' + (i + 1), t) / 2);
   return { l, r };
 }
 
@@ -620,7 +622,9 @@ function build(S) {
   const t = S.t, F = S.depth, H = S.H, dbl = S.divMode === 'double', n = S.bodies.length, D = S.door;
   const capInBox = !!(S.cut && S.cut.capInBox);
   const slideSys = S.sys === 'slide'; const slD = slideSys ? slideDepth(S) : 0; const bt = btOf(S); const backOn = bt > 0;
-  const cost = S.cost || { on: false, t: 0, addBack: false, dep: {} };
+  const cost = S.cost || { on: false, t: 0, onBack: true, dep: {} };
+  const onBack = cost.onBack !== false && backOn;   // costado de mocheta entre traseras
+  const extCosts = [];
   const gapAcc = S.accGap === undefined ? 2.5 : S.accGap;
   const maxG = S.drawerMaxL > 0 ? S.drawerMaxL : 100;
   const DZ = doorZ(S);
@@ -636,29 +640,31 @@ function build(S) {
   const th = (id, def, label) => { const ov = !!(S.ov && S.ov[id] > 0); const v = ov ? S.ov[id] : def; thk[id] = { id, label, t: v, def, ov }; return v; };
   if (backOn) thk.bk = { id: 'bk', label: 'Traseras (todas)', t: bt, def: DEFAULT.back.t, ov: Math.abs(bt - DEFAULT.back.t) > 1e-9, glob: 'back.t' };
   thk.dr = { id: 'dr', label: 'Puertas (todas)', t: D.thick, def: DEFAULT.door.thick, ov: Math.abs(D.thick - DEFAULT.door.thick) > 1e-9, glob: 'door.thick' };
-  const addBom = (name, a, b, th2, note, qty = 1, fe = 0) => bomRaw.push({ name, L: Math.max(a, b), W: Math.min(a, b), T: Math.round(th2 * 1000) / 1000, note: note || '', qty, fe, grp: bomGrp(name, capInBox) });
+  const addBom = (name, a, b, th2, note, qty = 1, fe = 0, shape = null) => bomRaw.push({ name, L: Math.max(a, b), W: Math.min(a, b), T: Math.round(th2 * 1000) / 1000, note: note || '', qty, fe, grp: bomGrp(name, capInBox), shape: shape && shape.n && shape.n.length ? { n: a >= b ? shape.n : shape.n.map(q => [q[2], q[3], q[0], q[1]]) } : null });
   const GP = { side: 'caja', back: 'caja', plinth: 'caja', filler: 'caja', costado: 'caja', door: 'puertas', drwfront: 'puertas', rod: 'acc', drwbody: 'acc', acc: 'acc', nsh: 'acc', obs: 'obs' };
   const piece = (o) => { P.push(Object.assign({ col: pal.board, alpha: 1, kind: 'board' }, o, { grp: o.grp || GP[o.tag] || 'caja' })); };
   const addIntoo = (name, ref, code, note, qty = 1) => intoo.push({ name, ref, code, note: note || '', qty, grp: 'acc' });
 
   // --- Tableros verticales (laterales y tabiques) con espesor individual ---
   const E = S.bodies.map((b, i) => edgeT(S, i));
-  const tL = th('L', t, 'Lateral izquierdo'), tR = th('R', t, 'Lateral derecho');
-  const boards = [{ id: 'L', x0: 0, x1: tL, name: 'Lateral izquierdo' }];
+  const tL = th('L', costT(S), 'Costado exterior izq.'), tR = th('R', costT(S), 'Costado exterior dcho.');
+  const boards = [{ id: 'L', x0: 0, x1: tL, name: 'Costado exterior izquierdo' }];
   for (let i = 1; i < n; i++) {
     if (dbl) {
       const ta = th('T' + i + 'a', t, 'Tabique ' + i + ' · cara izq.'), tb = th('T' + i + 'b', t, 'Tabique ' + i + ' · cara dcha.');
       boards.push({ id: 'T' + i + 'a', x0: c[i] - ta, x1: c[i], name: 'Tabique ' + i + ' (cara izq.)' }, { id: 'T' + i + 'b', x0: c[i], x1: c[i] + tb, name: 'Tabique ' + i + ' (cara der.)' });
     } else { const tt = th('T' + i, t, 'Tabique ' + i + ' (único)'); boards.push({ id: 'T' + i, x0: c[i] - tt / 2, x1: c[i] + tt / 2, name: 'Tabique ' + i + ' (único)' }); }
   }
-  boards.push({ id: 'R', x0: W - tR, x1: W, name: 'Lateral derecho' });
+  boards.push({ id: 'R', x0: W - tR, x1: W, name: 'Costado exterior derecho' });
   boards.forEach(bd => {
     const bth = bd.x1 - bd.x0;
     const y0 = S.back && S.back.fix === 'inside' ? minYraw(S, bd.x0, bd.x1) : minY(S, bd.x0, bd.x1);
     let rects = [{ a0: y0, a1: F, b0: 0, b1: H }]; let notched = false;
     for (const o of S.obstacles) if (o.notch && o.x1 > bd.x0 + 1e-6 && o.x0 < bd.x1 - 1e-6) { rects = rects.flatMap(r => rectSub(r, { a0: o.y0, a1: o.y1, b0: o.z0, b1: o.z1 })); notched = true; }
     rects.forEach(r => piece({ x0: bd.x0, x1: bd.x1, y0: r.a0, y1: r.a1, z0: r.b0, z1: r.b1, tag: 'side', pid: bd.id }));
-    addBom(bd.name.startsWith('Lateral') ? 'Lateral' : 'Tabique', H, F - y0, bth, (notched ? 'Muesca registro. ' : '') + 'Recortar fondo según pared', 1, H);
+    const isCo = bd.name.startsWith('Costado');
+    addBom(isCo ? 'Costado' : 'Tabique', H, F - y0, bth, (isCo ? 'Exterior ' + (bd.id === 'L' ? 'izquierdo' : 'derecho') + '. ' : '') + (notched ? 'Muesca registro. ' : '') + 'Recortar fondo según pared', 1, H);
+    if (isCo) extCosts.push({ id: bd.id, label: bd.name, t: bth, dep: F - y0, h: H, x0: bd.x0, ov: !!thk[bd.id].ov });
     planR.push({ type: 'board', x0: bd.x0, x1: bd.x1, y0, y1: F, id: bd.id });
   });
 
@@ -694,18 +700,18 @@ function build(S) {
         const A = rsC[k], B = rsC[k + 1]; const dy = A.y - B.y; if (Math.abs(dy) < 1e-6) continue;
         const xs = A.x1, deeperLeft = dy > 0, sh = deeperLeft ? B : A, dp = deeperLeft ? A : B;
         const zi = S.zones.findIndex(z => Math.abs(z.x1 - xs) < 1e-4); const cid = 'co' + (zi >= 0 ? zi : r1(xs));
-        const step = Math.abs(dy); const base = step + (cost.addBack && backOn ? bt : 0);
+        const step = Math.abs(dy); const base = Math.round((step - (onBack ? bt : 0)) * 1000) / 1000;
         const depOv = !!(cost.dep && cost.dep[cid] > 0); const dep = depOv ? cost.dep[cid] : base;
         const nm = dp.nm || 'mocheta';
         const label = 'Costado ' + (deeperLeft ? 'dcho.' : 'izq.') + ' de «' + nm + '» · salto ' + fmt(step);
         const tc = th(cid, costT(S), label);
-        const cx0 = deeperLeft ? xs : xs - tc, cx1 = cx0 + tc, cy0 = sh.y, cy1 = sh.y + dep;
+        const cx0 = deeperLeft ? xs : xs - tc, cx1 = cx0 + tc, cy0 = sh.y + (onBack ? bt : 0), cy1 = cy0 + dep;
         if (sh.x1 - sh.x0 < tc + 0.5) info.warn.push(`${label}: la zona de pared contigua (${fmt(sh.x1 - sh.x0)} cm) es casi tan estrecha como el costado (${fmt(tc * 10, 0)} mm).`);
         const ch = zt - zb;
         piece({ x0: cx0, x1: cx1, y0: cy0, y1: cy1, z0: zb, z1: zt, col: pal.board, tag: 'costado', pid: cid });
         planR.push({ type: 'costado', x0: cx0, x1: cx1, y0: cy0, y1: cy1, id: cid });
-        addBom('Costado (mocheta)', ch, dep, tc, 'Salto ' + fmt(step) + ' cm · lateral de «' + nm + '»', 1, ch);
-        const rec = { id: cid, body: i, x0: cx0, x1: cx1, y0: cy0, y1: cy1, xs, h: ch, t: tc, dep, base, step, name: nm, label, side: deeperLeft ? 'dcho.' : 'izq.', ov: thk[cid].ov, depOv };
+        addBom('Costado', ch, dep, tc, 'De mocheta · salto ' + fmt(step) + ' cm · «' + nm + '»' + (onBack ? ' · va entre traseras (fondo = salto − trasera)' : ''), 1, ch);
+        const rec = { id: cid, body: i, onBack, x0: cx0, x1: cx1, y0: cy0, y1: cy1, xs, h: ch, t: tc, dep, base, step, name: nm, label, side: deeperLeft ? 'dcho.' : 'izq.', ov: thk[cid].ov, depOv };
         info.costs.push(rec); costs.push(rec); costFoot.push({ a0: cx0, a1: cx1, b0: cy0, b1: cy1 });
       }
     }
@@ -774,23 +780,40 @@ function build(S) {
       placed.push(rec);
     });
     const sideAt = (zlo, zhi, side) => placed.filter(p => p.d.mode === 'side' && p.side === side && p.z1 > zlo + 1e-6 && p.z0 < zhi - 1e-6).reduce((s, p) => Math.max(s, p.d.w), 0);
-    const exclusions = placed.filter(p => p.d.mode === 'side').map(p => ({ a0: p.x0, a1: p.x1, b0: p.y0, b1: p.y1, z0: p.z0, z1: p.z1 }));
+    const exclusions = placed.filter(p => p.d.mode === 'side').map(p => ({ a0: p.x0, a1: p.x1, b0: p.y0, b1: p.y1, z0: p.z0, z1: p.z1, nm: p.d.name }));
     for (let a = 0; a < placed.length; a++) for (let e2 = a + 1; e2 < placed.length; e2++) {
       const A = placed[a], B = placed[e2]; if (!(A.z1 > B.z0 + 1e-6 && B.z1 > A.z0 + 1e-6)) continue;
       const xo = A.x1 > B.x0 + 1e-6 && B.x1 > A.x0 + 1e-6; const yo = A.y1 > B.y0 + 1e-6 && B.y1 > A.y0 + 1e-6;
       if (xo && yo) info.warn.push(`${A.d.name} y ${B.d.name} se solapan (z ${fmt(Math.max(A.z0, B.z0))}–${fmt(Math.min(A.z1, B.z1))}; fondo ${fmt(Math.max(A.y0, B.y0))}–${fmt(Math.min(A.y1, B.y1))}).`);
     }
 
+    const mergeMiss = arr => { let ch = true; arr = arr.map(q => ({ ...q })); while (ch) { ch = false; for (let p = 0; p < arr.length && !ch; p++) for (let q = p + 1; q < arr.length && !ch; q++) { const A = arr[p], B = arr[q]; const e = 1e-6;
+        if (Math.abs(A.a0 - B.a0) < e && Math.abs(A.a1 - B.a1) < e && (Math.abs(A.b1 - B.b0) < e || Math.abs(B.b1 - A.b0) < e)) { A.b0 = Math.min(A.b0, B.b0); A.b1 = Math.max(A.b1, B.b1); arr.splice(q, 1); ch = true; }
+        else if (Math.abs(A.b0 - B.b0) < e && Math.abs(A.b1 - B.b1) < e && (Math.abs(A.a1 - B.a0) < e || Math.abs(B.a1 - A.a0) < e)) { A.a0 = Math.min(A.a0, B.a0); A.a1 = Math.max(A.a1, B.a1); arr.splice(q, 1); ch = true; } } } return arr; };
+    const notchDesc = (m, bb) => { const w = (m.a1 - m.a0) * 10, d = (m.b1 - m.b0) * 10, l = m.a0 - bb.a0, rg = bb.a1 - m.a1, bk = m.b0 - bb.b0, fr = bb.b1 - m.b1, e = 0.05; let where;
+      if (bk < e) where = l < e && rg < e ? 'todo el canto trasero' : l < e ? 'esquina trasera izq.' : rg < e ? 'esquina trasera dcha.' : 'canto trasero, a ' + fmt(l * 10, 0) + ' mm del lado izq.';
+      else if (fr < e) where = l < e ? 'esquina delantera izq.' : rg < e ? 'esquina delantera dcha.' : 'canto delantero, a ' + fmt(l * 10, 0) + ' mm del lado izq.';
+      else where = 'a ' + fmt(l * 10, 0) + ' mm del lado izq. y ' + fmt(bk * 10, 0) + ' mm del canto trasero';
+      return fmt(w, 0) + '×' + fmt(d, 0) + ' mm (' + where + ')'; };
     const horiz = (zA, zB, name, yf, extra, pid) => {
       const grp = bomGrp(name, capInBox);
-      const sg = S.shelfFit ? segs(S, x0, x1) : [{ x0, x1, y: backY(S, x0, x1) }];
+      const isCap = /^(top|base)\d+$/.test(pid || '');           // tapa superior / base: siempre UNA sola pieza
+      const fitOn = isCap ? S.capFit !== 'rect' : !!S.shelfFit;
+      const sg = fitOn ? segs(S, x0, x1) : [{ x0, x1, y: backY(S, x0, x1) }];
       let rects = sg.map(s => ({ a0: s.x0, a1: s.x1, b0: s.y, b1: yf })); let notched = false, clipped = false, costClip = false;
       for (const o of S.obstacles) if (o.z1 > zA + 1e-6 && o.z0 < zB - 1e-6 && o.x1 > x0 && o.x0 < x1) { rects = rects.flatMap(r => rectSub(r, { a0: o.x0, a1: o.x1, b0: o.y0, b1: o.y1 })); notched = true; }
-      for (const ex of exclusions) if (ex.z1 > zA + 1e-6 && ex.z0 < zB - 1e-6) { rects = rects.flatMap(r => rectSub(r, { a0: ex.a0, a1: ex.a1, b0: ex.b0, b1: ex.b1 })); clipped = true; }
+      for (const ex of exclusions) if (ex.z1 > zA + 1e-6 && ex.z0 < zB - 1e-6) {
+        if (isCap) { info.warn.push(`${ex.nm} (desde z ${fmt(ex.z0)}) atraviesa la ${name === 'Base' ? 'base' : 'tapa superior'} (z ${fmt(zA)}–${fmt(zB)}): ${name === 'Base' ? 'sube su cota para que apoye sobre la base' : 'bájalo para que quede bajo la tapa'}. La ${name === 'Base' ? 'base' : 'tapa'} se mantiene en una sola pieza.`); }
+        else { rects = rects.flatMap(r => rectSub(r, { a0: ex.a0, a1: ex.a1, b0: ex.b0, b1: ex.b1 })); clipped = true; }
+      }
       if (zA >= zb - 1e-6 && zB <= zt + 1e-6) for (const f of costFoot) { const nr = rects.flatMap(r => rectSub(r, f)); if (nr.length !== rects.length || nr.some((q, qi) => q !== rects[qi])) costClip = true; rects = nr; }
       rects.forEach(r => piece({ x0: r.a0, x1: r.a1, y0: r.b0, y1: r.b1, z0: zA, z1: zB, tag: 'hz', shelf: !!extra, grp, pid }));
-      const my = minY(S, x0, x1);
-      addBom(name, x1 - x0, yf - my, zB - zA, (S.shelfFit && sg.length > 1 ? 'Recorte escalonado. ' : '') + (notched ? 'Muesca registro. ' : '') + (clipped ? 'Recorte por accesorio. ' : '') + (costClip ? 'Recorte por costado. ' : ''), 1, x1 - x0);
+      const my = Math.min(...sg.map(s => s.y));
+      const bb = { a0: x0, a1: x1, b0: my, b1: yf }; let miss = [bb];
+      rects.forEach(r => { miss = miss.flatMap(m => rectSub(m, r)); });
+      miss = mergeMiss(miss).filter(m => (m.a1 - m.a0) > 0.05 && (m.b1 - m.b0) > 0.05).sort((p, q) => p.a0 - q.a0 || p.b0 - q.b0);
+      const nt = miss.length ? (isCap ? 'Una sola pieza con ' : 'Con ') + (miss.length > 1 ? 'escotaduras ' : 'escotadura ') + miss.map(m => notchDesc(m, bb)).join(' + ') + '. ' : (isCap ? 'Una sola pieza rectangular. ' : '');
+      addBom(name, x1 - x0, yf - my, zB - zA, nt + (notched ? 'Incluye muesca del registro. ' : '') + (clipped ? 'Recorte por accesorio. ' : '') + (costClip ? 'Recorte por costado. ' : ''), 1, x1 - x0, { n: miss.map(m => [m.a0 - bb.a0, m.a1 - bb.a0, m.b0 - bb.b0, m.b1 - bb.b0]) });
     };
     horiz(zt, H, 'Tapa superior', F, false, 'top' + i);
     horiz(S.plinth, S.plinth + tBase, 'Base', F, false, 'base' + i);
@@ -1010,17 +1033,23 @@ function build(S) {
       const zA = over ? S.plinth : zb, zB = over ? H : zt;
       const rs = mergeSegs(segsRaw(S, px0, px1)); info.backs = [];
       rs.forEach((s, k) => {
-        let a0 = s.x0, a1 = s.x1;
+        let a0 = s.x0, a1 = s.x1; let cover = 0;
         if (cost.on) {
-          if (k > 0 && rs[k - 1].y > s.y + 1e-6) { const cc = info.costs.find(q => Math.abs(q.x0 - s.x0) < 1e-4); if (cc) a0 = s.x0 + cc.t; }
-          if (k < rs.length - 1 && rs[k + 1].y > s.y + 1e-6) { const cc = info.costs.find(q => Math.abs(q.x1 - s.x1) < 1e-4); if (cc) a1 = s.x1 - cc.t; }
+          if (onBack) {
+            // El costado se monta sobre las traseras: la de pared pasa por debajo de su huella y la del frente de la mocheta se prolonga sobre su canto.
+            if (k > 0 && rs[k - 1].y < s.y - 1e-6) { const cc = info.costs.find(q => Math.abs(q.xs - s.x0) < 1e-4); if (cc) { a0 = s.x0 - cc.t; cover += cc.t; } }
+            if (k < rs.length - 1 && rs[k + 1].y < s.y - 1e-6) { const cc = info.costs.find(q => Math.abs(q.xs - s.x1) < 1e-4); if (cc) { a1 = s.x1 + cc.t; cover += cc.t; } }
+          } else {
+            if (k > 0 && rs[k - 1].y > s.y + 1e-6) { const cc = info.costs.find(q => Math.abs(q.x0 - s.x0) < 1e-4); if (cc) a0 = s.x0 + cc.t; }
+            if (k < rs.length - 1 && rs[k + 1].y > s.y + 1e-6) { const cc = info.costs.find(q => Math.abs(q.x1 - s.x1) < 1e-4); if (cc) a1 = s.x1 - cc.t; }
+          }
         }
         let rects = [{ a0, a1, b0: zA, b1: zB }]; let cut = '';
         for (const o of S.obstacles) if (o.notch && o.x1 > a0 + 1e-6 && o.x0 < a1 - 1e-6 && o.y0 < s.y + bt && o.y1 > s.y) { rects = rects.flatMap(r => rectSub(r, { a0: o.x0, a1: o.x1, b0: o.z0, b1: o.z1 })); cut = 'Recorte ' + o.name + '. '; }
         rects.forEach(r => piece({ x0: r.a0, x1: r.a1, y0: s.y, y1: s.y + bt, z0: r.b0, z1: r.b1, col: pal.back, tag: 'back', kind: 'back', pid: 'bk' }));
         planR.push({ type: 'back', x0: a0, x1: a1, y0: s.y, y1: s.y + bt });
-        const wdt = a1 - a0; backs.push({ body: i, kind: 'panel', w: r1(wdt), h: zB - zA, y: s.y, x: a0, note: (s.y > 0 ? 'Sobre ' + (s.nm || 'mocheta') + ' (a ' + fmt(s.y) + ' cm de la pared)' : 'Sobre pared de fondo') + (cut ? ' · ' + cut.trim() : '') });
-        addBom('Trasera', zB - zA, wdt, bt, (s.y > 0 ? 'Sobre mocheta a ' + fmt(s.y) + ' cm. ' : 'Pared de fondo. ') + cut + (over ? 'Sobrepuesta al canto trasero' : 'Entre tableros'), 1, 0);
+        const wdt = a1 - a0; backs.push({ body: i, kind: 'panel', w: r1(wdt), h: zB - zA, y: s.y, x: a0, note: (s.y > 0 ? 'Sobre ' + (s.nm || 'mocheta') + ' (a ' + fmt(s.y) + ' cm de la pared)' : 'Sobre pared de fondo') + (cover > 0 ? ' · cubre el canto del costado (+' + fmt(cover * 10, 0) + ' mm)' : '') + (cut ? ' · ' + cut.trim() : '') });
+        addBom('Trasera', zB - zA, wdt, bt, (s.y > 0 ? 'Sobre mocheta a ' + fmt(s.y) + ' cm. ' : 'Pared de fondo. ') + cut + (cover > 0 ? 'Cubre el canto del costado (+' + fmt(cover * 10, 0) + ' mm). ' : '') + (over ? 'Sobrepuesta al canto trasero' : 'Entre tableros'), 1, 0);
       });
     }
 
@@ -1121,7 +1150,7 @@ function build(S) {
   const ia = new Map();
   intoo.forEach(r => { const key = r.code + '|' + r.name + '|' + r.note; const e = ia.get(key); if (e) e.qty += r.qty; else ia.set(key, { ...r }); });
   const intooAgg = [...ia.values()].sort((a, b) => String(a.name).localeCompare(b.name));
-  return { P, planR, bodies, bom, intoo: intooAgg, area, areaBack, c, W, warns, pal, F, H, doorDiag, gapRight: S.T - W, slide, backInfo, accList, doorZ: DZ, costs, thk };
+  return { P, planR, bodies, bom, intoo: intooAgg, area, areaBack, c, W, warns, pal, F, H, doorDiag, gapRight: S.T - W, slide, backInfo, accList, doorZ: DZ, costs, extCosts, thk };
 }
 
 /* Reparto de anchos de módulo */
@@ -1670,7 +1699,7 @@ function cutGroups(S, M) {
         map.set(key, g); out.push(g);
       }
       n++; gid++;
-      map.get(key).rows.push({ id: gid, lab: ph.pre + '-' + String(n).padStart(2, '0'), name: r.name, L: r.L, W: r.W, T: r.T, qty: r.qty, note: r.note, fe: r.fe || 0, sheets: [] });
+      map.get(key).rows.push({ id: gid, lab: ph.pre + '-' + String(n).padStart(2, '0'), name: r.name, L: r.L, W: r.W, T: r.T, qty: r.qty, note: r.note, fe: r.fe || 0, shape: r.shape || null, sheets: [] });
     });
   });
   return out;
@@ -1774,19 +1803,31 @@ const planGroups = (plan, ph) => (!ph || ph === 'all') ? plan.groups : plan.grou
 const planPhases = (plan, ph) => plan.phases.filter(p => (!ph || ph === 'all' || p.id === ph) && p.groups.length);
 
 const hueOf = id => (id * 137.508) % 360;
+const isCosto = r => /^Costado/.test(r.name);
+const rowFill = r => isCosto(r) ? 'hsl(28,85%,72%)' : `hsl(${hueOf(r.id)},55%,82%)`;
+const rowRGB = r => isCosto(r) ? hsl2rgb(28, 0.85, 0.72) : hsl2rgb(hueOf(r.id), 0.55, 0.82);
+const kindName = n => /^Costado/.test(n) ? 'Costado' : /^Tabique/.test(n) ? 'Tabique' : /^Tapa/.test(n) ? 'Tapa' : /^Base/.test(n) ? 'Base' : /^Trasera/.test(n) ? 'Trasera' : /^Frente de zócalo/.test(n) ? 'Zócalo' : n;
+const kindPlural = { Costado: 'Costados', Tabique: 'Tabiques', Tapa: 'Tapas', Base: 'Bases', Trasera: 'Traseras', 'Zócalo': 'Frentes de zócalo' };
+// Escotaduras de una pieza colocada (coordenadas del tablero, cm). Forma en el sistema largo × ancho de la pieza, con v = 0 en el canto trasero.
+function notchRects(pp) {
+  const sh = pp.it.row.shape; if (!sh || !sh.n || !sh.n.length) return [];
+  return sh.n.map(q => pp.rot ? [pp.x + (pp.w - q[3]), pp.y + q[0], q[3] - q[2], q[1] - q[0]] : [pp.x + q[0], pp.y + q[2], q[1] - q[0], q[3] - q[2]]);
+}
 const escH = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 function sheetSVG(g, sh, showCuts, uid) {
   const SW = g.sheet[0], SH = g.sheet[1], m = 5; const vb = `${-m} ${-m} ${SW + 2 * m + 4} ${SH + 2 * m + 2}`;
   let s = `<svg class="sheet" viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">`;
-  s += `<defs><pattern id="hz${uid}" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="3" stroke="#d3d6dd" stroke-width="0.5"/></pattern></defs>`;
+  s += `<defs><pattern id="hz${uid}" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="3" stroke="#d3d6dd" stroke-width="0.5"/></pattern><pattern id="nz${uid}" width="2.4" height="2.4" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line x1="0" y1="0" x2="0" y2="2.4" stroke="#c0392b" stroke-width="0.3"/></pattern></defs>`;
   s += `<rect x="0" y="0" width="${SW}" height="${SH}" fill="url(#hz${uid})" stroke="#222" stroke-width="0.5"/>`;
   s += `<rect x="${(g.sheet[0] - g.usable[0]) / 2}" y="${(g.sheet[1] - g.usable[1]) / 2}" width="${g.usable[0]}" height="${g.usable[1]}" fill="none" stroke="#9aa" stroke-width="0.25" stroke-dasharray="1.2 1"/>`;
   sh.free.forEach(f => { const x = f.x + (g.sheet[0] - g.usable[0]) / 2, y = f.y + (g.sheet[1] - g.usable[1]) / 2; s += `<rect x="${x}" y="${y}" width="${f.w}" height="${f.h}" fill="rgba(255,255,255,0.65)" stroke="#6a7fa8" stroke-width="0.3" stroke-dasharray="1.5 1"/>`; if (f.w > 24 && f.h > 7) s += `<text x="${x + f.w / 2}" y="${y + f.h / 2 + 1}" text-anchor="middle" font-size="3" fill="#44608f">retal ${fmt(f.w * 10, 0)}×${fmt(f.h * 10, 0)}</text>`; });
   sh.placed.forEach(p => {
-    const r = p.it.row; const fill = `hsl(${hueOf(r.id)},55%,82%)`;
-    s += `<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" fill="${fill}" stroke="#333" stroke-width="0.35"/>`;
+    const r = p.it.row; const fill = rowFill(r); const co = isCosto(r);
+    s += `<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" fill="${fill}" stroke="${co ? '#8a4a0a' : '#333'}" stroke-width="${co ? 0.7 : 0.35}"/>`;
+    notchRects(p).forEach(q => { s += `<rect x="${q[0]}" y="${q[1]}" width="${q[2]}" height="${q[3]}" fill="#fff"/><rect x="${q[0]}" y="${q[1]}" width="${q[2]}" height="${q[3]}" fill="url(#nz${uid})" stroke="#c0392b" stroke-width="0.35" stroke-dasharray="1.2 0.8"/>`; if (q[2] > 22 && q[3] > 6) s += `<text x="${q[0] + q[2] / 2}" y="${q[1] + q[3] / 2 + 0.9}" text-anchor="middle" font-size="2.4" fill="#8a2b1d">escotadura ${fmt(q[2] * 10, 0)}×${fmt(q[3] * 10, 0)}</text>`; });
+    if (!p.rot && p.h >= 14 && p.w >= 30 && r.shape && r.shape.n && r.shape.n.length) s += `<text x="${p.x + p.w / 2}" y="${p.y + 2.8}" text-anchor="middle" font-size="2.3" fill="#8a2b1d">▲ canto trasero</text>`;
     const cx = p.x + p.w / 2, cy = p.y + p.h / 2;
-    if (p.w >= 15 && p.h >= 8) s += `<text x="${cx}" y="${cy - 0.3}" text-anchor="middle" font-size="4" font-weight="700" fill="#111">${r.lab}</text><text x="${cx}" y="${cy + 3.6}" text-anchor="middle" font-size="2.9" fill="#222">${fmt(p.w * 10, 0)} × ${fmt(p.h * 10, 0)}${p.rot ? ' ↻' : ''}</text>`;
+    if (p.w >= 15 && p.h >= 8) s += `<text x="${cx}" y="${cy - 0.3}" text-anchor="middle" font-size="4" font-weight="700" fill="#111">${r.lab}</text><text x="${cx}" y="${cy + 3.6}" text-anchor="middle" font-size="2.9" fill="#222">${fmt(p.w * 10, 0)} × ${fmt(p.h * 10, 0)}${p.rot ? ' ↻' : ''}</text>` + (p.h >= 12 ? `<text x="${cx}" y="${cy + 6.8}" text-anchor="middle" font-size="2.3" font-weight="700" fill="${co ? '#8a4a0a' : '#555'}">${escH(kindName(r.name).toUpperCase())}</text>` : '');
     else if (p.w >= 7 && p.h >= 4.5) s += `<text x="${cx}" y="${cy + 1.2}" text-anchor="middle" font-size="3" font-weight="700" fill="#111">${r.lab}</text>`;
     else if (p.h > p.w && p.h >= 8 && p.w >= 3.2) s += `<text transform="translate(${cx + 1} ${cy}) rotate(-90)" text-anchor="middle" font-size="2.6" font-weight="700" fill="#111">${r.lab} · ${fmt(p.h * 10, 0)}×${fmt(p.w * 10, 0)}</text>`;
   });
@@ -1803,7 +1844,7 @@ function cutTables(plan, ph) {
   planGroups(plan, ph).forEach(g => {
     h += `<h3>${escH(g.full)} <span class="sub">· tablero ${sheetName(g.sheet)} · ${g.pieces} piezas · <b>${g.nSheets}</b> tablero${g.nSheets === 1 ? '' : 's'} · aprovechamiento ${fmt(g.eff * 100, 1)} %</span></h3>`;
     h += `<table class="cl"><tr><th>#</th><th>Pieza</th><th>Largo</th><th>Ancho</th><th>Esp.</th><th>Cant.</th><th>Veta</th><th>Canto (m)</th><th>Tablero</th><th>Notas</th></tr>`;
-    g.rows.forEach(r => { h += `<tr><td><span class="dot" style="background:hsl(${hueOf(r.id)},55%,82%)"></span><b>${r.lab}</b></td><td>${escH(r.name)}</td><td>${fmt(r.L * 10, 0)}</td><td>${fmt(r.W * 10, 0)}</td><td>${fmt(r.T * 10, 1)}</td><td>${r.qty}</td><td>${g.grain ? '↔ largo' : '—'}</td><td>${r.fe && g.mat !== 'back' ? fmt(r.fe * r.qty / 100, 2) : '—'}</td><td>${r.sheets.length ? r.sheets.slice().sort((a, b) => a - b).join(', ') : '<span class="bad">sin colocar</span>'}</td><td>${escH(r.note)}</td></tr>`; });
+    g.rows.forEach(r => { h += `<tr><td><span class="dot" style="background:${rowFill(r)}"></span><b>${r.lab}</b></td><td>${isCosto(r) ? '<b style="color:#a35a0c">' + escH(r.name) + '</b>' : escH(r.name)}</td><td>${fmt(r.L * 10, 0)}</td><td>${fmt(r.W * 10, 0)}</td><td>${fmt(r.T * 10, 1)}</td><td>${r.qty}</td><td>${g.grain ? '↔ largo' : '—'}</td><td>${r.fe && g.mat !== 'back' ? fmt(r.fe * r.qty / 100, 2) : '—'}</td><td>${r.sheets.length ? r.sheets.slice().sort((a, b) => a - b).join(', ') : '<span class="bad">sin colocar</span>'}</td><td>${escH(r.note)}</td></tr>`; });
     h += `</table>`;
   });
   return h;
@@ -1812,9 +1853,13 @@ function cutSummaryHTML(plan, ph) {
   let h = `<div class="cutsum"><table class="cl"><tr><th>Fase / material</th><th>Tablero</th><th>Piezas</th><th>Tableros</th><th>Mín. teórico</th><th>Aprovechamiento</th><th>Canto (m)</th></tr>`;
   planPhases(plan, ph).forEach(p => {
     h += `<tr class="phrow"><td><b>${escH(p.label)}</b></td><td></td><td><b>${p.pieces}</b></td><td><b>${p.nSheets}</b></td><td></td><td><b>${fmt(p.eff * 100, 1)} %</b></td><td><b>${fmt(p.edgeM, 1)}</b></td></tr>`;
-    p.groups.forEach(g => h += `<tr><td>&nbsp;&nbsp;${escH(g.label)}</td><td>${sheetName(g.sheet)}</td><td>${g.pieces}</td><td>${g.nSheets}</td><td>${g.lowerBound}</td><td>${fmt(g.eff * 100, 1)} %</td><td>${g.edgeM ? fmt(g.edgeM, 1) : '—'}</td></tr>`);
+    p.groups.forEach(g => {
+      h += `<tr><td>&nbsp;&nbsp;${escH(g.label)}</td><td>${sheetName(g.sheet)}</td><td>${g.pieces}</td><td>${g.nSheets}</td><td>${g.lowerBound}</td><td>${fmt(g.eff * 100, 1)} %</td><td>${g.edgeM ? fmt(g.edgeM, 1) : '—'}</td></tr>`;
+      const cnt = new Map(); g.rows.forEach(r => { const k = kindName(r.name); cnt.set(k, (cnt.get(k) || 0) + r.qty); });
+      h += `<tr class="cont"><td colspan="7">&nbsp;&nbsp;&nbsp;&nbsp;<i>contiene:</i> ${[...cnt.entries()].map(([k, n]) => k === 'Costado' ? `<b style="color:#a35a0c">Costados ×${n}</b>` : `${escH(kindPlural[k] || k)} ×${n}`).join(' · ')}</td></tr>`;
+    });
   });
-  h += `</table><div class="hint2">Cinta de canto estimada (canto frontal de laterales, tabiques, costados, tapas, baldas y zócalo + perímetro de puertas y frentes). Añade ≈10 % de merma.</div></div>`;
+  h += `</table><div class="hint2">Cinta de canto estimada (canto frontal de costados, tabiques, tapas, baldas y zócalo + perímetro de puertas y frentes). Añade ≈10 % de merma.</div></div>`;
   return h;
 }
 function cutSheetsHTML(plan, showCuts, uidBase, ph) {
@@ -1822,8 +1867,8 @@ function cutSheetsHTML(plan, showCuts, uidBase, ph) {
   planGroups(plan, ph).forEach(g => {
     g.sheetsOut.forEach(sh => {
       u++; const eff = sh.used / (g.sheet[0] * g.sheet[1]);
-      const list = {}; sh.placed.forEach(p => { list[p.it.row.lab] = (list[p.it.row.lab] || 0) + 1; });
-      h += `<div class="sheetbox"><div class="sheethead"><b>${escH(g.full)}</b> — tablero ${sh.n} de ${g.nSheets} · ${sheetName(g.sheet)} · ${sh.placed.length} pieza${sh.placed.length === 1 ? '' : 's'} · uso ${fmt(eff * 100, 1)} % · ${sh.cuts.length} corte${sh.cuts.length === 1 ? '' : 's'}</div>${sheetSVG(g, sh, showCuts, uidBase + u)}<div class="sheetlist">${Object.keys(list).map(l => `<span class="tag">${l} ×${list[l]}</span>`).join(' ')}</div></div>`;
+      const list = {}; sh.placed.forEach(p => { const lb = p.it.row.lab + ' · ' + kindName(p.it.row.name) + (isCosto(p.it.row) ? '|c' : ''); list[lb] = (list[lb] || 0) + 1; });
+      h += `<div class="sheetbox"><div class="sheethead"><b>${escH(g.full)}</b> — tablero ${sh.n} de ${g.nSheets} · ${sheetName(g.sheet)} · ${sh.placed.length} pieza${sh.placed.length === 1 ? '' : 's'} · uso ${fmt(eff * 100, 1)} % · ${sh.cuts.length} corte${sh.cuts.length === 1 ? '' : 's'}</div>${sheetSVG(g, sh, showCuts, uidBase + u)}<div class="sheetlist">${Object.keys(list).map(l => `<span class="tag"${l.endsWith('|c') ? ' style="background:#fde3c4;border:1px solid #d6802a;color:#7a3f08;font-weight:700"' : ''}>${l.replace(/\|c$/, '')} ×${list[l]}</span>`).join(' ')}</div></div>`;
     });
   });
   return h;
@@ -1849,7 +1894,8 @@ function cutRows(plan, ph) {
 function cutCSV(plan, ph) { return '\ufeff' + cutRows(plan, ph).map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(';')).join('\n'); }
 function cutTSV(plan, ph) { return cutRows(plan, ph).map(r => r.map(c => String(c).replace(/[\t\r\n]+/g, ' ')).join('\t')).join('\n'); }
 
-const CUT_CSS = `.cutdoc{font-family:"Segoe UI",Arial,sans-serif;font-size:12px;color:#1f2430;line-height:1.35}
+const CUT_CSS = `.cl tr.cont td{font-size:11px;color:#46506a;background:#fafbfe;padding-top:1px;padding-bottom:3px}
+.cutdoc{font-family:"Segoe UI",Arial,sans-serif;font-size:12px;color:#1f2430;line-height:1.35}
 .cutdoc h1{font-size:18px;margin:0 0 4px;color:#14306b}
 .cutdoc h2{font-size:15px;margin:20px 0 6px;color:#fff;background:#14306b;padding:4px 10px;border-radius:4px}
 .cutdoc h2.ph-puertas{background:#b36b00}.cutdoc h2.ph-acc{background:#2e7d4f}
@@ -2190,7 +2236,7 @@ class DxfW {
 /* ---------- DXF del plano de corte (por fases) ---------- */
 function makeCutDXF(plan, S, name, ph) {
   const D = new DxfW(); const k = 10;
-  [['TABLERO', 7, 'CONTINUOUS'], ['PIEZAS', 3, 'CONTINUOUS'], ['ETIQUETAS', 7, 'CONTINUOUS'], ['CORTES', 1, 'DASHED'], ['NUM_CORTES', 1, 'CONTINUOUS'], ['RETALES', 8, 'DASHED'], ['COTAS', 5, 'CONTINUOUS'], ['TITULOS', 2, 'CONTINUOUS'], ['LISTA', 7, 'CONTINUOUS']].forEach(l => D.layer(...l));
+  [['TABLERO', 7, 'CONTINUOUS'], ['PIEZAS', 3, 'CONTINUOUS'], ['ESCOTADURAS', 1, 'DASHED'], ['ETIQUETAS', 7, 'CONTINUOUS'], ['CORTES', 1, 'DASHED'], ['NUM_CORTES', 1, 'CONTINUOUS'], ['RETALES', 8, 'DASHED'], ['COTAS', 5, 'CONTINUOUS'], ['TITULOS', 2, 'CONTINUOUS'], ['LISTA', 7, 'CONTINUOUS']].forEach(l => D.layer(...l));
   const date = new Date().toLocaleDateString('es-ES'); const phs = planPhases(plan, ph); const tot = phs.reduce((s, p) => s + p.nSheets, 0);
   const COLS = 3, GX = 450, GY = 750; let curY = 0, maxRight = 0;
   D.text('TITULOS', 0, curY + 400, 120, 'DESPIECE Y PLANOS DE CORTE - ' + (name || 'Armario') + (ph && ph !== 'all' && phs[0] ? ' - FASE ' + phs[0].label : ''), 'l');
@@ -2214,6 +2260,7 @@ function makeCutDXF(plan, S, name, ph) {
         sh.placed.forEach(pp => {
           const r = pp.it.row; const [x, y] = P(pp.x, pp.y); const w = pp.w * k, h = pp.h * k;
           D.rect('PIEZAS', x, y - h, w, h);
+          notchRects(pp).forEach(q => { const [nx, ny] = P(q[0], q[1]); D.rect('ESCOTADURAS', nx, ny - q[3] * k, q[2] * k, q[3] * k); });
           const th = Math.max(12, Math.min(70, Math.min(w, h) * 0.28));
           if (w > 150 && h > 70) { D.text('ETIQUETAS', x + w / 2, y - h / 2 + th * 0.65, th, r.lab, 'c'); D.text('ETIQUETAS', x + w / 2, y - h / 2 - th * 0.55, th * 0.6, `${Math.round(w)} x ${Math.round(h)}${pp.rot ? ' (girada)' : ''}`, 'c'); D.text('ETIQUETAS', x + w / 2, y - h / 2 - th * 1.35, th * 0.45, r.name, 'c'); }
           else if (h > w && h > 120) D.text('ETIQUETAS', x + w / 2, y - h / 2, Math.min(th, w * 0.5), `${r.lab} ${Math.round(h)}x${Math.round(w)}`, 'c', 90);
@@ -2353,7 +2400,7 @@ function makeCutPDF(plan, S, name, ph) {
     p.groups.forEach(g => {
       ensure(40, null); pg.text(M, y + 10, `${g.label} - tablero ${sheetName(g.sheet)} · ${g.pieces} piezas · ${g.nSheets} tablero${g.nSheets === 1 ? '' : 's'} · uso ${fmt(g.eff * 100, 1)} %`, { size: 9.5, bold: true }); y += 15;
       table([{ t: 'ID', w: 36, dot: 1 }, { t: 'Pieza', w: 150 }, { t: 'Largo', w: 44, al: 'r' }, { t: 'Ancho', w: 44, al: 'r' }, { t: 'Esp.', w: 30, al: 'r' }, { t: 'Cant.', w: 32, al: 'r' }, { t: 'Veta', w: 44 }, { t: 'Canto m', w: 46, al: 'r' }, { t: 'Tablero', w: 52 }, { t: 'Notas', w: 306 }],
-        g.rows.map(r => { const a = [r.lab, r.name, fmt(r.L * 10, 0), fmt(r.W * 10, 0), fmt(r.T * 10, 1), String(r.qty), g.grain ? '↔ largo' : '—', r.fe && g.mat !== 'back' ? fmt(r.fe * r.qty / 100, 2) : '—', r.sheets.length ? r.sheets.slice().sort((q, z) => q - z).join(',') : 'SIN COLOCAR', r.note]; a._fill = hsl2rgb(hueOf(r.id), 0.55, 0.82); return a; }));
+        g.rows.map(r => { const a = [r.lab, r.name, fmt(r.L * 10, 0), fmt(r.W * 10, 0), fmt(r.T * 10, 1), String(r.qty), g.grain ? '↔ largo' : '—', r.fe && g.mat !== 'back' ? fmt(r.fe * r.qty / 100, 2) : '—', r.sheets.length ? r.sheets.slice().sort((q, z) => q - z).join(',') : 'SIN COLOCAR', r.note]; a._fill = rowRGB(r); return a; }));
     });
     p.groups.forEach(g => g.sheetsOut.forEach(sh => {
       newPage(); const eff = sh.used / (g.sheet[0] * g.sheet[1]);
@@ -2366,10 +2413,11 @@ function makeCutPDF(plan, S, name, ph) {
       if (off > 0) pg.rect(X(off), Y(off), g.usable[0] * sc, g.usable[1] * sc, { stroke: [150, 160, 170], lw: 0.3, dash: [2, 2] });
       sh.free.forEach(f => { const fx = f.x + off, fy = f.y + off; pg.rect(X(fx), Y(fy), f.w * sc, f.h * sc, { fill: [255, 255, 255], stroke: [106, 127, 168], lw: 0.4, dash: [3, 2] }); if (f.w * sc > 70 && f.h * sc > 12) pg.text(X(fx + f.w / 2), Y(fy + f.h / 2) + 3, `retal ${fmt(f.w * 10, 0)} × ${fmt(f.h * 10, 0)}`, { size: 7, col: [68, 96, 143], align: 'center' }); });
       sh.placed.forEach(pp => {
-        const r = pp.it.row; pg.rect(X(pp.x), Y(pp.y), pp.w * sc, pp.h * sc, { fill: hsl2rgb(hueOf(r.id), 0.55, 0.82), stroke: [50, 50, 50], lw: 0.5 });
+        const r = pp.it.row; pg.rect(X(pp.x), Y(pp.y), pp.w * sc, pp.h * sc, { fill: rowRGB(r), stroke: isCosto(r) ? [138, 74, 10] : [50, 50, 50], lw: isCosto(r) ? 0.9 : 0.5 });
+        notchRects(pp).forEach(q => pg.rect(X(q[0]), Y(q[1]), q[2] * sc, q[3] * sc, { fill: [255, 255, 255], stroke: [192, 57, 43], lw: 0.5, dash: [2.5, 1.8] }));
         const pw = pp.w * sc, ph2 = pp.h * sc, cx = X(pp.x + pp.w / 2), cy = Y(pp.y + pp.h / 2);
         const fs = Math.max(5, Math.min(13, Math.min(pw, ph2) * 0.3));
-        if (pw > 34 && ph2 > 16) { pg.text(cx, cy - 1, r.lab, { size: fs, bold: true, align: 'center' }); pg.text(cx, cy + fs * 0.9, `${fmt(pp.w * 10, 0)} × ${fmt(pp.h * 10, 0)}${pp.rot ? ' (giro)' : ''}`, { size: Math.max(5, fs * 0.62), align: 'center' }); }
+        if (pw > 34 && ph2 > 16) { pg.text(cx, cy - 1, r.lab, { size: fs, bold: true, align: 'center' }); pg.text(cx, cy + fs * 0.9, `${fmt(pp.w * 10, 0)} × ${fmt(pp.h * 10, 0)}${pp.rot ? ' (giro)' : ''}`, { size: Math.max(5, fs * 0.62), align: 'center' }); if (ph2 > 30) pg.text(cx, cy + fs * 0.9 + Math.max(5, fs * 0.62) + 1, kindName(r.name).toUpperCase(), { size: Math.max(4.5, fs * 0.45), bold: true, align: 'center', col: isCosto(r) ? [138, 74, 10] : [90, 90, 90] }); }
         else if (pw > 16 && ph2 > 8) pg.text(cx, cy + 2.5, r.lab, { size: 6.5, bold: true, align: 'center' });
       });
       sh.cuts.forEach(c => pg.line(X(c.x1), Y(c.y1), X(c.x2), Y(c.y2), { col: [214, 40, 40], lw: 0.7, dash: [4, 2.5] }));
@@ -2463,7 +2511,7 @@ async function xAction(a, f, url) {
 const AGENT_EXAMPLES = [
   'pon 4 cuerpos', 'altura 240 y fondo 60', 'zócalo 8', 'puertas sobre el zócalo', 'puertas hasta el suelo',
   'mocheta izquierda ancho 40 fondo 25', 'cuerpo 2 ancho 72', 'correderas una hoja por cuerpo con 3 guías', 'libera el cuerpo 2',
-  'traseras de 5 mm', 'costados de 16 mm', 'sin costados', 'espesor del lateral izquierdo 19 mm', 'tapa del cuerpo 1 espesor 22 mm',
+  'traseras de 5 mm', 'costados de 16 mm', 'sin costados', 'tapas rectangulares', 'costado exterior izquierdo 19 mm', 'tapa del cuerpo 1 espesor 22 mm',
   'cuerpo 1 cajonera de 745 mm centrada', 'cuerpo 2 guías de 600 mm', 'guías automáticas en todos',
   'añade pantalonero de 800 en cuerpo 2 a 130', 'pon el pantalonero del cuerpo 2 a 10 cm del fondo',
   'alzado abajo', 'planta abajo', 'minimiza el panel inferior',
@@ -2479,8 +2527,9 @@ const AGENT_HELP = `Puedo hacer, por ejemplo:
 • Correderas: «correderas una hoja por cuerpo con 3 guías», «correderas 4 hojas 2 guías», «hojas iguales», «optimiza correderas», «libera el cuerpo 1», «cierra puertas»
 • Abatibles: «2 puertas abatibles en cuerpo 1», «enrasadas», «sin puertas»
 • Traseras: «con traseras de 5 mm», «sin traseras», «traseras sobrepuestas / entre tableros»
-• Costados de mocheta (aparte de las traseras): «costados de 16 mm», «costados igual que el tablero», «sin costados», «con costados», «costados sumando la trasera»
-• Espesor de un tablero concreto: «espesor del lateral izquierdo 19 mm», «espesor del tabique 1 22 mm», «tapa del cuerpo 1 espesor 22 mm», «base del cuerpo 2 espesor 19 mm», «zócalo del cuerpo 1 espesor 19 mm», «quita los espesores personalizados». También puedes pulsar 🧱 Espesores sobre la planta o el alzado y hacer clic en cualquier tablero.
+• Costados (laterales exteriores y de mocheta, aparte de las traseras): «costados de 16 mm», «costados igual que el tablero», «sin costados» (quita los de mocheta), «con costados», «costados entre las traseras» / «costados hasta la pared», «costado exterior izquierdo 19 mm»
+• Tapa y base (siempre una sola pieza): «tapas con escotadura» · «tapas rectangulares»
+• Espesor de un tablero concreto: «espesor del lateral izquierdo 19 mm» (o «costado exterior izquierdo 19 mm»), «espesor del tabique 1 22 mm», «tapa del cuerpo 1 espesor 22 mm», «base del cuerpo 2 espesor 19 mm», «zócalo del cuerpo 1 espesor 19 mm», «quita los espesores personalizados». También puedes pulsar 🧱 Espesores sobre la planta o el alzado y hacer clic en cualquier tablero.
 • Cajoneras: «cuerpo 1 4 cajones», «cajón pequeño 12», «alto cajón 22», «cuerpo 1 cajonera de 745 mm centrada», «cuerpo 2 guías de 600 mm», «guías automáticas»
 • Interior: «baldas en cuerpo 2 a 60, 90», «barra a 180», «nicho cuerpo 1 con baldas»
 • Accesorios Intoo: «añade pantalonero de 800 en cuerpo 2 a 120», «tamaño a medida 790 al pantalonero», «pon el zapatero del cuerpo 2 a 10 cm del fondo», «apila accesorios del cuerpo 2»
@@ -2630,7 +2679,18 @@ function agentRun(S, text, api) {
     // ---- espesores por tablero ----
     if (/\b(quita|elimina|borra|restablece|resetea|limpia|olvida)\w*\b.*\bespesores?\b/.test(s)) { const k = Object.keys(S.ov || {}).length + Object.keys((S.cost && S.cost.dep) || {}).length; S.ov = {}; if (S.cost) S.cost.dep = {}; ok(k ? 'Espesores personalizados eliminados (' + k + ').' : 'No había espesores personalizados.'); continue; }
 
-    // ---- costados de mocheta (aparte de las traseras) ----
+    // ---- tapa y base: una pieza con escotadura o rectangular ----
+    if (/\b(tapas?|bases?)\b/.test(s) && /\b(rectangular\w*|sin escotadura\w*|sin recorte\w*|escotadura\w*|escalonad\w*)/.test(s) && !/\b(espesor|grosor)\b/.test(s)) {
+      const rect = /\b(rectangular\w*|sin escotadura\w*|sin recorte\w*)/.test(s); S.capFit = rect ? 'rect' : 'notch';
+      ok(rect ? 'Tapa y base: una pieza rectangular (llega solo hasta la mocheta más saliente).' : 'Tapa y base: una sola pieza con escotadura en las mochetas.'); continue;
+    }
+    // ---- costado exterior: espesor propio ----
+    if ((m = s.match(/\bcostado\s+(?:exterior|externo)\s+(izq\w*|der\w*)/)) && /\b(espesor|grosor)\b|\d\s*mm/.test(s)) {
+      const mv = s.replace(m[0], ' ').match(new RegExp(NUM + '\\s*(mm|cm)?')); const v = mv ? thkCm(mv[1], mv[2]) : 0;
+      if (!(v >= 0.2 && v <= 10)) { bad('Indica un espesor válido (p. ej. «costado exterior izquierdo 19 mm»).'); continue; }
+      setOvA(/izq/.test(m[1]) ? 'L' : 'R', v); ok('Espesor del costado exterior ' + (/izq/.test(m[1]) ? 'izquierdo' : 'derecho') + ': ' + fmt(v * 10, 1) + ' mm.'); continue;
+    }
+    // ---- costados (exteriores y de mocheta; aparte de las traseras) ----
     if (/\bcostados?\b/.test(s)) {
       const did = []; let mm;
       if (/\b(sin|quita\w*|elimina\w*|desactiva\w*|no (?:pongas|coloques|quiero))\b/.test(s)) { S.cost.on = false; did.push('desactivados'); }
@@ -2638,11 +2698,11 @@ function agentRun(S, text, api) {
         S.cost.on = true;
         if (/\b(igual|mismo)\b.*\b(tablero|espesor|general)\b|\bigual que (?:el )?tablero\b/.test(s)) { S.cost.t = 0; did.push('mismo espesor que el tablero (' + fmt(S.t * 10, 1) + ' mm)'); }
         else { const s2 = s.replace(/\bcuerpos?\s*\d+/g, ' '); if ((mm = s2.match(new RegExp(NUM + '\\s*(mm|cm)?')))) { const v = thkCm(mm[1], mm[2]); if (v >= 0.2 && v <= 10) { S.cost.t = v; did.push('espesor ' + fmt(v * 10, 1) + ' mm'); } else bad('Espesor de costado no válido (entre 2 y 100 mm).'); } }
-        if (/\b(sumando|suma\w*|con)\b.*\btrasera\b/.test(s)) { S.cost.addBack = true; did.push('fondo + espesor de trasera'); }
-        else if (/\bsin (?:sumar|la) trasera\b|\bsolo el salto\b/.test(s)) { S.cost.addBack = false; did.push('fondo = salto de mocheta'); }
+        if (/\b(sobre|entre|apoyad\w*|montad\w*)\b.*\btraseras?\b/.test(s)) { S.cost.onBack = true; did.push('montados entre las traseras (fondo = salto − trasera)'); }
+        else if (/\bhasta la pared\b|\bsin apoyar\b|\bsolo el salto\b/.test(s)) { S.cost.onBack = false; did.push('hasta la pared (fondo = salto)'); }
         if (!did.length) did.push('activados');
       }
-      ok('Costados de mocheta: ' + did.join(', ') + '.'); continue;
+      ok('Costados: ' + did.join(', ') + '.'); continue;
     }
     {
       const thkRe = /\b(lateral(?:es)? (izq\w*|der\w*)|tabique\s*(\d+)|tapa(?: superior)?|base|zocalo|balda de cierre|cierre de cajonera)\b/;
@@ -2844,7 +2904,7 @@ function agentRun(S, text, api) {
 }
 
 /* =====================================================================
-   UI v12  ·  costados de mocheta + espesor individual por tablero (herramienta 🧱 Espesores)
+   UI v13  ·  costados (exteriores y de mocheta) entre traseras · tapa/base en una pieza · espesor individual por tablero
    ===================================================================== */
 let S = normalize();
 let VIEW = { walls: true, ceiling: true, labels: true, doors: true, interior: true, obs: true, ref: true, back: true, acclab: true, wallAlpha: 0.9, mode: 'split', warnMin: false, pmin: false, bottom: 'plan', ortho: true };
@@ -2969,7 +3029,9 @@ function renderSide() {
       ${sel('palette', 'Acabado tablero', Object.entries(PALETTES).map(([k, v]) => [k, v.name]))}
       ${sel('fin', 'Acabado Intoo', [['blanco', 'Blanco'], ['moca', 'Moca / Antracita']])}
     </div>
-    ${chk('shelfFit', 'Tapas y baldas escalonadas (se ajustan a las mochetas)')}
+    ${chk('shelfFit', 'Baldas escalonadas (se ajustan a las mochetas)')}
+    <div class="grid2">${sel('capFit', 'Tapa y base', [['notch', 'Una pieza con escotadura en las mochetas'], ['rect', 'Una pieza rectangular (hasta la mocheta más saliente)']])}</div>
+    <div class="hint">La tapa y la base de cada cuerpo salen siempre de <b>una sola pieza</b>: la escotadura de las mochetas se corta en la esquina trasera y sus medidas aparecen en el despiece. Ningún accesorio las parte.</div>
     ${chk('topFiller', 'Mostrar remate superior hasta el techo')}
     <div class="note" id="gapnote"></div>
   </details>
@@ -3006,18 +3068,18 @@ function renderSide() {
     <div class="grid2">${nI('door.gap', 'Holgura entre hojas', 0.1)}${nI('door.thick', 'Espesor puerta', 0.1)}${nI('door.top', 'Holgura arriba', 0.1)}${nI('door.bottom', S.plinth > 0 && !S.door.coverPlinth ? 'Holgura sobre el zócalo' : 'Holgura abajo', 0.1)}${nI('door.maxHinged', 'Ancho máx. hoja abatible', 1)}${nI('door.minLeaf', 'Ancho mín. hoja', 1)}</div>
   </details>
   <details open><summary>Traseras</summary>
-    <div class="hint">Paneles finos del fondo (p. ej. 5–10 mm). Los cierres laterales de las mochetas son <b>costados</b> y se definen en la sección siguiente.</div>
+    <div class="hint">Paneles finos del fondo (p. ej. 5–10 mm). Los costados (exteriores y de mocheta) se definen en la sección siguiente y se montan sobre ellas.</div>
     ${chk('back.on', 'Colocar traseras')}
     <div class="grid2">${nI('back.t', 'Espesor trasera (cm)', 0.1, 'min="0.1" max="3"')}${sel('back.fix', 'Fijación', [['inside', 'Entre tableros'], ['over', 'Sobre el canto trasero']])}</div>
   </details>
-  <details open><summary>Costados (cierres de mocheta)</summary>
-    <div class="hint">Un costado es el tablero que cierra el lateral de cada mocheta o pilar. Se define <b>aparte de las traseras</b>: tiene su propio espesor y se pide con la caja (fase 1).</div>
+  <details open><summary>Costados</summary>
+    <div class="hint">Costados exteriores (laterales del armario) y costados de mocheta: mismo espesor, definido aquí y <b>aparte de las traseras</b>. Los de mocheta se montan <b>entre las traseras</b>: van atornillados por el canto a la trasera de pared y a la del frente de la mocheta, que se prolonga sobre su canto.</div>
     ${chk('cost.on', 'Colocar costados en los saltos de mocheta')}
-    <div class="grid2">${nIm('cost.t', 'Espesor (mm) · vacío = igual al tablero', 1, 'min="0" placeholder="' + Math.round(S.t * 10) + '"')}${chk('cost.addBack', 'Sumar el espesor de la trasera al fondo')}</div>
+    <div class="grid2">${nIm('cost.t', 'Espesor (mm) · vacío = igual al tablero', 1, 'min="0" placeholder="' + Math.round(S.t * 10) + '"')}${chk('cost.onBack', 'Montar sobre las traseras (fondo = salto − trasera)')}</div>
     <div id="costList"></div>
   </details>
   <details><summary>Espesores personalizados</summary>
-    <div class="hint">Pulsa «🧱 Espesores» sobre la planta o el alzado y haz clic en cualquier tablero para cambiar su espesor (laterales, tabiques, tapas, bases, baldas, zócalo, costados…).</div>
+    <div class="hint">Pulsa «🧱 Espesores» sobre la planta o el alzado y haz clic en cualquier tablero para cambiar su espesor (costados, tabiques, tapas, bases, baldas, zócalo…).</div>
     <div id="ovList"></div>
   </details>
   <div id="bodies">${bodiesHTML}</div>
@@ -3059,9 +3121,11 @@ function resetOv(id) { const r = M && M.thk && M.thk[id]; if (r && r.glob) setP(
 function renderCostList() {
   const cl = $('#costList'); if (!cl || !M) return;
   if (cl.contains(document.activeElement) && document.activeElement.tagName === 'INPUT') return;
-  if (!S.cost.on) { cl.innerHTML = '<div class="muted">Desactivados: las mochetas no llevan costado.</div>'; return; }
-  const cs = M.costs; if (!cs.length) { cl.innerHTML = '<div class="muted">No hay saltos de mocheta dentro de los cuerpos.</div>'; return; }
+  const cs = S.cost.on ? M.costs : [];
   let h = '<table class="mt"><tr><th>Costado</th><th>Salto</th><th>Espesor mm</th><th>Fondo mm</th><th></th></tr>';
+  (M.extCosts || []).forEach(c => { h += `<tr><td title="${esc(c.label)}">${esc(c.label)}</td><td>—</td><td><input type="number" step="1" min="2" data-ovmm="${c.id}" value="${Math.round(c.t * 100) / 10}" class="${c.ov ? 'ovin' : ''}"></td><td>${fmt(c.dep * 10, 0)}</td><td><button class="mini" data-act="ovreset" data-id="${c.id}" ${c.ov ? '' : 'disabled'} title="Volver al espesor por defecto">↺</button></td></tr>`; });
+  if (!S.cost.on) h += `<tr><td colspan="5" class="muted">Costados de mocheta desactivados.</td></tr>`;
+  else if (!cs.length) h += `<tr><td colspan="5" class="muted">No hay saltos de mocheta dentro de los cuerpos.</td></tr>`;
   cs.forEach(c => { h += `<tr><td title="${esc(c.label)}">${esc(c.label)}</td><td>${fmt(c.step * 10, 0)}</td><td><input type="number" step="1" min="2" data-ovmm="${c.id}" value="${Math.round(c.t * 100) / 10}" class="${c.ov ? 'ovin' : ''}"></td><td><input type="number" step="1" min="10" data-covdep="${c.id}" value="${Math.round(c.dep * 100) / 10}" class="${c.depOv ? 'ovin' : ''}"></td><td><button class="mini" data-act="ovreset" data-id="${c.id}" ${c.ov || c.depOv ? '' : 'disabled'} title="Volver a los valores por defecto">↺</button></td></tr>`; });
   cl.innerHTML = h + '</table>';
 }
@@ -3580,8 +3644,11 @@ function refreshInfo() {
   $('#pane-acc').innerHTML = M.accList.length ? `<table><tr><th>Cuerpo</th><th>Ref.</th><th>Accesorio</th><th>Tamaño</th><th>Ancho × alto × fondo</th><th>Altura z</th><th>Posición</th><th>Estado</th></tr>` + M.accList.map(a => `<tr class="${a.fit ? '' : 'rowbad'}"><td>${a.body + 1}</td><td>${esc(a.ref)}</td><td>${esc(a.name)}</td><td>${a.sizeLabel || 'único'}</td><td>${fmt(a.w)} × ${fmt(a.h)} × ${fmt(a.f)}</td><td>${fmt(a.z0)}–${fmt(a.z1)}</td><td>${depthLabel(a)}</td><td>${a.fit ? '✓' : '✗'}</td></tr>`).join('') + '</table>' : '<div class="muted">Sin accesorios.</div>';
   $('#pane-door').innerHTML = M.doorDiag.map(d => `<div class="${d.level === 'ok' ? 'okbox' : d.level === 'warn' ? 'warnbox' : 'badbox'}">${d.level === 'ok' ? '✓' : '⚠'} ${esc(d.text)}</div>`).join('') || '<div class="muted">No hay puertas.</div>';
   const BI = M.backInfo;
-  $('#pane-back').innerHTML = !BI.on ? '<div class="warnbox">Traseras desactivadas.</div>' : `<div class="hint">Traseras: paneles de ${fmt(BI.t * 10, 1)} mm (global). Los cierres laterales de las mochetas son <b>costados</b> y están en la pestaña «Costados».</div><table><tr><th>Cuerpo</th><th>Pieza</th><th>Ancho</th><th>Alto</th><th>Apoyo</th></tr>` + BI.panels.slice().sort((a, b) => a.body - b.body || a.x - b.x).map(p => `<tr><td>${p.body + 1}</td><td>Trasera</td><td><b>${fmt(p.w, 1)}</b></td><td>${fmt(p.h, 1)}</td><td>${esc(p.note)}</td></tr>`).join('') + '</table>';
-  $('#pane-cost').innerHTML = !S.cost.on ? '<div class="warnbox">Costados desactivados (sección «Costados» del panel izquierdo).</div>' : (M.costs.length ? `<div class="hint">Cada costado cierra el lateral de una mocheta. Espesor por defecto: <b>${fmt(costT(S) * 10, 1)} mm</b> (${S.cost.t > 0 ? 'propio de los costados' : 'igual al tablero general'}). Puedes cambiar el espesor y el fondo de cualquiera en el panel izquierdo, o pulsando «🧱 Espesores» sobre la planta.</div><table><tr><th>Cuerpo</th><th>Costado</th><th>Salto de mocheta (mm)</th><th>Alto (mm)</th><th>Fondo (mm)</th><th>Espesor (mm)</th><th>Posición x (mm)</th></tr>` + M.costs.map(c => `<tr><td>${c.body + 1}</td><td>${esc(c.label)}</td><td>${fmt(c.step * 10, 0)}</td><td>${fmt(c.h * 10, 0)}</td><td>${fmt(c.dep * 10, 0)}${c.depOv ? ' ✎' : ''}</td><td>${fmt(c.t * 10, 1)}${c.ov ? ' ✎' : ''}</td><td>${fmt(c.x0 * 10, 0)}</td></tr>`).join('') + '</table>' : '<div class="muted">No hay saltos de mocheta dentro de los cuerpos: no se necesitan costados.</div>');
+  $('#pane-back').innerHTML = !BI.on ? '<div class="warnbox">Traseras desactivadas.</div>' : `<div class="hint">Traseras: paneles de ${fmt(BI.t * 10, 1)} mm (global). Los costados están en la pestaña «Costados»: se montan sobre estas traseras, que pasan por debajo de su canto.</div><table><tr><th>Cuerpo</th><th>Pieza</th><th>Ancho</th><th>Alto</th><th>Apoyo</th></tr>` + BI.panels.slice().sort((a, b) => a.body - b.body || a.x - b.x).map(p => `<tr><td>${p.body + 1}</td><td>Trasera</td><td><b>${fmt(p.w, 1)}</b></td><td>${fmt(p.h, 1)}</td><td>${esc(p.note)}</td></tr>`).join('') + '</table>';
+  { const ext = M.extCosts || []; const cs = S.cost.on ? M.costs : [];
+    $('#pane-cost').innerHTML = `<div class="hint">Todos los costados llevan el mismo espesor por defecto: <b>${fmt(costT(S) * 10, 1)} mm</b> (${S.cost.t > 0 ? 'propio de los costados' : 'igual al tablero general'}). Los <b>costados de mocheta</b> se montan entre las traseras: van desde la cara delantera de la trasera de pared hasta la cara trasera de la trasera del frente de la mocheta (largo = salto − trasera) y se atornillan por el canto a ambas. Cambia espesor y fondo en el panel izquierdo o con «🧱 Espesores».</div><table><tr><th>Cuerpo</th><th>Costado</th><th>Salto de mocheta (mm)</th><th>Alto (mm)</th><th>Fondo (mm)</th><th>Espesor (mm)</th><th>Posición x (mm)</th></tr>` +
+      ext.map(c => `<tr><td>—</td><td>${esc(c.label)}</td><td>—</td><td>${fmt(c.h * 10, 0)}</td><td>${fmt(c.dep * 10, 0)}</td><td>${fmt(c.t * 10, 1)}${c.ov ? ' ✎' : ''}</td><td>${fmt(c.x0 * 10, 0)}</td></tr>`).join('') +
+      cs.map(c => `<tr><td>${c.body + 1}</td><td>${esc(c.label)}</td><td>${fmt(c.step * 10, 0)}</td><td>${fmt(c.h * 10, 0)}</td><td>${fmt(c.dep * 10, 0)}${c.depOv ? ' ✎' : ''}</td><td>${fmt(c.t * 10, 1)}${c.ov ? ' ✎' : ''}</td><td>${fmt(c.x0 * 10, 0)}</td></tr>`).join('') + '</table>' + (!S.cost.on ? '<div class="warnbox">Costados de mocheta desactivados (sección «Costados» del panel izquierdo).</div>' : ''); }
   let q = `<table><tr><th>Fase</th><th>Pieza</th><th>Largo</th><th>Ancho</th><th>Esp.</th><th>Uds</th><th>Notas</th></tr>`;
   PHASES.forEach(ph => { const rows = M.bom.filter(r => r.grp === ph.id); if (!rows.length) return; q += `<tr class="phrow"><td colspan="7"><b>${esc(ph.label)}</b> <span class="muted">· ${esc(ph.desc)}</span></td></tr>`; rows.forEach(r => q += `<tr><td>${phTag(r.grp)}</td><td>${esc(r.name)}</td><td>${fmt(r.L)}</td><td>${r.W ? fmt(r.W) : '—'}</td><td>${r.T ? fmt(r.T) : '—'}</td><td>${r.qty}</td><td>${esc(r.note)}</td></tr>`); });
   $('#pane-bom').innerHTML = q + `</table><div class="hint">Medidas en cm. Superficie de tablero (sin traseras) ≈ <b>${fmt(M.area, 2)} m²</b>. <button class="mini" data-act="csv">Descargar CSV</button></div>`;
@@ -3718,11 +3785,10 @@ window.addEventListener('DOMContentLoaded', () => {
   op.value = S.door.open; $('#opentxt').textContent = Math.round(S.door.open) + '%';
   const pr = $('#pullr'); pr.addEventListener('input', () => { S.door.pull = num(pr.value); $('#pulltxt').textContent = Math.round(S.door.pull) + '%'; update(); });
   update(); setView('persp'); updHistBtns();
-  pushLog(EMBEDDED ? 'Hola 👋 Estás en un visor restringido: GUARDAR, DXF y PDF no pueden descargar directamente. Abre la web en Edge/Chrome desde su dirección o como archivo local.' : 'Hola 👋 v12: los costados de mocheta son tableros aparte de las traseras y puedes cambiar el espesor de cualquier tablero con 🧱 Espesores (planta o alzado).', 'help');
+  pushLog(EMBEDDED ? 'Hola 👋 Estás en un visor restringido: GUARDAR, DXF y PDF no pueden descargar directamente. Abre la web en Edge/Chrome desde su dirección o como archivo local.' : 'Hola 👋 v13: todos los laterales son costados, los de mocheta van entre las traseras y la tapa y la base salen de una sola pieza (la escotadura se indica en el despiece).', 'help');
 });
 
 
 </script>
-<script src="parche-costados.js"></script>
 </body>
 </html>
