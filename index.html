@@ -126,12 +126,12 @@ table.t th{background:#f3f6fd;color:var(--navy)}
       <section class="card mue" aria-labelledby="t-mue">
         <div class="ico" aria-hidden="true">🪵</div>
         <h2 id="t-mue">Mueble a medida</h2>
-        <p>Muebles y carpintería que no son armarios: pasacopas con pilares, mueble bajo para vinilos o lo que necesites. Interfaz simplificada.</p>
+        <p>Muebles y carpintería que no son armarios: pasacopas con pilares, pasaplatos con guillotina de cristal, mueble bajo para vinilos o lo que necesites. Cada pieza lleva su material (maderas, lacados, inox, cristal…).</p>
         <div class="act">
           <label class="fl" for="mueName">Nombre del proyecto</label>
           <input type="text" id="mueName" placeholder="Ej.: Pasacopas salón-cocina" maxlength="80" autocomplete="off">
           <label class="fl" for="mueTpl">Punto de partida</label>
-          <select id="mueTpl"><option value="pasacopas">Pasacopas con pilares y gabinete</option><option value="vinilos">Mueble bajo para vinilos</option><option value="blank">En blanco</option></select>
+          <select id="mueTpl"><option value="pasacopas">Pasacopas con pilares y gabinete</option><option value="pasaplatos">Pasaplatos con guillotina de cristal</option><option value="vinilos">Mueble bajo para vinilos</option><option value="blank">En blanco</option></select>
           <div style="height:10px"></div>
           <button class="btn or" id="btnMue" type="button">Crear mueble</button>
         </div>
@@ -284,30 +284,35 @@ table.t th{background:#f3f6fd;color:var(--navy)}
 
 <section class="m-sec" id="m-intro" data-grp="Muebles a medida">
 <h2>Mueble a medida · cómo funciona</h2>
-<p>Un mueble se compone de <b>elementos</b> colocados en un espacio de tres ejes: <b>x</b> de izquierda a derecha, <b>y</b> de atrás (pared) hacia el frente y <b>z</b> desde el suelo. Hay tres tipos:</p>
+<p>Un mueble se compone de <b>elementos</b> colocados en un espacio de tres ejes: <b>x</b> de izquierda a derecha, <b>y</b> de atrás (pared o cara de cocina) hacia el frente (salón) y <b>z</b> desde el suelo. Hay cinco tipos:</p>
 <table class="t"><tr><th>Elemento</th><th>Qué es</th><th>Parámetros principales</th></tr>
 <tr><td><b>Cuerpo</b></td><td>Caja con laterales, tapa, base, huecos iguales, baldas y puertas.</td><td>x, y, z, ancho, fondo, alto · <b>módulos</b> · <b>huecos por módulo</b> · baldas por hueco · puertas (sin, una por hueco, dos por módulo) · zócalo · trasera · aviso de hueco mínimo · espesor propio.</td></tr>
-<tr><td><b>Tablero</b></td><td>Pieza suelta: barra, encimera, balda…</td><td>x, y, z, ancho, fondo y <b>espesor</b>.</td></tr>
+<tr><td><b>Tablero</b></td><td>Pieza suelta en <b>cualquier plano</b>: barra, encimera, balda, frente, costado, jamba…</td><td>x, y, z, ancho, fondo, alto · el <b>espesor</b> es el lado menor (o el plano que fijes: horizontal, frontal o lateral) · material · función · mecanizados · demasía de obra.</td></tr>
+<tr><td><b>Vidrio</b></td><td>Hoja de cristal, fija o elevable (guillotina).</td><td>x, y, z, ancho, fondo, alto · <b>recorrido al subir</b> · material (cristal, espejo…) · no entra en el corte.</td></tr>
+<tr><td><b>Módulo externo</b></td><td>Mueble comprado (p. ej. un armario espejo IKEA): se dibuja con sus cotas exteriores como referencia de encaje y colisión.</td><td>x, y, z, ancho, fondo, alto · material · no entra en el corte.</td></tr>
 <tr><td><b>Pilar</b></td><td>Columna de pladur de referencia, con <b>forro de tablero</b> opcional.</td><td>x, y, ancho, fondo, alto · forro en frente, lado izquierdo y/o derecho · espesor del forro · tramos en altura.</td></tr></table>
 <ul>
 <li><b>Huecos iguales</b>: el ancho total se reparte en N = módulos × huecos huecos libres idénticos (se muestra el valor en cada ficha). Los módulos sirven para <b>partir las tapas y bases</b> en piezas que quepan en el tablero (un mueble de 5 m necesita varios).</li>
 <li><b>Forro de pilares</b>: el frontal cubre el canto de los laterales. Si el forro es más alto que el tablero (255 cm frente a 244), usa «Tramos en altura» o elige un tablero mayor en la pestaña de corte.</li>
-<li><b>Avisos</b>: elementos que se solapan, que superan el techo, huecos por debajo del mínimo pedido, baldas largas que pueden flectar, hojas de puerta muy anchas.</li>
+<li><b>Materiales por pieza</b>: cada elemento puede llevar el suyo: roble, nogal, cedro, mango, pino, haya, lacados (blanco, gris, verde), acero inoxidable, cristal y espejo. Si no se indica, usa el «Acabado general». El corte genera tableros independientes <b>por material y espesor</b> y deja fuera el inox, el cristal, el espejo y los módulos comprados (pestaña «Despiece → Fuera del corte»). En «Materiales y acabados» (panel izquierdo) ajustas la ficha de cada material y si entra en el corte.</li>
+<li><b>Puertas y tiradores</b>: las puertas pueden ir en otro material que el cuerpo. Tirador: sin tirador, push-to-open, oculto, barra, pomo, asa o gola. Los herrajes (bisagras, push, tiradores) salen en el Despiece.</li>
+<li><b>Taller y obra</b>: función de la pieza, mecanizados (ranuras, cajeados, pasacables…) y <b>demasía de obra</b> (cm) para piezas que se ajustan in situ. Con «Sumar demasía de obra» (pestaña Corte) la demasía se añade al largo y al ancho de corte; si no, solo aparece como nota. La pestaña «📏 Obra» guarda las medidas reales tal como se tomaron.</li>
+<li><b>Avisos</b>: elementos que se solapan (el cristal que entra en una ranura de jamba no cuenta), que superan el techo, huecos por debajo del mínimo pedido, baldas largas que pueden flectar, hojas de puerta muy anchas y cristales que chocan al subir.</li>
 </ul>
 </section>
 
 <section class="m-sec" id="m-uso" data-grp="Muebles a medida">
 <h2>Mueble a medida · pantalla y cotas</h2>
 <ul>
-<li><b>Plantillas</b>: «Pasacopas con pilares» (dos pilares de pladur forrados, cabinet inferior, barra y gabinete superior) y «Mueble bajo para vinilos» (520×60×47 cm con 15 huecos de unos 32,7 cm). También «En blanco». Aplicar una plantilla sustituye el diseño actual y pide confirmación.</li>
+<li><b>Plantillas</b>: «Pasacopas con pilares» (dos pilares de pladur forrados, cabinet inferior, barra y gabinete superior), «Pasaplatos con guillotina de cristal» (columnas de nogal, gabinete con push-to-open, barra de inox, jambas lacadas, cristal elevable y armario espejo) y «Mueble bajo para vinilos» (520×60×47 cm con 15 huecos de unos 32,7 cm). También «En blanco». Aplicar una plantilla sustituye el diseño actual y pide confirmación.</li>
 <li><b>Entorno</b>: altura de techo, espesor de tablero general, acabado, traseras y la posición de la sección del plano de perfil.</li>
-<li><b>Elementos</b>: pulsa uno (en la lista o directamente sobre la vista) para <b>seleccionarlo</b>. Se resalta en naranja en todas las vistas y aparecen sus <b>cotas amarillas editables</b>: posición y tamaño en cada vista. Duplicar, eliminar y añadir (+ Cuerpo, + Tablero, + Pilar) están en el panel.</li>
-<li><b>Vistas</b>: 3D (perspectiva, isométrica, frontal, planta, izquierda, derecha) y, abajo, <b>Alzado</b>, <b>Planta</b> (con las tapas retiradas) y <b>Perfil</b> (sección). «Ver» enseña un solo elemento y atenúa el resto. Interruptores de techo, pared de fondo, cotas, puertas, interior y pilares.</li>
+<li><b>Elementos</b>: pulsa uno (en la lista o directamente sobre la vista) para <b>seleccionarlo</b>. Se resalta en naranja en todas las vistas y aparecen sus <b>cotas amarillas editables</b>: posición y tamaño en cada vista. Duplicar, eliminar y añadir (+ Cuerpo, + Tablero, + Vidrio, + Módulo externo, + Pilar) están en el panel.</li>
+<li><b>Vistas</b>: 3D (perspectiva, isométrica, frontal, planta, izquierda, derecha) y, abajo, <b>Alzado</b>, <b>Planta</b> (con las tapas retiradas) y <b>Perfil</b> (sección). «Ver» enseña un solo elemento y atenúa el resto. Interruptores de techo, pared de fondo, cotas, puertas, interior, pilares, tiradores, cristales y externos, y un control para abrir el cristal elevable.</li>
 <li><b>📏 Medir</b> funciona como en el armario. Los números grises son cotas informativas (medidas totales, huecos, techo).</li>
 <li><b>Resumen</b>, <b>Despiece</b>, <b>✂ Corte</b> y <b>📐 Planos</b> funcionan como en el diseñador de armarios; los planos incluyen un alzado interior por cuerpo con los anchos de hueco.</li>
-<li><b>JSON</b>: «Copiar para Copilot» copia el mueble con una nota de unidades y ejes para que cualquier asistente pueda editarlo. «Pegar desde Copilot» lo carga de vuelta.</li>
+<li><b>JSON</b> (v2): «Copiar para Copilot» copia el mueble con una nota de unidades, ejes y campos. «Pegar desde Copilot» lo carga de vuelta. Un JSON con el eje y medido desde el frente (0 = cara del salón) se convierte solo al cargarlo. Los proyectos v1 siguen abriendo igual.</li>
 </ul>
-<div class="note">Hoy el diseñador de muebles genera: laterales, divisiones, tapa, base, zócalo, traseras, baldas, puertas abatibles por hueco o por módulo, tableros sueltos y forros de pilar. Cajones, correderas o herrajes específicos no están incluidos.</div>
+<div class="note">Hoy el diseñador de muebles genera: laterales, divisiones, tapa, base, zócalo, traseras, baldas, puertas abatibles por hueco o por módulo con tirador, tableros sueltos en cualquier plano, vidrios, módulos de referencia y forros de pilar. Cajones, correderas y motorización de la guillotina no están incluidos (el motor se anota en los mecanizados).</div>
 </section>
 
 <section class="m-sec" id="atajos" data-grp="General">
@@ -380,7 +385,7 @@ function launchMueble(proj, errEl, isNew) {
 }
 $('#btnNew').addEventListener('click', function () { launchArmario(newArmario($('#projName').value.trim() || 'Mi armario'), $('#globalMsg')); });
 $('#projName').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); $('#btnNew').click(); } });
-$('#btnMue').addEventListener('click', function () { var nm = $('#mueName').value.trim() || ({ pasacopas: 'Pasacopas', vinilos: 'Mueble de vinilos', blank: 'Mi mueble' }[$('#mueTpl').value]); launchMueble({ tpl: $('#mueTpl').value, name: nm }, $('#globalMsg'), true); });
+$('#btnMue').addEventListener('click', function () { var nm = $('#mueName').value.trim() || ({ pasacopas: 'Pasacopas', pasaplatos: 'Pasaplatos', vinilos: 'Mueble de vinilos', blank: 'Mi mueble' }[$('#mueTpl').value]); launchMueble({ tpl: $('#mueTpl').value, name: nm }, $('#globalMsg'), true); });
 $('#mueName').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); $('#btnMue').click(); } });
 $('#btnDemo').addEventListener('click', function () { launchArmario({ S: clone(SAMPLE.S), VIEW: clone(SAMPLE.VIEW), name: SAMPLE.name }, $('#globalMsg')); });
 $('#btnResA').addEventListener('click', function () { window.location.href = APP_ARMARIO; });

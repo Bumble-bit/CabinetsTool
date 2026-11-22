@@ -49,6 +49,7 @@ button:hover{background:#e6edfb;border-color:#6f8fe0}
 button:disabled{opacity:.45;cursor:default}
 button.mini{padding:1px 6px;font-size:11px}
 button.pri{background:#2a4aa8;color:#fff;border-color:#2a4aa8}button.pri:hover{background:#3558c4}
+table.mt{margin:4px 10px;width:calc(100% - 20px);font-size:11.5px}table.mt th{position:static}table.mt td{padding:2px 4px}table.mt input[type=text]{width:100%;font:inherit;font-size:11.5px;padding:2px 4px;border:1px solid #bcc4d6;border-radius:4px}
 button.warnbtn{background:#d9730d;border-color:#d9730d;color:#fff}
 #warns{position:absolute;left:8px;bottom:8px;max-width:min(560px,70%);background:rgba(255,248,225,.97);border:1px solid #e3c36a;border-radius:8px;font-size:12px;color:#6a4a00;display:none;box-shadow:0 2px 8px rgba(0,0,0,.12);z-index:3}
 #warnHead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:3px 6px 3px 9px}
@@ -175,7 +176,7 @@ svg.drsvg{width:100%;height:auto;max-height:78vh;display:block;background:#fff}
     </div>
     <div id="tplBox">
       <h2>🧩 Plantilla</h2>
-      <div class="r"><select id="tplSel"><option value="pasacopas">Pasacopas con pilares</option><option value="vinilos">Mueble bajo para vinilos</option><option value="blank">En blanco</option></select><button data-act="tpl">Aplicar plantilla</button></div>
+      <div class="r"><select id="tplSel"><option value="pasacopas">Pasacopas con pilares</option><option value="pasaplatos">Pasaplatos con guillotina de cristal</option><option value="vinilos">Mueble bajo para vinilos</option><option value="blank">En blanco</option></select><button data-act="tpl">Aplicar plantilla</button></div>
     </div>
     <div id="sideBody"></div>
   </aside>
@@ -193,7 +194,7 @@ svg.drsvg{width:100%;height:auto;max-height:78vh;display:block;background:#fff}
         <canvas id="cv3d"></canvas>
         <div class="toolbar">
           <div class="tgroup"><button data-act="view" data-v="persp">Perspectiva</button><button data-act="view" data-v="iso">Isométrica</button><button data-act="view" data-v="front">Frontal</button><button data-act="view" data-v="plan">Planta</button><button data-act="view" data-v="left">Izq.</button><button data-act="view" data-v="right">Dcha.</button></div>
-          <div class="tgroup"><label><input type="checkbox" data-v-opt="ceiling"> Techo</label><label><input type="checkbox" data-v-opt="wall"> Pared de fondo</label><label><input type="checkbox" data-v-opt="labels"> Cotas</label><label><input type="checkbox" data-v-opt="doors"> Puertas</label><label><input type="checkbox" data-v-opt="interior"> Interior</label><label><input type="checkbox" data-v-opt="pilares"> Pilares</label></div>
+          <div class="tgroup"><label><input type="checkbox" data-v-opt="ceiling"> Techo</label><label><input type="checkbox" data-v-opt="wall"> Pared de fondo</label><label><input type="checkbox" data-v-opt="labels"> Cotas</label><label><input type="checkbox" data-v-opt="doors"> Puertas</label><label><input type="checkbox" data-v-opt="interior"> Interior</label><label><input type="checkbox" data-v-opt="pilares"> Pilares</label><label><input type="checkbox" data-v-opt="handles"> Tiradores</label><label><input type="checkbox" data-v-opt="glass"> Cristales</label><label><input type="checkbox" data-v-opt="ext"> Externos</label></div><div class="tgroup"><label>Cristal abierto <input type="range" id="glassr" min="0" max="100" step="1" value="0" style="width:70px"> <b id="glasstxt" style="min-width:30px">0%</b></label></div>
         </div>
         <div id="warns"><div id="warnHead"><b id="warnTitle"></b><button id="warnBtn" data-act="warnmin">▾ Minimizar</button></div><div id="warnBody"></div></div>
         <div class="helpbox">Arrastra: girar · Mayús/clic dcho.: mover · Rueda: zoom · Doble clic: restablecer</div>
@@ -210,8 +211,8 @@ svg.drsvg{width:100%;height:auto;max-height:78vh;display:block;background:#fff}
         <div id="planCv"><canvas id="cvplan"></canvas><input id="planInput" type="text" inputmode="decimal" autocomplete="off"><div id="planLabel"></div></div>
       </section>
       <section id="infoWrap">
-        <div class="tabs"><button class="tab on" data-act="tab" data-v="res">Resumen</button><button class="tab" data-act="tab" data-v="bom">Despiece</button><button class="tab" data-act="tab" data-v="cut">✂ Corte (fases)</button><button class="tab" data-act="tab" data-v="plans">📐 Planos</button></div>
-        <div class="pane on" id="pane-res"></div><div class="pane" id="pane-bom"></div><div class="pane" id="pane-cut"></div><div class="pane" id="pane-plans"></div>
+        <div class="tabs"><button class="tab on" data-act="tab" data-v="res">Resumen</button><button class="tab" data-act="tab" data-v="bom">Despiece</button><button class="tab" data-act="tab" data-v="cut">✂ Corte (fases)</button><button class="tab" data-act="tab" data-v="plans">📐 Planos</button><button class="tab" data-act="tab" data-v="obra">📏 Obra</button></div>
+        <div class="pane on" id="pane-res"></div><div class="pane" id="pane-bom"></div><div class="pane" id="pane-cut"></div><div class="pane" id="pane-plans"></div><div class="pane" id="pane-obra"></div>
       </section>
     </div>
   </main>
@@ -233,11 +234,42 @@ const r1 = v => Math.round(v * 10) / 10;
 const escH = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const PALETTES = {
   roble: { board: [214, 184, 138], door: [224, 200, 160], inner: [196, 164, 118], back: [236, 232, 222], name: 'Roble claro' },
-  blanco: { board: [238, 238, 234], door: [246, 246, 243], inner: [222, 222, 217], back: [244, 244, 240], name: 'Blanco' },
   nogal: { board: [140, 98, 66], door: [156, 112, 78], inner: [120, 82, 54], back: [190, 170, 150], name: 'Nogal' },
-  gris: { board: [150, 154, 160], door: [168, 172, 178], inner: [132, 136, 142], back: [200, 202, 206], name: 'Gris grafito claro' },
-  verde: { board: [150, 170, 150], door: [166, 186, 166], inner: [130, 150, 130], back: [210, 224, 210], name: 'Verde salvia' }
+  cedro: { board: [176, 108, 74], door: [190, 122, 86], inner: [154, 92, 62], back: [214, 188, 170], name: 'Cedro' },
+  mango: { board: [196, 146, 92], door: [210, 160, 106], inner: [176, 128, 80], back: [226, 206, 182], name: 'Mango' },
+  pino: { board: [230, 198, 134], door: [238, 210, 150], inner: [210, 178, 114], back: [240, 228, 204], name: 'Pino' },
+  haya: { board: [224, 188, 148], door: [234, 202, 164], inner: [204, 170, 130], back: [241, 230, 212], name: 'Haya' },
+  blanco_lacado: { board: [238, 238, 234], door: [246, 246, 243], inner: [222, 222, 217], back: [244, 244, 240], name: 'Blanco lacado' },
+  gris_lacado: { board: [150, 154, 160], door: [168, 172, 178], inner: [132, 136, 142], back: [200, 202, 206], name: 'Gris grafito lacado' },
+  verde_lacado: { board: [150, 170, 150], door: [166, 186, 166], inner: [130, 150, 130], back: [210, 224, 210], name: 'Verde salvia lacado' }
 };
+/* CATÁLOGO DE MATERIALES · cada pieza puede llevar el suyo (material); si no lleva, usa el acabado general (palette).
+   kind: wood | lacquer (tablero, entran en el corte) · metal | glass | mirror | external | wall (no se cortan en tablero) */
+const MAT_ALIAS = { blanco: 'blanco_lacado', gris: 'gris_lacado', verde: 'verde_lacado', lacado: 'blanco_lacado' };
+const matKey = id => { id = String(id == null ? '' : id).trim(); return MAT_ALIAS[id] || id; };
+const MATS = {};
+Object.keys(PALETTES).forEach(k => { const p = PALETTES[k], lac = /lacado/.test(k); MATS[k] = { id: k, name: p.name, kind: lac ? 'lacquer' : 'wood', cut: true, grain: !lac, alpha: 1, board: p.board, door: p.door, inner: p.inner, back: p.back, finish: '' }; });
+const SPECIAL = {
+  inox: { name: 'Acero inoxidable', kind: 'metal', c: [190, 196, 204], alpha: 1, finish: 'Acero inoxidable cepillado AISI 304' },
+  cristal: { name: 'Cristal', kind: 'glass', c: [168, 208, 220], alpha: 0.38, finish: 'Vidrio templado transparente 6 mm' },
+  espejo: { name: 'Espejo', kind: 'mirror', c: [196, 222, 232], alpha: 0.62, finish: 'Espejo' },
+  externo: { name: 'Mueble comprado (referencia)', kind: 'external', c: [226, 226, 230], alpha: 0.85, finish: 'Medidas exteriores del fabricante' },
+  pladur_obra: { name: 'Pladur / obra', kind: 'wall', c: [186, 188, 194], alpha: 0.9, finish: 'Pladur existente' }
+};
+Object.keys(SPECIAL).forEach(k => { const s = SPECIAL[k]; MATS[k] = { id: k, name: s.name, kind: s.kind, cut: false, grain: false, alpha: s.alpha, board: s.c, door: s.c, inner: s.c, back: s.c, finish: s.finish }; });
+/* material efectivo: catálogo + ajustes del proyecto (S.mats: acabado y «entra en el corte») */
+function matOf(S, id) {
+  id = matKey(id) || (S && S.palette) || 'roble'; const ov = S && S.mats && S.mats[id]; let m = MATS[id];
+  if (!m) { const k = ov && ov.kind, b = k === 'metal' ? MATS.inox : k === 'glass' ? MATS.cristal : (k === 'external' || k === 'mirror') ? MATS.externo : k === 'wall' ? MATS.pladur_obra : MATS.roble; m = Object.assign({}, b, { id, name: String(id).replace(/_/g, ' ') }); }
+  if (ov) m = Object.assign({}, m, { cut: ov.cut === undefined ? m.cut : !!ov.cut, finish: ov.finish !== undefined && ov.finish !== '' ? ov.finish : m.finish });
+  return m;
+}
+const MAT_GROUPS = [['Maderas', ['wood']], ['Lacados', ['lacquer']], ['Metal', ['metal']], ['Vidrio y espejo', ['glass', 'mirror']], ['Referencia', ['external', 'wall']]];
+const HANDLES = { none: 'Sin tirador', push: 'Push-to-open (imán / pulsador)', oculto: 'Tirador oculto (canto)', barra: 'Tirador de barra', pomo: 'Pomo', asa: 'Asa horizontal', gola: 'Gola (perfil encastrado)' };
+const planoOf = it => { if (it.plano === 'H' || it.plano === 'F' || it.plano === 'L') return it.plano; const m = Math.min(it.w, it.d, it.h); return it.h <= m + 1e-9 ? 'H' : it.d <= m + 1e-9 ? 'F' : 'L'; };
+const PLANO_LAB = { H: 'horizontal (espesor en z)', F: 'frontal vertical (espesor en y)', L: 'lateral vertical (espesor en x)' };
+const splitList = s => String(s || '').split(/[,;\n]+/).map(x => x.trim()).filter(Boolean);
+const nice = s => String(s || '').replace(/_/g, ' ');
 /* FASES DE FABRICACIÓN: 1 caja · 2 puertas · 3 accesorios (baldas) */
 const PHASES = [
   { id: 'caja', n: 1, short: 'CAJA', pre: 'C', label: '1 · CAJA (carcasa)', desc: 'Laterales, divisiones, tapa, base, zócalo, traseras, tableros sueltos y forros: lo primero que se encarga.' },
@@ -256,13 +288,13 @@ function cutGroups(S, M) {
   const cfg = S.cut, out = []; let gid = 0; const pal = (PALETTES[S.palette] || {}).name || ''; const ordr = { tab: 0, door: 1, back: 2 };
   PHASES.forEach(ph => {
     const map = new Map(); let n = 0;
-    M.bom.filter(r => r.mat && r.grp === ph.id).sort((a, b) => (ordr[a.mat] - ordr[b.mat]) || b.L * b.W - a.L * a.W).forEach(r => {
+    M.bom.filter(r => r.mat && r.grp === ph.id).sort((a, b) => (ordr[a.mat] - ordr[b.mat]) || String(a.mid || '').localeCompare(String(b.mid || '')) || b.L * b.W - a.L * a.W).forEach(r => {
       if (r.mat === 'door' && !cfg.incDoors) return; if (r.mat === 'back' && !cfg.incBacks) return;
-      const key = r.mat + '|' + r.T.toFixed(2);
+      const key = r.mat + '|' + (r.mid || '') + '|' + r.T.toFixed(2);
       if (!map.has(key)) {
         const mm = Math.round(r.T * 100) / 10;
-        const label = r.mat === 'tab' ? `Tablero ${mm} mm · ${pal}` : r.mat === 'door' ? `Puertas ${mm} mm · ${pal}` : `Traseras ${mm} mm`;
-        const g = { phase: ph.id, key: ph.id + '|' + key, mat: r.mat, T: r.T, label, full: ph.short + ' · ' + label, sheet: (r.mat === 'back' ? cfg.sheetBack : cfg.sheet).slice(), rows: [], grain: r.mat !== 'back' && cfg.grain };
+        const label = r.mat === 'tab' ? `Tablero ${mm} mm · ${r.mname || pal}` : r.mat === 'door' ? `Puertas ${mm} mm · ${r.mname || pal}` : `Traseras ${mm} mm`;
+        const g = { phase: ph.id, key: ph.id + '|' + key, mat: r.mat, T: r.T, label, full: ph.short + ' · ' + label, sheet: (r.mat === 'back' ? cfg.sheetBack : cfg.sheet).slice(), rows: [], grain: r.mat !== 'back' && cfg.grain && r.grain !== false };
         map.set(key, g); out.push(g);
       }
       n++; gid++;
@@ -574,8 +606,8 @@ function xAction(a, f, url) { if (a === 'dl') { try { triggerDownload(f.name, f.
    DIBUJOS VECTORIALES (planos): lienzo con capas, SVG en pantalla, DXF 1:1 en mm y PDF A3 a escala
    ===================================================================== */
 const DK = 10;
-const DR_LAYERS = { MUROS: [7, 'CONTINUOUS', '#222222'], HATCH: [8, 'CONTINUOUS', '#a8a8a8'], CAJA: [5, 'CONTINUOUS', '#6b4b2a'], PUERTAS: [30, 'CONTINUOUS', '#c26a00'], ACCESORIOS: [3, 'CONTINUOUS', '#2e7d4f'], OCULTO: [8, 'DASHED', '#8a8a8a'], COTAS: [4, 'CONTINUOUS', '#2a4aa8'], SIMBOLOS: [6, 'DASHED', '#a040a0'], MARCO: [7, 'CONTINUOUS', '#444444'], TEXTOS: [7, 'CONTINUOUS', '#111111'] };
-const DR_FILL = { CAJA: '#ead9b9', PUERTAS: '#f6e0b4', ACCESORIOS: '#d3ebdc' };
+const DR_LAYERS = { MUROS: [7, 'CONTINUOUS', '#222222'], HATCH: [8, 'CONTINUOUS', '#a8a8a8'], CAJA: [5, 'CONTINUOUS', '#6b4b2a'], PUERTAS: [30, 'CONTINUOUS', '#c26a00'], ACCESORIOS: [3, 'CONTINUOUS', '#2e7d4f'], OCULTO: [8, 'DASHED', '#8a8a8a'], COTAS: [4, 'CONTINUOUS', '#2a4aa8'], SIMBOLOS: [6, 'DASHED', '#a040a0'], MARCO: [7, 'CONTINUOUS', '#444444'], TEXTOS: [7, 'CONTINUOUS', '#111111'], VIDRIO: [140, 'CONTINUOUS', '#1a8fa8'], INOX: [9, 'CONTINUOUS', '#6c7480'], EXTERNOS: [50, 'CONTINUOUS', '#a0522d'] };
+const DR_FILL = { CAJA: '#ead9b9', PUERTAS: '#f6e0b4', ACCESORIOS: '#d3ebdc', VIDRIO: '#cfe9f1', INOX: '#d8dce2', EXTERNOS: '#eadfd2' };
 const mmT = v => { const r = Math.round(v * 10) / 10; return String(Math.abs(r - Math.round(r)) < 1e-9 ? Math.round(r) : r); };
 class Dr {
   constructor(id, title, sub, scale) { this.id = id; this.title = title; this.sub = sub || ''; this.scale = scale || 20; this.p = []; this.th = 40; }
@@ -631,15 +663,20 @@ function makeDrawingsPDF(views, S, name, ok) {
    pilar de referencia (pladur) con forro de tablero. Todo en cm: x → derecha · y → fondo (0 = atrás) · z → altura.
    ===================================================================== */
 const MKEY = 'mueble_v1_auto';
-const CUTDEF = { sheet: [244, 122], sheetBack: [244, 122], kerf: 0.4, trim: 0, grain: true, incDoors: true, incBacks: true, seed: 1 };
-const AYUDA = 'Unidades en cm. x: izquierda→derecha; y: fondo (0 = atrás/pared, crece hacia el frente); z: altura desde el suelo. type: cuerpo | tablero | pilar. En «tablero», h es el espesor. cuerpo: mods = módulos iguales contiguos, cols = huecos por módulo, baldas = baldas por hueco, doors = none | hueco | dos, zocalo = altura del zócalo (cm), minHueco = aviso si el hueco libre es menor.';
+const CUTDEF = { sheet: [244, 122], sheetBack: [244, 122], kerf: 0.4, trim: 0, grain: true, incDoors: true, incBacks: true, applyTrim: true, seed: 1 };
+const AYUDA = 'Unidades en cm. x: izquierda→derecha; y: fondo (0 = atrás/pared o cara de cocina, crece hacia el frente/salón); z: altura desde el suelo. type: cuerpo | tablero | pilar | vidrio | modulo_externo. En «tablero» y «vidrio» el espesor es la dimensión menor (o el eje fijado en «plano»: H = z, F = y, L = x). material: id del catálogo (roble, nogal, cedro, mango, pino, haya, blanco_lacado, gris_lacado, verde_lacado, inox, cristal, espejo, externo); vacío = acabado general (palette). Solo se cortan los materiales con «entra en el corte». machining: lista de operaciones de taller; role: función de la pieza; handle: none | push | oculto | barra | pomo | asa | gola; trim_allowance: demasía de obra en cm (se suma a la medida de corte si cut.applyTrim). vidrio: travel = recorrido de subida en cm. cuerpo: mods = módulos iguales contiguos, cols = huecos por módulo, baldas = baldas por hueco, doors = none | hueco | dos, doorMat = material de las puertas, handleMat = material del tirador, zocalo = altura del zócalo (cm), minHueco = aviso si el hueco libre es menor.';
 let _seq = 1;
 const nid = () => 'e' + (_seq++);
-const mkCuerpo = o => Object.assign({ id: nid(), type: 'cuerpo', name: 'Cuerpo', x: 0, y: 0, z: 0, w: 80, d: 50, h: 80, mods: 1, cols: 1, baldas: 0, back: true, doors: 'none', zocalo: 0, minHueco: 0, t: 0 }, o);
-const mkTablero = o => Object.assign({ id: nid(), type: 'tablero', name: 'Tablero', x: 0, y: 0, z: 0, w: 80, d: 50, h: 3 }, o);
-const mkPilar = o => Object.assign({ id: nid(), type: 'pilar', name: 'Pilar', x: 0, y: 0, z: 0, w: 15, d: 60, h: 255, fF: true, fL: true, fR: true, ft: 1.8, fs: 1 }, o);
+const COMMON = () => ({ material: '', role: '', machining: [], handle: 'none', trim_allowance: 0, notes: '' });
+const mkCuerpo = o => Object.assign({ id: nid(), type: 'cuerpo', name: 'Cuerpo', x: 0, y: 0, z: 0, w: 80, d: 50, h: 80, mods: 1, cols: 1, baldas: 0, back: true, doors: 'none', zocalo: 0, minHueco: 0, t: 0, doorMat: '', handleMat: '', opening_system: '' }, COMMON(), o);
+const mkTablero = o => Object.assign({ id: nid(), type: 'tablero', name: 'Tablero', x: 0, y: 0, z: 0, w: 80, d: 50, h: 3, plano: 'auto' }, COMMON(), o);
+const mkPilar = o => Object.assign({ id: nid(), type: 'pilar', name: 'Pilar', x: 0, y: 0, z: 0, w: 15, d: 60, h: 255, fF: true, fL: true, fR: true, ft: 1.8, fs: 1 }, COMMON(), o);
+const mkVidrio = o => Object.assign({ id: nid(), type: 'vidrio', name: 'Vidrio', x: 0, y: 0, z: 0, w: 80, d: 0.6, h: 60, travel: 0 }, COMMON(), { material: 'cristal' }, o);
+const mkExterno = o => Object.assign({ id: nid(), type: 'modulo_externo', name: 'Módulo externo', x: 0, y: 0, z: 0, w: 40, d: 15, h: 95 }, COMMON(), { material: 'externo' }, o);
+const PASAPLATOS = {"v": 2, "kind": "mueble", "yOrigin": "back", "t": 1.9, "back": {"on": true, "t": 0.5}, "ceil": 255, "secX": 0, "palette": "nogal", "raw_site_measurements": {"hueco_pared_derecha_ancho": [49.5, 50.0], "fondo_mochete_derecha_a_pared": 8.5, "columna_izq_pladur_ancho_max": 33.0, "columna_der_pladur_ancho_max": 28.5, "hueco_central_ancho_salon": 87.5, "hueco_central_ancho_cocina": 88.5, "gabinete_altura_der": 116.7, "gabinete_altura_izq": 117.7, "ventana_altura_libre": 65.0, "tablero_halogenos_fondo": 22.5, "faldon_vertical_blanco_altura": 50.7, "viga_gotele_a_techo_altura": 22.5, "panel_split_ancho": 87.8, "panel_split_altura_izq_der": [54.0, 55.0], "panel_split_distancia_techo": 0.0}, "mats": {"nogal": {"finish": "chapado de nogal natural, barniz mate"}, "blanco_lacado": {"finish": "MDF hidrófugo lacado blanco satinado"}, "inox": {"finish": "acero inoxidable cepillado AISI 304"}, "cristal": {"finish": "vidrio templado transparente 6 mm"}, "espejo": {"finish": "IKEA LETTAN, espejo 40×15×95"}}, "items": [{"id": "col_izq_frente", "type": "tablero", "name": "Frente columna izq.", "material": "nogal", "role": "revestimiento_estructural", "x": 0, "y": 43.1, "z": 0, "w": 33, "d": 1.9, "h": 255, "plano": "auto", "trim_allowance": 1.0, "machining": [], "handle": "none", "notes": "No envuelve el costado izquierdo (va a ras con la pared). Cara vista desde el salón."}, {"id": "col_der_frente", "type": "tablero", "name": "Frente columna dcha.", "material": "nogal", "role": "revestimiento_estructural", "x": 120.5, "y": 43.1, "z": 0, "w": 33, "d": 1.9, "h": 255, "plano": "auto", "trim_allowance": 1.0, "machining": [], "handle": "none", "notes": "Ensanchada de 28,5 a 33,0 cm para simetría con la columna izquierda."}, {"id": "col_der_costado", "type": "tablero", "name": "Costado columna dcha.", "material": "nogal", "role": "revestimiento_lateral", "x": 151.6, "y": 0, "z": 0, "w": 1.9, "d": 43.1, "h": 255, "plano": "auto", "trim_allowance": 1.0, "machining": [], "handle": "none", "notes": "Envuelve el lateral derecho de la columna."}, {"id": "gabinete_inf_cuerpo", "type": "cuerpo", "name": "Gabinete inferior (termo)", "material": "nogal", "role": "mueble_bajo", "x": 33, "y": 0, "z": 0, "w": 87.5, "d": 43.1, "h": 117.2, "mods": 1, "cols": 1, "baldas": 0, "back": false, "doors": "dos", "zocalo": 0, "minHueco": 0, "t": 0, "doorMat": "", "handle": "push", "handleMat": "", "opening_system": "push_to_open_iman", "trim_allowance": 0.8, "machining": [], "notes": "Altura media 117,2 (116,7 dcha. / 117,7 izq.). Sin trasera ni baldas: aloja el termo eléctrico y la estructura de pladur. Fondo 43,1 para que las puertas queden enrasadas con el frente de las columnas (45 cm)."}, {"id": "barra_inox", "type": "tablero", "name": "Barra inox", "material": "inox", "role": "encimera_pasaplatos", "x": 34.9, "y": -2, "z": 117.2, "w": 83.7, "d": 49, "h": 2.5, "plano": "auto", "trim_allowance": 0, "machining": ["cajeado_inferior_canal_aluminio", "rebaje_apoyo_alicatado_cocina"], "handle": "none", "notes": "Encajada entre las jambas: se desmonta hacia arriba/adelante sin quitar las jambas. Sin guardavivos debajo."}, {"id": "jamba_int_izq", "type": "tablero", "name": "Jamba izq. (guía cristal)", "material": "blanco_lacado", "role": "jamba_guia", "x": 33, "y": 0, "z": 117.2, "w": 1.9, "d": 45, "h": 137.8, "plano": "auto", "trim_allowance": 1.0, "machining": ["ranura_guia_cristal_junquillo_pelito", "cajeado_superior_bloque_motor", "guardavivos_inox_canto_frontal"], "handle": "none", "notes": "Enrasada con el frente de las columnas; el canto visto se remata con guardavivos de inox."}, {"id": "jamba_int_der", "type": "tablero", "name": "Jamba dcha. (guía cristal)", "material": "blanco_lacado", "role": "jamba_guia", "x": 118.6, "y": 0, "z": 117.2, "w": 1.9, "d": 45, "h": 137.8, "plano": "auto", "trim_allowance": 1.0, "machining": ["ranura_guia_cristal_junquillo_pelito", "cajeado_superior_bloque_motor", "guardavivos_inox_canto_frontal"], "handle": "none", "notes": "Simétrica a la izquierda. Permite desmontar la barra sin retirar el tablero."}, {"id": "panel_split_sup", "type": "tablero", "name": "Panel split A/A", "material": "blanco_lacado", "role": "registrable_atornillado", "x": 34.9, "y": 41.2, "z": 200.5, "w": 83.7, "d": 1.9, "h": 54.5, "plano": "auto", "trim_allowance": 1.0, "machining": ["corona_central_pasatubos_split", "taladros_fijacion_rastreles"], "handle": "none", "notes": "Llega hasta el techo (0 cm). Atornillado a rastreles para acceder al eje/motor. Ancho en obra 87,8 cm, ajustado entre jambas."}, {"id": "faldon_vertical_frente", "type": "tablero", "name": "Faldón guillotina", "material": "blanco_lacado", "role": "cerramiento_guillotina", "x": 34.9, "y": 23.5, "z": 184.7, "w": 83.7, "d": 1.9, "h": 47.8, "plano": "auto", "trim_allowance": 0.5, "machining": [], "handle": "none", "notes": "Sustituye al pladur azul vertical. Altura 47,8 = enrasado con la viga de gotelé (z 232,5). Medida de obra 50,7: confirmar."}, {"id": "soffit_halogenos", "type": "tablero", "name": "Tablero halógenos", "material": "blanco_lacado", "role": "techo_ventana_halogenos", "x": 34.9, "y": 0, "z": 184.7, "w": 83.7, "d": 22.5, "h": 1.9, "plano": "auto", "trim_allowance": 0, "machining": ["2x_coronas_focos_halogenos_existentes"], "handle": "none", "notes": "Sustituye al pladur azul horizontal de 22,5 cm de fondo manteniendo la posición de los focos."}, {"id": "cristal_guillotina", "type": "vidrio", "name": "Cristal guillotina", "material": "cristal", "role": "cerramiento_movil", "x": 34.4, "y": 22.7, "z": 119.7, "w": 84.7, "d": 0.6, "h": 65, "travel": 60, "trim_allowance": 0, "machining": [], "handle": "none", "notes": "Corre por las ranuras con junquillo de pelito de las jambas; sube hacia el cajón superior. Posición en y a confirmar en obra (entre el tablero de halógenos y el faldón)."}, {"id": "ikea_lettan_espejo", "type": "modulo_externo", "name": "Armario IKEA LETTAN", "material": "espejo", "role": "mobiliario_auxiliar_pared_derecha", "x": 158, "y": -6.5, "z": 115, "w": 40, "d": 15, "h": 95, "trim_allowance": 0, "machining": [], "handle": "none", "notes": "Centrado en el hueco derecho de 49,5–50,0 cm (≈4,75 cm de holgura por lado). El mochete tiene 8,5 cm de fondo: sobresale 6,5 cm hacia la cocina."}], "dims": [], "checks": [{"label": "Simetría de columnas desde el salón", "value": "33,0 + 87,5 + 33,0 = 153,5 cm"}, {"label": "Holgura del hueco del IKEA LETTAN", "value": "49,5 − 40,0 = 9,5 cm libres"}, {"label": "Altura útil de la ventana abierta", "value": "65,0 cm (de la barra al techo de halógenos)"}], "cut": {"sheet": [280, 207], "sheetBack": [244, 122], "kerf": 0.4, "trim": 0, "grain": true, "incDoors": true, "incBacks": false, "applyTrim": true, "seed": 1}};
 function mTemplate(kind) {
-  const S = { v: 1, kind: 'mueble', _ayuda: AYUDA, t: 1.8, back: { on: true, t: 0.5 }, ceil: 255, secX: 0, palette: 'roble', items: [], dims: [], cut: clone(CUTDEF) };
+  if (kind === 'pasaplatos') return clone(PASAPLATOS);
+  const S = { v: 2, kind: 'mueble', _ayuda: AYUDA, t: 1.8, back: { on: true, t: 0.5 }, ceil: 255, secX: 0, palette: 'roble', mats: {}, items: [], dims: [], cut: clone(CUTDEF) };
   if (kind === 'pasacopas') {
     S.cut.sheet = [280, 207]; // el forro de los pilares mide 255 cm: no cabe en un tablero de 244
     const tf = 1.8, pw = 15, gap = 85, x0 = tf + pw + tf;
@@ -650,29 +687,62 @@ function mTemplate(kind) {
   } else { S.ceil = 0; S.items = [mkCuerpo({ name: 'Cuerpo 1' })]; }
   return S;
 }
+const ITYPES = ['cuerpo', 'tablero', 'pilar', 'vidrio', 'modulo_externo'];
+const yNeedsFlip = raw => !!raw && Array.isArray(raw.items) && (raw.yOrigin === 'front' || (raw.yOrigin === undefined && /0\s*=\s*frente/i.test(String(raw._ayuda || ''))));
 function mNorm(src) {
-  const D = mTemplate('blank'), S = Object.assign({}, D, clone(src || {})); S.v = 1; S.kind = 'mueble'; S._ayuda = AYUDA;
-  S.t = clamp(num(S.t) || 1.8, 0.3, 6); S.back = { on: !(src && src.back && src.back.on === false), t: clamp(num(src && src.back && src.back.t) || 0.5, 0.1, 3) }; S.ceil = Math.max(0, num(S.ceil)); S.secX = Math.max(0, num(S.secX)); S.palette = PALETTES[S.palette] ? S.palette : 'roble';
+  const D = mTemplate('blank'), raw = clone(src || {});
+  // Proyectos con el origen de y en el frente (0 = cara del salón, crece hacia la cocina): se pasan al criterio de la app (y = 0 atrás, crece hacia el frente)
+  if (yNeedsFlip(raw)) {
+    const dd = raw.items.filter(i => i && isFinite(+i.y) && isFinite(+i.d)), Dr0 = num(raw.total_depth_assumed) || Math.max(0, ...dd.map(i => +i.y + +i.d));
+    raw.items.forEach(i => { if (i && isFinite(+i.y) && isFinite(+i.d)) i.y = Math.round((Dr0 - (+i.y + +i.d)) * 1000) / 1000; });
+  }
+  const S = Object.assign({}, D, raw); S.v = 2; S.kind = 'mueble'; S._ayuda = AYUDA; S.yOrigin = 'back';
+  S.t = clamp(num(S.t) || 1.8, 0.3, 6); S.back = { on: !(src && src.back && src.back.on === false), t: clamp(num(src && src.back && src.back.t) || 0.5, 0.1, 3) }; S.ceil = Math.max(0, num(S.ceil)); S.secX = Math.max(0, num(S.secX)); S.palette = PALETTES[matKey(S.palette)] ? matKey(S.palette) : 'roble';
+  // catálogo de materiales del proyecto (acabado y «entra en el corte»); acepta el formato materials_catalog {type, finish, include_in_cut}
+  const cat = {}, KT = { wood: 'wood', lacquer: 'lacquer', metal: 'metal', glass: 'glass', external: 'external', mirror: 'mirror', wall: 'wall' };
+  const addCat = (id, o) => { id = matKey(id); if (!id || !o || typeof o !== 'object') return; const e = cat[id] || (cat[id] = {}), k = KT[o.kind || o.type]; if (k) e.kind = k; if (o.finish !== undefined) e.finish = nice(o.finish).slice(0, 120); const c = o.cut !== undefined ? o.cut : o.include_in_cut; if (c !== undefined) e.cut = !!c; };
+  if (raw.materials_catalog && typeof raw.materials_catalog === 'object') Object.keys(raw.materials_catalog).forEach(k => addCat(k, raw.materials_catalog[k]));
+  if (raw.mats && typeof raw.mats === 'object') Object.keys(raw.mats).forEach(k => addCat(k, raw.mats[k]));
+  S.mats = cat; delete S.materials_catalog;
+  // medidas reales de obra y comprobaciones (solo informativas)
+  const rs = {}; if (raw.raw_site_measurements && typeof raw.raw_site_measurements === 'object') Object.keys(raw.raw_site_measurements).slice(0, 80).forEach(k => { const v = raw.raw_site_measurements[k]; if (Array.isArray(v)) rs[k] = v.map(num); else if (typeof v === 'number') rs[k] = v; else if (typeof v === 'string') rs[k] = v.slice(0, 200); });
+  S.raw_site_measurements = rs;
+  S.checks = [].concat(Array.isArray(raw.checks) ? raw.checks : [], (Array.isArray(raw.dims) ? raw.dims : []).filter(d => d && d.label !== undefined && d.value !== undefined && d.v === undefined)).filter(d => d && d.label !== undefined).map(d => ({ label: String(d.label).slice(0, 80), value: String(d.value).slice(0, 160) }));
   const c = Object.assign(clone(CUTDEF), S.cut || {}); const sh = (v, dv) => Array.isArray(v) && v.length === 2 && v[0] > 20 && v[1] > 20 ? [num(v[0]), num(v[1])] : dv.slice();
-  S.cut = { sheet: sh(c.sheet, CUTDEF.sheet), sheetBack: sh(c.sheetBack, CUTDEF.sheetBack), kerf: clamp(num(c.kerf), 0, 2), trim: clamp(num(c.trim), 0, 5), grain: !!c.grain, incDoors: c.incDoors !== false, incBacks: c.incBacks !== false, seed: Math.max(1, Math.round(num(c.seed)) || 1) };
+  S.cut = { sheet: sh(c.sheet, CUTDEF.sheet), sheetBack: sh(c.sheetBack, CUTDEF.sheetBack), kerf: clamp(num(c.kerf), 0, 2), trim: clamp(num(c.trim), 0, 5), grain: !!c.grain, incDoors: c.incDoors !== false, incBacks: c.incBacks !== false, applyTrim: c.applyTrim !== false, seed: Math.max(1, Math.round(num(c.seed)) || 1) };
   S.dims = (Array.isArray(S.dims) ? S.dims : []).filter(d => d && ['plan', 'front', 'side'].includes(d.v) && Array.isArray(d.a) && Array.isArray(d.b) && [...d.a, ...d.b].every(x => isFinite(x))).map(d => ({ v: d.v, a: [+d.a[0], +d.a[1]], b: [+d.b[0], +d.b[1]] }));
   const used = new Set();
-  S.items = (Array.isArray(S.items) ? S.items : []).filter(i => i && ['cuerpo', 'tablero', 'pilar'].includes(i.type)).map((i, k) => {
-    const base = i.type === 'cuerpo' ? mkCuerpo({}) : i.type === 'tablero' ? mkTablero({}) : mkPilar({}), it = Object.assign(base, i);
+  S.items = (Array.isArray(S.items) ? S.items : []).filter(i => i && ITYPES.includes(i.type)).map((i, k) => {
+    const base = i.type === 'cuerpo' ? mkCuerpo({}) : i.type === 'tablero' ? mkTablero({}) : i.type === 'vidrio' ? mkVidrio({}) : i.type === 'modulo_externo' ? mkExterno({}) : mkPilar({}), it = Object.assign(base, i);
     ['x', 'y', 'z'].forEach(f => it[f] = num(it[f])); ['w', 'd', 'h'].forEach(f => it[f] = Math.max(0.1, num(it[f]) || base[f])); it.name = String(it.name || base.name).slice(0, 60);
     if (!it.id || used.has(it.id)) it.id = 'e' + (++_seq); used.add(it.id); const m = /^e(\d+)$/.exec(it.id); if (m && +m[1] >= _seq) _seq = +m[1] + 1;
-    if (it.type === 'cuerpo') { it.mods = clamp(Math.round(num(it.mods)) || 1, 1, 12); it.cols = clamp(Math.round(num(it.cols)) || 1, 1, 30); it.baldas = clamp(Math.round(num(it.baldas)), 0, 12); it.back = it.back !== false; it.doors = ['none', 'hueco', 'dos'].includes(it.doors) ? it.doors : 'none'; it.zocalo = Math.max(0, num(it.zocalo)); it.minHueco = Math.max(0, num(it.minHueco)); it.t = Math.max(0, num(it.t)); }
+    it.material = it.material ? matKey(it.material) : ''; it.role = String(it.role || '').slice(0, 80); it.notes = String(it.notes || '').slice(0, 400);
+    it.machining = (Array.isArray(it.machining) ? it.machining : splitList(it.machining)).map(s => String(s).trim()).filter(Boolean).slice(0, 20);
+    it.opening_system = String(it.opening_system || '').slice(0, 60); it.handle = HANDLES[it.handle] ? it.handle : 'none'; if (it.handle === 'none' && /push/i.test(it.opening_system)) it.handle = 'push';
+    it.trim_allowance = clamp(num(it.trim_allowance), 0, 10);
+    if (it.type === 'cuerpo') { it.mods = clamp(Math.round(num(it.mods)) || 1, 1, 12); it.cols = clamp(Math.round(num(it.cols)) || 1, 1, 30); it.baldas = clamp(Math.round(num(it.baldas)), 0, 12); it.back = it.back !== false; it.doors = ['none', 'hueco', 'dos'].includes(it.doors) ? it.doors : 'none'; it.zocalo = Math.max(0, num(it.zocalo)); it.minHueco = Math.max(0, num(it.minHueco)); it.t = Math.max(0, num(it.t)); it.doorMat = it.doorMat ? matKey(it.doorMat) : ''; it.handleMat = it.handleMat ? matKey(it.handleMat) : ''; }
+    if (it.type === 'tablero') it.plano = ['H', 'F', 'L'].includes(it.plano) ? it.plano : 'auto';
+    if (it.type === 'vidrio') it.travel = Math.max(0, num(it.travel));
     if (it.type === 'pilar') { it.fF = !!it.fF; it.fL = !!it.fL; it.fR = !!it.fR; it.ft = clamp(num(it.ft) || 1.8, 0.3, 6); it.fs = clamp(Math.round(num(it.fs)) || 1, 1, 6); }
     return it;
   });
   return S;
 }
 function mBuild(S) {
-  const pal = PALETTES[S.palette] || PALETTES.roble, P = [], warns = [], info = {}, rows = [], GP = 0.3;
-  const piece = (it, tag, grp, x0, x1, y0, y1, z0, z1, col, alpha) => P.push({ x0, x1, y0, y1, z0, z1, col: col || pal.board, alpha: alpha == null ? 1 : alpha, kind: 'board', tag, grp, item: it.id });
-  const add = (name, a, b, T, note, qty, grp, fe) => rows.push({ name, L: Math.max(a, b), W: Math.min(a, b), T: Math.round(T * 1000) / 1000, note: note || '', qty: qty || 1, fe: fe || 0, grp, mat: /^Trasera/.test(name) ? 'back' : /^Puerta/.test(name) ? 'door' : 'tab' });
+  const P = [], warns = [], info = {}, rows = [], hw = [], GP = 0.3, LAYK = { glass: 'VIDRIO', metal: 'INOX', mirror: 'EXTERNOS', external: 'EXTERNOS' };
+  const DARK = { id: 'sombra', name: 'Sombra', kind: 'wood', cut: false, grain: false, alpha: 1, board: [52, 52, 58], door: [52, 52, 58], inner: [52, 52, 58], back: [52, 52, 58], finish: '' };
+  let MT = matOf(S, S.palette);   // material del elemento en curso
+  const piece = (it, tag, grp, x0, x1, y0, y1, z0, z1, col, alpha, mt, extra) => { mt = mt || MT; const fa = mt.alpha < 1 ? mt.alpha : undefined; P.push(Object.assign({ x0, x1, y0, y1, z0, z1, col: col || mt.board, alpha: alpha == null ? (fa === undefined ? 1 : fa) : alpha, kind: 'board', tag, grp, item: it.id, mid: mt.id, mk: mt.kind, lay: LAYK[mt.kind] }, fa === undefined ? {} : { fa }, extra || {})); };
+  // mt = undefined → material del elemento · mt = null → sin material de acabado (traseras) · tr = demasía de obra (cm)
+  const add = (name, a, b, T, note, qty, grp, fe, mt, tr) => {
+    mt = mt === undefined ? MT : mt; const kind = /^Trasera/.test(name) ? 'back' : /^Puerta/.test(name) ? 'door' : 'tab', out = !!mt && mt.cut === false, tra = S.cut.applyTrim && tr > 0 && !out ? tr : 0;
+    rows.push({ name, L: Math.max(a, b) + tra, W: Math.min(a, b) + tra, T: Math.round(T * 1000) / 1000, note: (note || '') + (tr > 0 ? ' · demasía de obra ' + fmt(tr * 10, 0) + ' mm' + (out ? ' (no aplica)' : tra ? ' incluida en la medida de corte' : ' (solo nota)') : ''), qty: qty || 1, fe: fe || 0, grp: out ? 'ext' : grp, mat: out ? null : kind, mid: mt ? mt.id : '', mname: mt ? mt.name : '', mfin: mt ? mt.finish : '', grain: !mt || mt.grain !== false, nocut: out });
+  };
+  const mn = it => [it.role && 'función: ' + nice(it.role), it.machining && it.machining.length && 'mecanizado: ' + it.machining.map(nice).join(', '), it.notes].filter(Boolean).join(' · ');
+  const nn = (base, it) => { const m = mn(it); return base + (m ? ' · ' + m : ''); };
   S.items.forEach(it => {
     if (it.type === 'cuerpo') {
+      MT = matOf(S, it.material || S.palette); const dm = it.doorMat ? matOf(S, it.doorMat) : MT, hm = matOf(S, it.handleMat || 'inox');
       const t = it.t > 0 ? it.t : S.t, mods = it.mods, cols = it.cols, N = mods * cols, bt = it.back && S.back.on ? S.back.t : 0, zc = Math.min(it.zocalo, Math.max(0, it.h - 4 * t));
       const hueco = (it.w - (N + 1) * t) / N, inner = cols * hueco + (cols - 1) * t, dB = it.d - bt, yB0 = it.y + bt, yB1 = it.y + it.d, zT = it.z + it.h, zB = it.z + zc, hc = zT - t - (zB + t);
       const q = ` · ${it.name}`;
@@ -681,48 +751,79 @@ function mBuild(S) {
       if (hc < 3) warns.push(`«${it.name}»: la altura útil interior es de solo ${fmt(hc)} cm.`);
       const comps = [], lat = [], div = [], spans = []; let x = it.x;
       for (let m = 0; m < mods; m++) { lat.push([x, x + t]); x += t; const sx = x; for (let c = 0; c < cols; c++) { comps.push({ x0: x, x1: x + hueco }); x += hueco; if (c < cols - 1) { div.push([x, x + t]); x += t; } } spans.push([sx, x]); } lat.push([x, x + t]);
-      lat.forEach(l => piece(it, 'lat', 'caja', l[0], l[1], yB0, yB1, it.z, zT)); add('Lateral', it.h, dB, t, 'Cuerpo «' + it.name + '»', lat.length, 'caja', it.h * lat.length);
+      lat.forEach(l => piece(it, 'lat', 'caja', l[0], l[1], yB0, yB1, it.z, zT)); add('Lateral', it.h, dB, t, nn('Cuerpo «' + it.name + '»', it), lat.length, 'caja', it.h * lat.length);
       spans.forEach(sp => { piece(it, 'base', 'caja', sp[0], sp[1], yB0, yB1, zB, zB + t); piece(it, 'tapa', 'caja', sp[0], sp[1], yB0, yB1, zT - t, zT); });
       add('Base', inner, dB, t, 'Entre laterales' + q, mods, 'caja', inner * mods); add('Tapa', inner, dB, t, 'Entre laterales' + q, mods, 'caja', inner * mods);
       div.forEach(dv => piece(it, 'div', 'caja', dv[0], dv[1], yB0, yB1, zB + t, zT - t)); if (div.length) add('División', hc, dB, t, 'Entre base y tapa' + q, div.length, 'caja', hc * div.length);
-      if (bt > 0) spans.forEach((sp, m) => { const a = m === 0 ? it.x : (lat[m][0] + lat[m][1]) / 2, b = m === mods - 1 ? it.x + it.w : (lat[m + 1][0] + lat[m + 1][1]) / 2; piece(it, 'trasera', 'caja', a, b, it.y, it.y + bt, zB, zT, pal.back); add('Trasera', zT - zB, b - a, bt, 'Aplicada al canto trasero' + q, 1, 'caja'); });
-      if (zc > 0.5) spans.forEach(sp => piece(it, 'zocalo', 'caja', sp[0], sp[1], Math.max(yB0, yB1 - 3 - t), yB1 - 3, it.z, zB, pal.inner)); if (zc > 0.5) add('Zócalo', inner, zc, t, 'Retranqueado 3 cm' + q, mods, 'caja', inner * mods);
+      if (bt > 0) spans.forEach((sp, m) => { const a = m === 0 ? it.x : (lat[m][0] + lat[m][1]) / 2, b = m === mods - 1 ? it.x + it.w : (lat[m + 1][0] + lat[m + 1][1]) / 2; piece(it, 'trasera', 'caja', a, b, it.y, it.y + bt, zB, zT, MT.back); add('Trasera', zT - zB, b - a, bt, 'Aplicada al canto trasero' + q, 1, 'caja', 0, null); });
+      if (zc > 0.5) spans.forEach(sp => piece(it, 'zocalo', 'caja', sp[0], sp[1], Math.max(yB0, yB1 - 3 - t), yB1 - 3, it.z, zB, MT.inner)); if (zc > 0.5) add('Zócalo', inner, zc, t, 'Retranqueado 3 cm' + q, mods, 'caja', inner * mods);
       const shz = [];
       if (it.baldas > 0 && hc > 3) { const n = it.baldas, g = (hc - n * t) / (n + 1); if (g < 6) warns.push(`«${it.name}»: con ${n} balda(s) quedan huecos de ${fmt(g)} cm entre baldas.`); if (hueco > 90) warns.push(`«${it.name}»: las baldas de ${fmt(hueco)} cm pueden flectar (recomendado ≤ 90 cm; añade una división).`);
-        comps.forEach(cm => { for (let k = 1; k <= n; k++) { const z0 = zB + t + k * g + (k - 1) * t; if (cm === comps[0]) shz.push(z0 + t); piece(it, 'balda', 'acc', cm.x0 + 0.1, cm.x1 - 0.1, yB0, yB1 - 0.5, z0, z0 + t, pal.inner); } }); add('Balda', hueco - 0.2, dB - 0.5, t, 'Una por hueco y nivel' + q, N * n, 'acc', (hueco - 0.2) * N * n); }
+        comps.forEach(cp => { for (let k = 1; k <= n; k++) { const z0 = zB + t + k * g + (k - 1) * t; if (cp === comps[0]) shz.push(z0 + t); piece(it, 'balda', 'acc', cp.x0 + 0.1, cp.x1 - 0.1, yB0, yB1 - 0.5, z0, z0 + t, MT.inner); } }); add('Balda', hueco - 0.2, dB - 0.5, t, 'Una por hueco y nivel' + q, N * n, 'acc', (hueco - 0.2) * N * n); }
       const doors = [];
       if (it.doors !== 'none') {
         const edge = (c, side) => { const idx = comps.indexOf(c); return side === 'l' ? (idx === 0 ? it.x + GP / 2 : c.x0 - t / 2 + GP / 2) : (idx === comps.length - 1 ? it.x + it.w - GP / 2 : c.x1 + t / 2 - GP / 2); };
         const dz0 = zB + GP / 2, dz1 = zT - GP / 2, dh = dz1 - dz0, rects = [];
-        if (it.doors === 'hueco') comps.forEach(c => rects.push([edge(c, 'l'), edge(c, 'r')])); else spans.forEach((sp, m) => { const a = edge(comps[m * cols], 'l'), b = edge(comps[m * cols + cols - 1], 'r'), w2 = (b - a - GP) / 2; rects.push([a, a + w2], [b - w2, b]); });
-        rects.forEach(r => { piece(it, 'puerta', 'puertas', r[0], r[1], yB1, yB1 + t, dz0, dz1, pal.door, 0.92); doors.push({ x0: r[0], x1: r[1], z0: dz0, z1: dz1 }); });
+        if (it.doors === 'hueco') comps.forEach(c => rects.push([edge(c, 'l'), edge(c, 'r'), 'r'])); else spans.forEach((sp, m) => { const a = edge(comps[m * cols], 'l'), b = edge(comps[m * cols + cols - 1], 'r'), w2 = (b - a - GP) / 2; rects.push([a, a + w2, 'r'], [b - w2, b, 'l']); });
+        // tirador: la barra y el pomo van en el canto libre de cada hoja; la gola y el oculto, en el canto superior
+        const handle = r => {
+          const hd = it.handle, hh = dz1 - dz0, yF = yB1 + t, ex = r[2] === 'r' ? r[1] - 3.5 : r[0] + 3.5, cx = (r[0] + r[1]) / 2, ho = { noExt: true };
+          if (hd === 'barra') { const L = Math.min(30, hh * 0.6), zc2 = Math.min((dz0 + dz1) / 2, dz0 + 105); piece(it, 'tirador', 'puertas', ex - 0.6, ex + 0.6, yF, yF + 2.4, zc2 - L / 2, zc2 + L / 2, null, 1, hm, ho); }
+          else if (hd === 'pomo') { const zc2 = hh > 130 ? dz0 + 100 : dz1 - 6; piece(it, 'tirador', 'puertas', ex - 1.2, ex + 1.2, yF, yF + 2.6, zc2 - 1.2, zc2 + 1.2, null, 1, hm, ho); }
+          else if (hd === 'asa') { piece(it, 'tirador', 'puertas', cx - 7, cx + 7, yF, yF + 2.2, dz1 - 6.6, dz1 - 5.4, null, 1, hm, ho); }
+          else if (hd === 'gola') piece(it, 'tirador', 'puertas', r[0] + 0.3, r[1] - 0.3, yF, yF + 0.15, dz1 - 3.4, dz1 - 0.3, null, 1, DARK, ho);
+          else if (hd === 'oculto') piece(it, 'tirador', 'puertas', r[0] + 0.3, r[1] - 0.3, yF, yF + 0.15, dz1 - 1.0, dz1 - 0.2, null, 1, DARK, ho);
+        };
+        rects.forEach(r => { piece(it, 'puerta', 'puertas', r[0], r[1], yB1, yB1 + t, dz0, dz1, dm.door, dm.alpha < 1 ? dm.alpha : 0.92, dm); doors.push({ x0: r[0], x1: r[1], z0: dz0, z1: dz1 }); handle(r); });
         const wd = rects[0][1] - rects[0][0]; rects.forEach(r => { if (r[1] - r[0] > 60) warns.push(`«${it.name}»: hoja de puerta de ${fmt(r[1] - r[0])} cm (muy ancha; usa «Una por hueco» o más huecos).`); });
-        add('Puerta', wd, dh, t, 'Bisagras (ref.): ' + (dh > 200 ? 5 : dh > 160 ? 4 : dh > 90 ? 3 : 2) + ' por hoja' + q, rects.length, 'puertas', 2 * (wd + dh) * rects.length);
-      }
-      info[it.id] = { type: 'cuerpo', hueco, N, inner, comps, lat, div, spans, zB, zT, t, bt, zc, hc, shz, doors, dB };
-    } else if (it.type === 'tablero') { piece(it, 'tablero', 'caja', it.x, it.x + it.w, it.y, it.y + it.d, it.z, it.z + it.h); add(it.name, it.w, it.d, it.h, 'Tablero suelto', 1, 'caja', Math.max(it.w, it.d)); info[it.id] = { type: 'tablero' }; }
-    else {
-      piece(it, 'pilar', 'ref', it.x, it.x + it.w, it.y, it.y + it.d, it.z, it.z + it.h, [186, 188, 194], 0.9); const tf = it.ft, z0 = it.z, z1 = it.z + it.h, q = ` · ${it.name}`;
-      if (it.fF) { const a = it.x - (it.fL ? tf : 0), b = it.x + it.w + (it.fR ? tf : 0); piece(it, 'forro', 'caja', a, b, it.y + it.d, it.y + it.d + tf, z0, z1); add('Forro frontal', it.h / it.fs, b - a, tf, 'Cubre el canto de los laterales' + (it.fs > 1 ? ' · en ' + it.fs + ' tramos' : '') + q, it.fs, 'caja', it.h * 2); }
+        const hn = dh > 200 ? 5 : dh > 160 ? 4 : dh > 90 ? 3 : 2;
+        add('Puerta', wd, dh, t, 'Bisagras (ref.): ' + hn + ' por hoja' + q, rects.length, 'puertas', 2 * (wd + dh) * rects.length, dm);
+        hw.push({ name: 'Bisagras (ref.)', qty: hn * rects.length, note: it.name });
+        if (it.handle === 'push') hw.push({ name: HANDLES.push, qty: rects.length, note: it.name + (it.opening_system ? ' · ' + nice(it.opening_system) : '') });
+        else if (it.handle !== 'none') hw.push({ name: HANDLES[it.handle], qty: rects.length, note: it.name + (['barra', 'pomo', 'asa'].includes(it.handle) ? ' · ' + hm.name : '') });
+      } else if (it.handle !== 'none') warns.push(`«${it.name}»: tiene tirador «${HANDLES[it.handle]}» pero no lleva puertas.`);
+      info[it.id] = { type: 'cuerpo', hueco, N, inner, comps, lat, div, spans, zB, zT, t, bt, zc, hc, shz, doors, dB, mat: MT, doorMat: dm };
+    } else if (it.type === 'tablero') {
+      MT = matOf(S, it.material || S.palette); const ax = planoOf(it), T = ax === 'H' ? it.h : ax === 'F' ? it.d : it.w, fc = ax === 'H' ? [it.w, it.d] : ax === 'F' ? [it.w, it.h] : [it.d, it.h];
+      piece(it, 'tablero', 'caja', it.x, it.x + it.w, it.y, it.y + it.d, it.z, it.z + it.h);
+      add(it.name, fc[0], fc[1], T, nn('Tablero suelto · ' + PLANO_LAB[ax], it), 1, 'caja', Math.max(fc[0], fc[1]), undefined, it.trim_allowance);
+      info[it.id] = { type: 'tablero', ax, T, face: fc, mat: MT };
+    } else if (it.type === 'vidrio') {
+      MT = matOf(S, it.material || 'cristal'); const ax = planoOf(it), T = ax === 'H' ? it.h : ax === 'F' ? it.d : it.w, fc = ax === 'H' ? [it.w, it.d] : ax === 'F' ? [it.w, it.h] : [it.d, it.h];
+      piece(it, 'vidrio', 'acc', it.x, it.x + it.w, it.y, it.y + it.d, it.z, it.z + it.h, null, null, MT, { travel: it.travel });
+      add(it.name, fc[0], fc[1], T, nn('Vidrio' + (MT.finish ? ' · ' + MT.finish : '') + (it.travel > 0 ? ' · recorrido ' + fmt(it.travel) + ' cm' : ''), it), 1, 'acc', 0, undefined, 0);
+      info[it.id] = { type: 'vidrio', ax, T, face: fc, mat: MT };
+    } else if (it.type === 'modulo_externo') {
+      MT = Object.assign({}, matOf(S, it.material || 'externo'), { cut: false });
+      piece(it, 'externo', 'ref', it.x, it.x + it.w, it.y, it.y + it.d, it.z, it.z + it.h, null, null, MT);
+      add(it.name, it.h, it.w, it.d, nn('Módulo comprado · alto × ancho × fondo exteriores', it), 1, 'ref', 0, MT, 0);
+      info[it.id] = { type: 'modulo_externo', mat: MT };
+    } else {
+      MT = matOf(S, it.material || S.palette); const pl = matOf(S, 'pladur_obra');
+      piece(it, 'pilar', 'ref', it.x, it.x + it.w, it.y, it.y + it.d, it.z, it.z + it.h, [186, 188, 194], 0.9, pl); const tf = it.ft, z0 = it.z, z1 = it.z + it.h, q = ` · ${it.name}`;
+      if (it.fF) { const a = it.x - (it.fL ? tf : 0), b = it.x + it.w + (it.fR ? tf : 0); piece(it, 'forro', 'caja', a, b, it.y + it.d, it.y + it.d + tf, z0, z1); add('Forro frontal', it.h / it.fs, b - a, tf, 'Cubre el canto de los laterales' + (it.fs > 1 ? ' · en ' + it.fs + ' tramos' : '') + q, it.fs, 'caja', it.h * 2, undefined, it.trim_allowance); }
       if (it.fL) { piece(it, 'forro', 'caja', it.x - tf, it.x, it.y, it.y + it.d, z0, z1); } if (it.fR) { piece(it, 'forro', 'caja', it.x + it.w, it.x + it.w + tf, it.y, it.y + it.d, z0, z1); }
-      const ns = (it.fL ? 1 : 0) + (it.fR ? 1 : 0); if (ns) add('Forro lateral', it.h / it.fs, it.d, tf, 'Lado izquierdo y/o derecho' + (it.fs > 1 ? ' · en ' + it.fs + ' tramos' : '') + q, ns * it.fs, 'caja', it.h * ns);
+      const ns = (it.fL ? 1 : 0) + (it.fR ? 1 : 0); if (ns) add('Forro lateral', it.h / it.fs, it.d, tf, 'Lado izquierdo y/o derecho' + (it.fs > 1 ? ' · en ' + it.fs + ' tramos' : '') + q, ns * it.fs, 'caja', it.h * ns, undefined, it.trim_allowance);
       info[it.id] = { type: 'pilar' };
     }
   });
-  // extensiones por elemento y bbox
-  const ext = {}; P.forEach(p => { const e = ext[p.item] || (ext[p.item] = { x0: 1e9, x1: -1e9, y0: 1e9, y1: -1e9, z0: 1e9, z1: -1e9 }); e.x0 = Math.min(e.x0, p.x0); e.x1 = Math.max(e.x1, p.x1); e.y0 = Math.min(e.y0, p.y0); e.y1 = Math.max(e.y1, p.y1); e.z0 = Math.min(e.z0, p.z0); e.z1 = Math.max(e.z1, p.z1); });
+  // extensiones por elemento y bbox (los tiradores sobresalen de la puerta y no cuentan)
+  const ext = {}; P.forEach(p => { if (p.noExt) return; const e = ext[p.item] || (ext[p.item] = { x0: 1e9, x1: -1e9, y0: 1e9, y1: -1e9, z0: 1e9, z1: -1e9 }); e.x0 = Math.min(e.x0, p.x0); e.x1 = Math.max(e.x1, p.x1); e.y0 = Math.min(e.y0, p.y0); e.y1 = Math.max(e.y1, p.y1); e.z0 = Math.min(e.z0, p.z0); e.z1 = Math.max(e.z1, p.z1); });
   let bb = { x0: 1e9, x1: -1e9, y0: 1e9, y1: -1e9, z0: 0, z1: 0 }; Object.values(ext).forEach(e => { bb.x0 = Math.min(bb.x0, e.x0); bb.x1 = Math.max(bb.x1, e.x1); bb.y0 = Math.min(bb.y0, e.y0); bb.y1 = Math.max(bb.y1, e.y1); bb.z1 = Math.max(bb.z1, e.z1); }); if (bb.x0 > 1e8) bb = { x0: 0, x1: 100, y0: 0, y1: 50, z0: 0, z1: 100 };
   bb.w = bb.x1 - bb.x0; bb.d = bb.y1 - bb.y0; bb.h = bb.z1 - bb.z0;
-  // avisos geométricos
-  const its = S.items.filter(i => ext[i.id]);
+  // avisos geométricos (el cristal que entra en la ranura de una jamba no cuenta como solape)
+  const its = S.items.filter(i => ext[i.id]), grooved = i => (i.machining || []).some(m => /ranura/i.test(m));
   for (let a = 0; a < its.length; a++) {
     const A = its[a], eA = ext[A.id]; if (S.ceil > 0 && A.type !== 'pilar' && eA.z1 > S.ceil + 0.01) warns.push(`«${A.name}» sobrepasa el techo (${fmt(eA.z1)} > ${fmt(S.ceil)} cm).`);
-    for (let b = a + 1; b < its.length; b++) { const B = its[b], eB = ext[B.id], dx = Math.min(eA.x1, eB.x1) - Math.max(eA.x0, eB.x0), dy = Math.min(eA.y1, eB.y1) - Math.max(eA.y0, eB.y0), dz = Math.min(eA.z1, eB.z1) - Math.max(eA.z0, eB.z0); if (dx > 0.05 && dy > 0.05 && dz > 0.05) warns.push(`«${A.name}» y «${B.name}» se solapan (${fmt(dx * 10, 0)} × ${fmt(dy * 10, 0)} × ${fmt(dz * 10, 0)} mm).`); }
+    for (let b = a + 1; b < its.length; b++) { const B = its[b], eB = ext[B.id], dx = Math.min(eA.x1, eB.x1) - Math.max(eA.x0, eB.x0), dy = Math.min(eA.y1, eB.y1) - Math.max(eA.y0, eB.y0), dz = Math.min(eA.z1, eB.z1) - Math.max(eA.z0, eB.z0); if (dx > 0.05 && dy > 0.05 && dz > 0.05 && !((A.type === 'vidrio' && grooved(B)) || (B.type === 'vidrio' && grooved(A)))) warns.push(`«${A.name}» y «${B.name}» se solapan (${fmt(dx * 10, 0)} × ${fmt(dy * 10, 0)} × ${fmt(dz * 10, 0)} mm).`); }
   }
+  // el cristal que sube no debe chocar con nada por encima de su posición cerrada
+  S.items.filter(i => i.type === 'vidrio' && i.travel > 0 && ext[i.id]).forEach(g => { const eg = ext[g.id]; its.forEach(B => { if (B.id === g.id || grooved(B)) return; const eB = ext[B.id], dx = Math.min(eg.x1, eB.x1) - Math.max(eg.x0, eB.x0), dy = Math.min(eg.y1, eB.y1) - Math.max(eg.y0, eB.y0), dz = Math.min(eg.z1 + g.travel, eB.z1) - Math.max(eg.z1, eB.z0); if (dx > 0.05 && dy > 0.05 && dz > 0.05) warns.push(`Al subir ${fmt(g.travel)} cm, «${g.name}» choca con «${B.name}» (${fmt(dx * 10, 0)} × ${fmt(dy * 10, 0)} mm de solape en planta). Separa sus posiciones en y.`); }); });
   if (!S.items.some(i => i.type !== 'pilar')) warns.push('Añade al menos un cuerpo o un tablero para obtener despiece.');
-  const agg = new Map(); rows.forEach(r => { const k = [r.name, r.L.toFixed(2), r.W.toFixed(2), r.T, r.note, r.grp].join('|'); const e = agg.get(k); if (e) { e.qty += r.qty; e.fe += r.fe; } else agg.set(k, { ...r }); });
-  const bom = [...agg.values()], area = bom.filter(r => r.mat !== 'back').reduce((s, r) => s + r.L * r.W * r.qty, 0) / 1e4, areaBack = bom.filter(r => r.mat === 'back').reduce((s, r) => s + r.L * r.W * r.qty, 0) / 1e4;
-  return { P, bom, warns, info, ext, bb, area, areaBack, pal };
+  const agg = new Map(); rows.forEach(r => { const k = [r.name, r.L.toFixed(2), r.W.toFixed(2), r.T, r.note, r.grp, r.mid].join('|'); const e = agg.get(k); if (e) { e.qty += r.qty; e.fe += r.fe; } else agg.set(k, { ...r }); });
+  const bom = [...agg.values()], area = bom.filter(r => r.mat && r.mat !== 'back').reduce((s, r) => s + r.L * r.W * r.qty, 0) / 1e4, areaBack = bom.filter(r => r.mat === 'back').reduce((s, r) => s + r.L * r.W * r.qty, 0) / 1e4;
+  const hwa = new Map(); hw.forEach(h => { const k = h.name + '|' + h.note; const e = hwa.get(k); if (e) e.qty += h.qty; else hwa.set(k, { ...h }); });
+  return { P, bom, warns, info, ext, bb, area, areaBack, pal: matOf(S, S.palette), hw: [...hwa.values()] };
 }
 function mSecX(S, M) { if (S.secX > 0) return S.secX; const c0 = S.items.find(i => i.type === 'cuerpo'); if (c0 && M.info[c0.id]) { const cm = M.info[c0.id].comps[0]; return (cm.x0 + cm.x1) / 2; } const t0 = S.items.find(i => i.type === 'tablero'); return t0 ? t0.x + t0.w / 2 : (M.bb.x0 + M.bb.x1) / 2; }
 const withBB = (S, M) => Object.assign({}, S, { _bb: { w: M.bb.w, d: M.bb.d, h: M.bb.h } });
@@ -777,8 +878,9 @@ function m3D(ctx, w, h, S, M, cam, opt) {
   tess([[XL, Y0, 0], [XR, Y0, 0], [XR, Y1, 0], [XL, Y1, 0]], 1e5).forEach(s => faces.push({ q: s.q, n: [0, 0, 1], e: [false, false, false, false], col: [196, 186, 172], a: 1, layer: 0 }));
   if (opt.wall) { const yw = Math.min(bb.y0, 0) - 0.4; tess([[XL, yw, 0], [XR, yw, 0], [XR, yw, zt], [XL, yw, zt]], 1e5).forEach(s => faces.push({ q: s.q, n: [0, 1, 0], e: [false, false, false, false], col: [236, 232, 224], a: 0.6, layer: 1 })); }
   if (opt.ceiling && S.ceil > 0) tess([[XL, Y0, S.ceil], [XR, Y0, S.ceil], [XR, Y1, S.ceil], [XL, Y1, S.ceil]], 1e5).forEach(s => faces.push({ q: s.q, n: [0, 0, -1], e: [false, false, false, false], col: [250, 250, 250], a: 0.38, layer: 1 }));
-  M.P.forEach(p => { if (p.tag === 'puerta' && !opt.doors) return; if ((p.tag === 'balda' || p.tag === 'div') && !opt.interior) return; if (p.tag === 'trasera' && opt.back === false) return; if (p.tag === 'pilar' && opt.pilares === false) return;
-    facesFromPiece(p).forEach(f => { f.layer = 2; f.sel = opt.sel && p.item === opt.sel; faces.push(f); }); });
+  M.P.forEach(p0 => { const p = p0; if ((p.tag === 'puerta' || p.tag === 'tirador') && !opt.doors) return; if (p.tag === 'tirador' && opt.handles === false) return; if (p.tag === 'vidrio' && opt.glass === false) return; if (p.tag === 'externo' && opt.ext === false) return; if ((p.tag === 'balda' || p.tag === 'div') && !opt.interior) return; if (p.tag === 'trasera' && opt.back === false) return; if (p.tag === 'pilar' && opt.pilares === false) return;
+    const dzG = p.travel > 0 ? p.travel * (opt.glassOpen || 0) / 100 : 0, pp = dzG ? Object.assign({}, p, { z0: p.z0 + dzG, z1: p.z1 + dzG }) : p;
+    facesFromPiece(pp).forEach(f => { f.layer = 2; f.sel = opt.sel && p.item === opt.sel; faces.push(f); }); });
   const prepared = [];
   for (const f of faces) { const pq = f.q.map(p => proj(K, p)); if (pq.some(p => !p.ok)) continue; const cen = f.q.reduce((s, v) => V.add(s, v), [0, 0, 0]).map(x => x / 4), toCam = K.ortho ? V.mul(K.f, -1) : V.sub(K.C, cen); if (V.dot(f.n, toCam) <= 0) continue; prepared.push({ pq, z: (pq[0].z + pq[1].z + pq[2].z + pq[3].z) / 4, layer: f.layer, col: shade(f.col, f.n, K), a: f.a, e: f.e, sel: f.sel }); }
   prepared.sort((a, b) => (a.layer - b.layer) || (b.z - a.z)); ctx.lineJoin = 'round';
@@ -786,7 +888,7 @@ function m3D(ctx, w, h, S, M, cam, opt) {
     const pq = p.pq, col = p.col; ctx.beginPath(); ctx.moveTo(pq[0].x, pq[0].y); for (let i = 1; i < 4; i++) ctx.lineTo(pq[i].x, pq[i].y); ctx.closePath(); const fill = `rgba(${col[0] | 0},${col[1] | 0},${col[2] | 0},${p.a})`; ctx.fillStyle = fill; ctx.fill(); if (p.a >= 0.99) { ctx.strokeStyle = fill; ctx.lineWidth = 0.9; ctx.stroke(); }
     if (p.layer === 2) { ctx.strokeStyle = p.sel ? '#ff7a00' : 'rgba(40,30,20,0.55)'; ctx.lineWidth = p.sel ? 1.8 : 0.9; ctx.beginPath(); for (let i = 0; i < 4; i++) if (p.e[i]) { const a = pq[i], b = pq[(i + 1) % 4]; ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); } ctx.stroke(); }
   }
-  if (opt.labels) S.items.forEach(it => { const e = M.ext[it.id]; if (!e) return; const q = proj(K, [(e.x0 + e.x1) / 2, e.y1, e.z1]); if (q.ok) pill(ctx, `${it.name} · ${fmt(it.w)}×${fmt(it.d)}×${fmt(it.h)}`, q.x, q.y - 14, it.id === opt.sel ? 'rgba(217,115,13,0.95)' : it.type === 'pilar' ? 'rgba(90,90,100,0.9)' : 'rgba(20,50,110,0.88)'); });
+  if (opt.labels) S.items.forEach(it => { const e = M.ext[it.id]; if (!e) return; const q = proj(K, [(e.x0 + e.x1) / 2, e.y1, e.z1]); if (q.ok) pill(ctx, `${it.name.length > 26 ? it.name.slice(0, 25) + '…' : it.name} · ${fmt(it.w)}×${fmt(it.d)}×${fmt(it.h)}`, q.x, q.y - 14, it.id === opt.sel ? 'rgba(217,115,13,0.95)' : it.type === 'pilar' ? 'rgba(90,90,100,0.9)' : 'rgba(20,50,110,0.88)'); });
   return K;
 }
 /* ---------- utilidades 2D ---------- */
@@ -831,10 +933,10 @@ function mView(ctx, w, h, S, M, opt, view) {
   // piezas
   const xsec = view === 'side' ? mSecX(S, M) : 0, isCut = p => p.tag !== 'pilar' && p.x0 <= xsec + 1e-6 && p.x1 >= xsec - 1e-6;
   const key = p => view === 'front' ? p.y0 + p.y1 : view === 'side' ? (isCut(p) ? 10000 : 0) + p.x0 + p.x1 : p.z0 + p.z1;
-  const pcs = M.P.filter(p => !(p.tag === 'tapa' && view === 'plan') && !(p.tag === 'puerta' && !opt.doors) && !((p.tag === 'balda' || p.tag === 'div') && !opt.interior) && !(p.tag === 'pilar' && opt.pilares === false)).sort((a, b) => key(a) - key(b));
+  const pcs = M.P.filter(p => !(p.tag === 'tapa' && view === 'plan') && !((p.tag === 'puerta' || p.tag === 'tirador') && !opt.doors) && !(p.tag === 'tirador' && opt.handles === false) && !(p.tag === 'vidrio' && opt.glass === false) && !(p.tag === 'externo' && opt.ext === false) && !((p.tag === 'balda' || p.tag === 'div') && !opt.interior) && !(p.tag === 'pilar' && opt.pilares === false)).sort((a, b) => key(a) - key(b));
   pcs.forEach(p => {
     const u0 = p[A.u + '0'], u1 = p[A.u + '1'], v0 = p[A.v + '0'], v1 = p[A.v + '1'], xa = X(u0), xb = X(u1), ya = Y(v0), yb = Y(v1), x = Math.min(xa, xb), y = Math.min(ya, yb), ww = Math.max(1, Math.abs(xb - xa)), hh = Math.max(1, Math.abs(yb - ya)), c = p.col;
-    let a = p.tag === 'puerta' ? 0.25 : p.tag === 'pilar' ? 0.75 : 0.93; if (view === 'side' && !isCut(p)) a *= 0.2; if (opt.focus && opt.focus !== 'all' && p.item !== opt.focus) a *= 0.22;
+    let a = p.fa !== undefined ? p.fa : p.tag === 'puerta' ? 0.25 : p.tag === 'pilar' ? 0.75 : 0.93; if (view === 'side' && !isCut(p)) a *= 0.2; if (opt.focus && opt.focus !== 'all' && p.item !== opt.focus) a *= 0.22;
     ctx.fillStyle = `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`; ctx.fillRect(x, y, ww, hh); ctx.strokeStyle = p.tag === 'puerta' ? 'rgba(150,110,50,0.8)' : p.tag === 'pilar' ? 'rgba(90,90,100,0.9)' : 'rgba(60,40,20,0.5)'; ctx.lineWidth = p.tag === 'puerta' ? 1 : 0.7; ctx.strokeRect(x, y, ww, hh);
     const bx = boxes[p.item] || (boxes[p.item] = { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }); bx.x0 = Math.min(bx.x0, x); bx.y0 = Math.min(bx.y0, y); bx.x1 = Math.max(bx.x1, x + ww); bx.y1 = Math.max(bx.y1, y + hh);
     snaps.push([u0, v0], [u1, v0], [u0, v1], [u1, v1]);
@@ -862,8 +964,8 @@ function mView(ctx, w, h, S, M, opt, view) {
 }
 async function mViewPNG(kind, S, M, CAM, VIEW) {
   const w = 1600, h = kind === 'persp' ? 900 : 1000, k = 2, cv = document.createElement('canvas'); cv.width = w * k; cv.height = h * k; const ctx = cv.getContext('2d'); ctx.scale(k, k);
-  if (kind === 'persp') m3D(ctx, w, h, S, M, CAM.ortho ? { ...CAM, orthoSize: CAM.orthoSize * 0.85 } : { ...CAM, dist: CAM.dist * 0.85 }, { ceiling: VIEW.ceiling, wall: VIEW.wall, labels: VIEW.labels, doors: VIEW.doors, interior: VIEW.interior, pilares: VIEW.pilares, back: true });
-  else mView(ctx, w, h, S, M, { doors: VIEW.doors, interior: VIEW.interior, pilares: VIEW.pilares, focus: 'all', user: { tool: false } }, kind);
+  if (kind === 'persp') m3D(ctx, w, h, S, M, CAM.ortho ? { ...CAM, orthoSize: CAM.orthoSize * 0.85 } : { ...CAM, dist: CAM.dist * 0.85 }, { ceiling: VIEW.ceiling, wall: VIEW.wall, labels: VIEW.labels, doors: VIEW.doors, interior: VIEW.interior, pilares: VIEW.pilares, handles: VIEW.handles, glass: VIEW.glass, ext: VIEW.ext, glassOpen: VIEW.glassOpen, back: true });
+  else mView(ctx, w, h, S, M, { doors: VIEW.doors, interior: VIEW.interior, pilares: VIEW.pilares, handles: VIEW.handles, glass: VIEW.glass, ext: VIEW.ext, focus: 'all', user: { tool: false } }, kind);
   return canvasBlob(cv);
 }
 
@@ -872,7 +974,7 @@ async function mViewPNG(kind, S, M, CAM, VIEW) {
    Capas por fase: CAJA · PUERTAS · ACCESORIOS (+ MUROS, HATCH, OCULTO, COTAS, TEXTOS, MARCO). Cotas en mm.
    ===================================================================== */
 const LAYG = { caja: 'CAJA', puertas: 'PUERTAS', acc: 'ACCESORIOS' };
-const layerOf = p => p.tag === 'pilar' ? 'MUROS' : (LAYG[p.grp] || 'CAJA');
+const layerOf = p => p.tag === 'pilar' ? 'MUROS' : (p.lay || LAYG[p.grp] || 'CAJA');
 function edgesOf(vals, tol) { tol = tol || 0.05; const s = vals.filter(isFinite).sort((a, b) => a - b), o = []; s.forEach(v => { if (!o.length || v - o[o.length - 1] > tol) o.push(v); }); return o; }
 function drDraw(d, M, view, keep) {
   const k = DK, key = p => view === 'front' ? p.y0 + p.y1 : view === 'side' ? p.x0 + p.x1 : p.z0 + p.z1;
@@ -902,7 +1004,7 @@ function mDrawings(S, M) {
   // 1 y 2: alzados
   [true, false].forEach(closed => { if (closed && !hasDoors) return;
     const d = new Dr(closed ? 'alz-cerrado' : 'alz-interior', closed ? 'ALZADO FRONTAL · PUERTAS CERRADAS' : 'ALZADO FRONTAL · INTERIOR (SIN PUERTAS)', sub0, 20); drBase(S, M, 'front', d);
-    drDraw(d, M, 'front', p => closed ? !(doorItems.has(p.item) && !['puerta', 'zocalo'].includes(p.tag)) : p.tag !== 'puerta'); drNames(S, M, d, 'front'); drChains(S, M, d, 'front', S.items); out.push(d); });
+    drDraw(d, M, 'front', p => closed ? !(doorItems.has(p.item) && !['puerta', 'zocalo', 'tirador'].includes(p.tag)) : !['puerta', 'tirador'].includes(p.tag)); drNames(S, M, d, 'front'); drChains(S, M, d, 'front', S.items); out.push(d); });
   // 3: planta (tapas retiradas)
   { const d = new Dr('planta', 'PLANTA', 'Vista desde arriba con las tapas retiradas · pared al fondo (arriba), frente abajo · ' + sub0, 20); drBase(S, M, 'plan', d); drDraw(d, M, 'plan', p => p.tag !== 'tapa'); drNames(S, M, d, 'plan'); drChains(S, M, d, 'plan', S.items); out.push(d); }
   // 4: perfil (sección lateral)
@@ -925,7 +1027,7 @@ function mDrawings(S, M) {
    INTERFAZ · mueble a medida (simplificada): elementos, vistas 3D/planta/alzado/perfil, despiece, corte por fases y planos
    ===================================================================== */
 let S = mNorm(mTemplate('pasacopas')), SB = S, M = null, currentName = '', infoTab = 'res', PL = null, planHover = null, planEdit = null, pending = false, saveT = null, armTpl = false;
-let VIEW = { ceiling: true, wall: false, labels: true, doors: true, interior: true, pilares: true, mode: 'split', pmin: false, bottom: 'front', ortho: true, warnMin: false };
+let VIEW = { ceiling: true, wall: false, labels: true, doors: true, interior: true, pilares: true, handles: true, glass: true, ext: true, glassOpen: 0, mode: 'split', pmin: false, bottom: 'front', ortho: true, warnMin: false };
 let CAM = mCamFit({ bb: { x0: 0, x1: 122, y0: 0, y1: 62, z0: 0, z1: 255, w: 122, d: 62, h: 255 } }, 'persp');
 let UI = { sel: null, hoverItem: null, tool: false, pend: null, hover: null, snapped: false, shift: false, focus: 'all', open: new Set() };
 let CUT = { plan: null, sig: '', timer: null, showCuts: true, note: '', ph: 'all' }, DRW = { views: null, sig: '', timer: null, sel: 'all', vis: null };
@@ -950,28 +1052,45 @@ function updHist() { const u = $('#btnUndo'), r = $('#btnRedo'); if (u) u.disabl
 const fI = (it, f, label, step = 0.5, extra = '') => `<label class="f"><span>${label}</span><input type="number" step="${step}" data-it="${it.id}" data-f="${f}" value="${it[f]}" ${extra}></label>`;
 const gI = (k, label, step, extra = '') => `<label class="f"><span>${label}</span><input type="number" step="${step}" data-g="${k}" ${extra}></label>`;
 const fC = (it, f, label) => `<label class="chk"><input type="checkbox" data-it="${it.id}" data-f="${f}" ${it[f] ? 'checked' : ''}> ${label}</label>`;
+const fT = (it, f, label, ph) => `<label class="f wide"><span>${label}</span><input type="text" data-it="${it.id}" data-f="${f}" value="${esc(f === 'machining' ? (it.machining || []).join(', ') : (it[f] || ''))}" placeholder="${ph || ''}"></label>`;
+const fS = (it, f, label, opts) => `<label class="f"><span>${label}</span><select data-it="${it.id}" data-f="${f}">${opts.map(o => `<option value="${o[0]}" ${String(it[f] || '') === String(o[0]) ? 'selected' : ''}>${o[1]}</option>`).join('')}</select></label>`;
+function matOptions(cur) {
+  cur = matKey(cur); let h = '';
+  MAT_GROUPS.forEach(g => { const ids = Object.keys(MATS).filter(id => g[1].includes(MATS[id].kind)); if (ids.length) h += `<optgroup label="${g[0]}">` + ids.map(id => `<option value="${id}" ${id === cur ? 'selected' : ''}>${esc(MATS[id].name)}</option>`).join('') + '</optgroup>'; });
+  if (cur && !MATS[cur]) h += `<option value="${esc(cur)}" selected>${esc(nice(cur))}</option>`; return h;
+}
+const matSel = (it, f, label, blank) => `<label class="f"><span>${label}</span><select data-it="${it.id}" data-f="${f}">${blank ? `<option value="" ${!it[f] ? 'selected' : ''}>${blank}</option>` : ''}${matOptions(it[f])}</select></label>`;
+const HANDLE_OPTS = Object.keys(HANDLES).map(k => [k, HANDLES[k]]);
 function itemCard(it) {
-  const isC = it.type === 'cuerpo', isT = it.type === 'tablero', isP = it.type === 'pilar', ico = isC ? '🗄' : isT ? '▬' : '▮';
+  const isC = it.type === 'cuerpo', isT = it.type === 'tablero', isP = it.type === 'pilar', isG = it.type === 'vidrio', isX = it.type === 'modulo_externo', ico = isC ? '\uD83D\uDDC4' : isT ? '▬' : isG ? '\uD83E\uDE9F' : isX ? '\uD83D\uDCE6' : '▮', plano = isT || isG;
   let h = `<details class="card item${UI.sel === it.id ? ' sel' : ''}" data-id="${it.id}" ${UI.open.has(it.id) ? 'open' : ''}><summary class="itemsum"><span>${ico} <b id="nm-${it.id}">${esc(it.name)}</b></span><span class="sum" id="sum-${it.id}"></span></summary>
     <label class="f wide"><span>Nombre</span><input type="text" data-it="${it.id}" data-f="name" value="${esc(it.name)}"></label>
+    ${isP ? '' : `<div class="grid2">${matSel(it, 'material', isC ? 'Material del cuerpo' : 'Material', isG || isX ? '' : 'Acabado general (por defecto)')}${isT ? fS(it, 'plano', 'Plano (espesor)', [['auto', 'Automático (lado menor)'], ['H', 'Horizontal · espesor en z'], ['F', 'Frontal · espesor en y'], ['L', 'Lateral · espesor en x']]) : isG ? fI(it, 'travel', 'Recorrido al subir (cm)', 1, 'min="0"') : ''}</div>`}
     <div class="grid3">${fI(it, 'x', 'x · desde izq.')}${fI(it, 'y', 'y · desde atrás')}${fI(it, 'z', 'z · altura suelo')}</div>
-    <div class="grid3">${fI(it, 'w', 'Ancho', 0.5, 'min="0.1"')}${fI(it, 'd', 'Fondo', 0.5, 'min="0.1"')}${fI(it, 'h', isT ? 'Espesor' : 'Alto', isT ? 0.1 : 0.5, 'min="0.1"')}</div>`;
+    <div class="grid3">${fI(it, 'w', 'Ancho (x)', 0.5, 'min="0.1"')}${fI(it, 'd', 'Fondo (y)', 0.5, 'min="0.1"')}${fI(it, 'h', 'Alto (z)', 0.5, 'min="0.1"')}</div>`;
   if (isC) h += `<div class="grid3">${fI(it, 'mods', 'Módulos', 1, 'min="1" max="12"')}${fI(it, 'cols', 'Huecos / módulo', 1, 'min="1" max="30"')}${fI(it, 'baldas', 'Baldas / hueco', 1, 'min="0" max="12"')}</div>
     <div class="grid3">${fI(it, 'zocalo', 'Zócalo (cm)', 0.5, 'min="0"')}<label class="f"><span>Puertas</span><select data-it="${it.id}" data-f="doors">${[['none', 'Sin puertas'], ['hueco', 'Una por hueco'], ['dos', 'Dos por módulo']].map(o => `<option value="${o[0]}" ${it.doors === o[0] ? 'selected' : ''}>${o[1]}</option>`).join('')}</select></label>${fC(it, 'back', 'Trasera')}</div>
-    <div class="grid2">${fI(it, 'minHueco', 'Aviso si hueco < (cm)', 0.5, 'min="0"')}${fI(it, 't', 'Espesor propio (0 = general)', 0.1, 'min="0"')}</div>`;
-  if (isP) h += `<div class="sec">Forro de tablero</div><div class="grid3">${fC(it, 'fF', 'Frente')}${fC(it, 'fL', 'Lado izq.')}${fC(it, 'fR', 'Lado dcho.')}</div><div class="grid2">${fI(it, 'ft', 'Espesor forro', 0.1, 'min="0.3"')}${fI(it, 'fs', 'Tramos en altura', 1, 'min="1" max="6"')}</div>`;
+    <div class="grid2">${fI(it, 'minHueco', 'Aviso si hueco < (cm)', 0.5, 'min="0"')}${fI(it, 't', 'Espesor propio (0 = general)', 0.1, 'min="0"')}</div>
+    <div class="sec">Puertas y tirador</div>
+    <div class="grid3">${matSel(it, 'doorMat', 'Material puertas', 'Igual que el cuerpo')}${fS(it, 'handle', 'Tirador / apertura', HANDLE_OPTS)}${matSel(it, 'handleMat', 'Material tirador', 'Acero inoxidable')}</div>
+    ${fT(it, 'opening_system', 'Sistema de apertura (nota)', 'p. ej. push_to_open_iman')}`;
+  if (isP) h += `<div class="sec">Forro de tablero</div><div class="grid3">${fC(it, 'fF', 'Frente')}${fC(it, 'fL', 'Lado izq.')}${fC(it, 'fR', 'Lado dcho.')}</div><div class="grid2">${fI(it, 'ft', 'Espesor forro', 0.1, 'min="0.3"')}${fI(it, 'fs', 'Tramos en altura', 1, 'min="1" max="6"')}</div>${matSel(it, 'material', 'Material del forro', 'Acabado general (por defecto)')}`;
+  h += `<div class="sec">Taller y obra</div>${fT(it, 'role', 'Función de la pieza', 'p. ej. jamba_guia, registrable_atornillado')}${fT(it, 'machining', 'Mecanizados (separados por comas)', 'p. ej. ranura_guia_cristal, cajeado_motor')}
+    <div class="grid2">${fI(it, 'trim_allowance', isC ? 'Demasía de obra (cm · solo nota)' : 'Demasía de obra (cm)', 0.1, 'min="0" max="10"')}${fT(it, 'notes', 'Notas', '')}</div>`;
   return h + `<div class="calc" id="calc-${it.id}"></div><div class="rowbtn"><button class="mini" data-act="dup" data-id="${it.id}">⧉ Duplicar</button><button class="mini" data-act="del" data-id="${it.id}">✕ Eliminar</button></div></details>`;
 }
 function renderSide() {
   const st = $('#side').scrollTop;
   $('#sideBody').innerHTML = `<details open><summary>Entorno y tableros</summary>
     <div class="grid2">${gI('ceil', 'Altura de techo (cm · 0 = sin techo)', 1, 'min="0"')}${gI('t', 'Espesor tablero (cm)', 0.1, 'min="0.3"')}</div>
-    <div class="grid2"><label class="f"><span>Acabado</span><select data-g="palette">${Object.entries(PALETTES).map(([k, v]) => `<option value="${k}">${v.name}</option>`).join('')}</select></label>${gI('secX', 'Perfil: sección en x (0 = auto)', 1, 'min="0"')}</div>
+    <div class="grid2"><label class="f"><span>Acabado general (por defecto)</span><select data-g="palette">${Object.entries(PALETTES).map(([k, v]) => `<option value="${k}">${v.name}</option>`).join('')}</select></label>${gI('secX', 'Perfil: sección en x (0 = auto)', 1, 'min="0"')}</div>
     <label class="chk"><input type="checkbox" data-g="back.on"> Traseras (paneles finos)</label>${gI('back.t', 'Espesor trasera (cm)', 0.1, 'min="0.1" max="3"')}</details>
     <div class="sec2">Elementos del mueble <span class="muted">· pulsa uno para seleccionarlo y ver sus cotas</span></div>
     <div id="items">${S.items.map(itemCard).join('') || '<div class="muted" style="margin:6px 10px">Sin elementos: añade uno abajo.</div>'}</div>
-    <div class="rowbtn wrap"><button class="pri" data-act="add" data-t="cuerpo">+ Cuerpo</button><button class="pri" data-act="add" data-t="tablero">+ Tablero / barra</button><button class="pri" data-act="add" data-t="pilar">+ Pilar</button></div>
-    <div class="hint">Cuerpo = caja con laterales, tapa, base, huecos iguales, baldas y puertas. Tablero = pieza suelta (barra, encimera, balda). Pilar = columna de pladur de referencia, con forro de tablero opcional.</div>`;
+    <div class="rowbtn wrap"><button class="pri" data-act="add" data-t="cuerpo">+ Cuerpo</button><button class="pri" data-act="add" data-t="tablero">+ Tablero / barra</button><button class="pri" data-act="add" data-t="vidrio">+ Vidrio</button><button class="pri" data-act="add" data-t="externo">+ Módulo externo</button><button class="pri" data-act="add" data-t="pilar">+ Pilar</button></div>
+    <div class="hint">Cuerpo = caja con laterales, tapa, base, huecos iguales, baldas, puertas y tirador. Tablero = pieza suelta en cualquier plano (barra, frente, costado, jamba…): el espesor es su lado menor. Vidrio = hoja fija o elevable. Módulo externo = mueble comprado, solo referencia de medidas y colisión. Pilar = columna de pladur de referencia, con forro opcional.</div>
+    <details><summary>Materiales y acabados</summary><div class="hint">Cada pieza puede llevar su material. Aquí ajustas el acabado de cada uno y si entra en el despiece de tablero (inox, cristal y espejo no se cortan).</div>
+      <table class="mt"><tr><th>Material</th><th>Acabado / ficha</th><th>Corte</th></tr>${Object.keys(MATS).map(id => { const m = matOf(S, id); return `<tr><td>${esc(m.name)}</td><td><input type="text" data-mat="${id}:finish" value="${esc(m.finish || '')}" placeholder="acabado"></td><td><input type="checkbox" data-mat="${id}:cut" ${m.cut ? 'checked' : ''}></td></tr>`; }).join('')}</table></details>`;
   syncG(); $('#side').scrollTop = st;
 }
 const getP = (o, p) => p.split('.').reduce((a, k) => (a == null ? a : a[k]), o), setP = (o, p, v) => { const ks = p.split('.'), l = ks.pop(); ks.reduce((a, k) => a[k], o)[l] = v; };
@@ -979,32 +1098,33 @@ function syncG() { $$('#sideBody [data-g]').forEach(el => { if (el === document.
 function pushLog() { }
 /* ---------- proyecto: guardar / cargar / copilot ---------- */
 function backupName() { const d = new Date(), ds = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); return ((currentName || $('#projName').value.trim() || 'mueble').replace(/[^\w\-áéíóúñÁÉÍÓÚÑ ]+/g, '_').trim().replace(/\s+/g, '_') || 'mueble') + '_' + ds + '.mueble.json'; }
-function saveBackup() { commitNow(); const nm = $('#projName').value.trim() || currentName || 'Mueble'; currentName = nm; deliver(mkFile(backupName(), 'text', JSON.stringify({ app: 'mueble3d', v: 1, name: nm, ts: new Date().toISOString(), S: clone(S), VIEW: clone(VIEW) }, null, 1), 'application/json'), 'Backup del proyecto (.json)'); refreshTitle(); }
+function saveBackup() { commitNow(); const nm = $('#projName').value.trim() || currentName || 'Mueble'; currentName = nm; deliver(mkFile(backupName(), 'text', JSON.stringify({ app: 'mueble3d', v: 2, name: nm, ts: new Date().toISOString(), S: clone(S), VIEW: clone(VIEW) }, null, 1), 'application/json'), 'Backup del proyecto (.json)'); refreshTitle(); }
 function parseProj(txt) { txt = String(txt || '').replace(/^\uFEFF/, '').trim(); try { return JSON.parse(txt); } catch (e) { } const a = txt.indexOf('{'), b = txt.lastIndexOf('}'); if (a >= 0 && b > a) { try { return JSON.parse(txt.slice(a, b + 1)); } catch (e) { } } throw new Error('no es un JSON válido'); }
 function loadProjectText(txt, src) {
   if (/^\s*<!DOCTYPE html|^\s*<html/i.test(String(txt))) { toast('⚠ «' + (src || 'ese archivo') + '» es una aplicación (.html), no un backup. Elige un .mueble.json.'); return false; }
   let o; try { o = parseProj(txt); } catch (e) { toast('⚠ No se pudo leer ' + (src ? '«' + src + '»' : 'el texto') + ': ' + e.message + '.'); return false; }
   const st = o && o.S ? o.S : o; if (o && o.app === 'armario3d' || (st && st.bodies && !st.items)) { toast('⚠ Ese archivo es de un ARMARIO. Ábrelo desde la portada (botón «Cargar proyecto») para usar el diseñador de armarios.'); return false; }
   if (!st || typeof st !== 'object' || !Array.isArray(st.items)) { toast('⚠ El JSON no parece un mueble (falta la lista «items»).'); return false; }
-  commitNow(); S = mNorm(st); if (o && o.VIEW) VIEW = Object.assign(VIEW, o.VIEW); currentName = (o && o.name) || (src || '').replace(/(\.mueble)?\.(json|txt)$/i, ''); $('#projName').value = currentName; lastSnap = JSON.stringify(S); undoStack = []; redoStack = []; UI.sel = null; UI.open = new Set(); UI.focus = 'all';
-  renderSide(); syncView(); applyMode(); refreshTitle(); update(); setView('persp'); updHist(); toast('✔ Proyecto cargado' + (src ? ' desde «' + src + '»' : '') + '.'); return true;
+  const flipped = yNeedsFlip(st); commitNow(); S = mNorm(st); if (o && o.VIEW) VIEW = Object.assign(VIEW, o.VIEW); currentName = (o && o.name) || (src || '').replace(/(\.mueble)?\.(json|txt)$/i, ''); $('#projName').value = currentName; lastSnap = JSON.stringify(S); undoStack = []; redoStack = []; UI.sel = null; UI.open = new Set(); UI.focus = 'all';
+  renderSide(); syncView(); applyMode(); refreshTitle(); update(); setView('persp'); updHist(); toast('✔ Proyecto cargado' + (src ? ' desde «' + src + '»' : '') + '.' + (flipped ? ' Eje y convertido: el origen estaba en el frente (salón) y ahora está en la cara de cocina.' : '')); return true;
 }
 function loadFile(f) { if (!f) return; const done = t => loadProjectText(t, f.name); if (f.text) f.text().then(done, () => { const r = new FileReader(); r.onload = () => done(r.result); r.readAsText(f); }); else { const r = new FileReader(); r.onload = () => done(r.result); r.readAsText(f); } }
 function refreshTitle() { const t = $('#projTitle'); if (t) t.textContent = currentName ? '📁 ' + currentName : ''; }
 function copyForCopilot() { copyText(JSON.stringify(S), 'Mueble copiado: pégalo en Copilot y pídele cambios. Luego pega su respuesta en «Pegar desde Copilot».'); }
 async function pasteFromCopilot() { const ta = $('#pasteJson'); let txt = ta.value.trim(); if (!txt && navigator.clipboard && navigator.clipboard.readText) { try { txt = (await navigator.clipboard.readText()).trim(); } catch (e) { } } if (!txt) { toast('⚠ Pega primero en el cuadro el JSON (Ctrl+V) y vuelve a pulsar.'); ta.focus(); return; } if (loadProjectText(txt, '')) ta.value = ''; }
-function applyTemplate(k) { commitNow(); S = mNorm(mTemplate(k)); UI.sel = null; UI.open = new Set(); UI.focus = 'all'; renderSide(); update(); commitNow(); setView('persp'); toast('✔ Plantilla aplicada: ' + ({ pasacopas: 'pasacopas con pilares', vinilos: 'mueble bajo para vinilos', blank: 'en blanco' }[k]) + '.'); }
+function applyTemplate(k) { commitNow(); S = mNorm(mTemplate(k)); UI.sel = null; UI.open = new Set(); UI.focus = 'all'; renderSide(); update(); commitNow(); setView('persp'); toast('✔ Plantilla aplicada: ' + ({ pasacopas: 'pasacopas con pilares', pasaplatos: 'pasaplatos con guillotina de cristal', vinilos: 'mueble bajo para vinilos', blank: 'en blanco' }[k]) + '.'); }
 /* ---------- eventos ---------- */
 function itemOf(id) { return S.items.find(i => i.id === id); }
 document.addEventListener('input', e => {
   const el = e.target; if (!el.dataset) return;
-  if (el.dataset.it) { const it = itemOf(el.dataset.it); if (!it) return; const f = el.dataset.f; it[f] = el.type === 'checkbox' ? el.checked : el.tagName === 'SELECT' ? el.value : f === 'name' ? el.value : num(el.value); if (f === 'name') { const n = $('#nm-' + it.id); if (n) n.textContent = it.name; } update(); if (el.type === 'checkbox' || el.tagName === 'SELECT') commitNow(); else commitSoon(); return; }
+  if (el.dataset.it) { const it = itemOf(el.dataset.it); if (!it) return; const f = el.dataset.f; it[f] = el.type === 'checkbox' ? el.checked : el.tagName === 'SELECT' ? el.value : ['name', 'role', 'notes', 'opening_system'].includes(f) ? el.value : f === 'machining' ? splitList(el.value) : num(el.value); if (f === 'name') { const n = $('#nm-' + it.id); if (n) n.textContent = it.name; } update(); if (el.type === 'checkbox' || el.tagName === 'SELECT') commitNow(); else commitSoon(); return; }
+  if (el.dataset.mat) { const pr = el.dataset.mat.split(':'), o = (S.mats = S.mats || {})[pr[0]] || (S.mats[pr[0]] = {}); if (pr[1] === 'cut') o.cut = el.checked; else o.finish = el.value; update(); if (el.type === 'checkbox') commitNow(); else commitSoon(); return; }
   if (el.dataset.g) { const v = el.type === 'checkbox' ? el.checked : el.tagName === 'SELECT' ? el.value : num(el.value); setP(S, el.dataset.g, v); update(); if (el.type === 'checkbox' || el.tagName === 'SELECT') commitNow(); else commitSoon(); }
 });
 document.addEventListener('change', e => {
   const el = e.target; if (!el || !el.dataset) return;
   if (el.id === 'file') { if (el.files && el.files[0]) loadFile(el.files[0]); el.value = ''; return; }
-  if (el.dataset.it || el.dataset.g) { commitNow(); return; }
+  if (el.dataset.it || el.dataset.g || el.dataset.mat) { commitNow(); return; }
   if (el.id === 'chkOrtho') { VIEW.ortho = el.checked; requestDraw(); }
   if (el.id === 'projName') { currentName = el.value.trim(); refreshTitle(); save(); }
   if (el.id === 'focusSel') { UI.focus = el.value; requestDraw(); }
@@ -1017,7 +1137,7 @@ function selectItem(id, scroll) { UI.sel = id; $$('#items .item').forEach(d => d
 document.addEventListener('click', e => {
   const sm = e.target.closest('summary.itemsum'); if (sm) { e.preventDefault(); const d = sm.parentElement, id = d.dataset.id; d.open = !d.open; if (d.open) UI.open.add(id); else UI.open.delete(id); selectItem(d.open ? id : (UI.sel === id ? null : UI.sel)); return; }
   const b = e.target.closest('[data-act]'); if (!b || b.tagName === 'INPUT' || b.tagName === 'SELECT') return; const a = b.dataset.act; let commit = true, struct = false;
-  if (a === 'add') { const t = b.dataset.t, bb = M.bb, o = t === 'cuerpo' ? mkCuerpo({ name: 'Cuerpo ' + (S.items.filter(i => i.type === 'cuerpo').length + 1), x: Math.round(bb.x1 + 5) }) : t === 'tablero' ? mkTablero({ name: 'Tablero ' + (S.items.filter(i => i.type === 'tablero').length + 1), x: Math.round(bb.x1 + 5) }) : mkPilar({ name: 'Pilar ' + (S.items.filter(i => i.type === 'pilar').length + 1), x: Math.round(bb.x1 + 5) }); S.items.push(o); UI.open.add(o.id); UI.sel = o.id; struct = true; }
+  if (a === 'add') { const t = b.dataset.t, bb = M.bb, o = t === 'cuerpo' ? mkCuerpo({ name: 'Cuerpo ' + (S.items.filter(i => i.type === 'cuerpo').length + 1), x: Math.round(bb.x1 + 5) }) : t === 'tablero' ? mkTablero({ name: 'Tablero ' + (S.items.filter(i => i.type === 'tablero').length + 1), x: Math.round(bb.x1 + 5) }) : t === 'vidrio' ? mkVidrio({ name: 'Vidrio ' + (S.items.filter(i => i.type === 'vidrio').length + 1), x: Math.round(bb.x1 + 5) }) : t === 'externo' ? mkExterno({ name: 'Módulo externo ' + (S.items.filter(i => i.type === 'modulo_externo').length + 1), x: Math.round(bb.x1 + 5) }) : mkPilar({ name: 'Pilar ' + (S.items.filter(i => i.type === 'pilar').length + 1), x: Math.round(bb.x1 + 5) }); S.items.push(o); UI.open.add(o.id); UI.sel = o.id; struct = true; }
   else if (a === 'dup') { const it = itemOf(b.dataset.id); if (it) { const c = clone(it); c.id = 'e' + (++_seq); c.name = it.name + ' (copia)'; c.x = r1(it.x + it.w + 2); S.items.splice(S.items.indexOf(it) + 1, 0, c); UI.open.add(c.id); UI.sel = c.id; struct = true; } }
   else if (a === 'del') { const i = S.items.findIndex(x => x.id === b.dataset.id); if (i >= 0) { S.items.splice(i, 1); if (UI.sel === b.dataset.id) UI.sel = null; struct = true; } }
   else if (a === 'tpl') { const k = $('#tplSel').value; if (!armTpl) { armTpl = true; b.textContent = '¿Seguro? Se sustituirá el diseño · pulsa de nuevo'; b.classList.add('warnbtn'); setTimeout(() => { armTpl = false; b.textContent = 'Aplicar plantilla'; b.classList.remove('warnbtn'); }, 4000); commit = false; } else { armTpl = false; b.textContent = 'Aplicar plantilla'; b.classList.remove('warnbtn'); applyTemplate(k); commit = false; } }
@@ -1028,7 +1148,7 @@ document.addEventListener('click', e => {
   else if (a === 'bottom') { setBottom(b.dataset.v); commit = false; } else if (a === 'measure') { setMeasure(!UI.tool); commit = false; }
   else if (a === 'cleardims') { if ((S.dims || []).length) S.dims = []; else commit = false; UI.pend = null; } else if (a === 'pmin') { VIEW.pmin = !VIEW.pmin; closeEditor(); applyMode(); commit = false; } else if (a === 'warnmin') { VIEW.warnMin = !VIEW.warnMin; applyWarn(); commit = false; }
   else if (a === 'tab') { setTab(b.dataset.v); commit = false; }
-  else if (a === 'bomcsv') { deliver(mkFile('despiece_mueble.csv', 'text', '\ufeff' + [['Fase', 'Pieza', 'Largo (cm)', 'Ancho (cm)', 'Espesor (cm)', 'Uds', 'Notas']].concat(M.bom.map(r => [(PHASES.find(p => p.id === r.grp) || {}).short || '', r.name, fmt(r.L), fmt(r.W), fmt(r.T), r.qty, r.note])).map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(';')).join('\n'), 'text/csv'), 'Despiece (CSV)'); commit = false; }
+  else if (a === 'bomcsv') { deliver(mkFile('despiece_mueble.csv', 'text', '\ufeff' + [['Fase', 'Pieza', 'Material', 'Largo (cm)', 'Ancho (cm)', 'Espesor (cm)', 'Uds', 'Notas']].concat(M.bom.map(r => [(PHASES.find(p => p.id === r.grp) || {}).short || 'FUERA DEL CORTE', r.name, r.mname || '', fmt(r.L), fmt(r.W), fmt(r.T), r.qty, r.note])).map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(';')).join('\n'), 'text/csv'), 'Despiece (CSV)'); commit = false; }
   else if (a === 'cutph') { CUT.ph = b.dataset.v; renderCutPane(); commit = false; } else if (a === 'cutseed') { S.cut.seed = (S.cut.seed || 1) + 1; refreshCut(true); }
   else if (a === 'cutview') { openCutViewer(CUT.ph); commit = false; } else if (a === 'cutprint') { openCutViewer(CUT.ph); setTimeout(doPrint, 450); commit = false; }
   else if (a === 'cutdxf' || a === 'cvdxf') { saveCut('dxf', b.dataset.v || CUT.ph); commit = false; } else if (a === 'cutdxf3') { saveCut('dxf3'); commit = false; } else if (a === 'cutpdf' || a === 'cvpdf') { saveCut('pdf', CUT.ph); commit = false; }
@@ -1057,7 +1177,7 @@ function renderCutPane() {
   const cards = '<div class="phcards">' + [{ id: 'all', label: 'TODAS LAS FASES', desc: 'Caja + puertas + baldas', nSheets: P.totalSheets, pieces: P.phases.reduce((s, p) => s + p.pieces, 0) }].concat(P.phases).map(p => `<button class="phcard ph-${p.id} ${ph === p.id ? 'on' : ''}" data-act="cutph" data-v="${p.id}"><b>${esc(p.label)}</b><span>${p.pieces} piezas · <b>${p.nSheets}</b> tablero${p.nSheets === 1 ? '' : 's'}${p.eff ? ' · ' + fmt(p.eff * 100, 0) + ' % uso' : ''}</span><small>${esc(p.desc)}</small></button>`).join('') + '</div>';
   let h = cards + `<div class="cutbar"><label>Tablero (cuerpos y puertas)${sizeSel('sheetP', c.sheet)}</label><label>Largo (mm)<input type="number" step="10" min="300" data-cut="sheetL" value="${Math.round(c.sheet[0] * 10)}"></label><label>Ancho (mm)<input type="number" step="10" min="200" data-cut="sheetW" value="${Math.round(c.sheet[1] * 10)}"></label><label>Traseras${sizeSel('sheetBP', c.sheetBack)}</label>
     <label>Sierra (mm)<input type="number" step="0.5" min="0" max="20" data-cut="kerf" value="${fmt(c.kerf * 10, 1).replace(',', '.')}"></label><label>Refilado (mm)<input type="number" step="1" min="0" max="50" data-cut="trim" value="${fmt(c.trim * 10, 1).replace(',', '.')}"></label>
-    <label class="row"><input type="checkbox" data-cut="grain" ${c.grain ? 'checked' : ''}> Respetar veta</label><label class="row"><input type="checkbox" data-cut="incDoors" ${c.incDoors ? 'checked' : ''}> Puertas</label><label class="row"><input type="checkbox" data-cut="incBacks" ${c.incBacks ? 'checked' : ''}> Traseras</label><label class="row"><input type="checkbox" data-cut="showCuts" ${CUT.showCuts ? 'checked' : ''}> Ver orden de cortes</label></div>
+    <label class="row"><input type="checkbox" data-cut="grain" ${c.grain ? 'checked' : ''}> Respetar veta</label><label class="row"><input type="checkbox" data-cut="incDoors" ${c.incDoors ? 'checked' : ''}> Puertas</label><label class="row"><input type="checkbox" data-cut="incBacks" ${c.incBacks ? 'checked' : ''}> Traseras</label><label class="row"><input type="checkbox" data-cut="applyTrim" ${c.applyTrim ? 'checked' : ''}> Sumar demasía de obra</label><label class="row"><input type="checkbox" data-cut="showCuts" ${CUT.showCuts ? 'checked' : ''}> Ver orden de cortes</label></div>
     <div class="cutbtns"><span class="lblph">Fase mostrada: <b>${esc(phName(ph))}</b></span><button class="pri" data-act="cutdxf" title="DXF 2D en mm de la fase mostrada (capas TABLERO, PIEZAS, ETIQUETAS, CORTES, RETALES, COTAS, LISTA)">📐 DXF de esta fase</button><button data-act="cutdxf3">📐 3 DXF (caja · puertas · baldas)</button><button data-act="cutpdf">⬇ PDF</button><button data-act="cutpng">🖼 PNG de tableros</button><button data-act="cutcsv">⬇ Lista CSV</button><button data-act="cutcopytab">📋 Copiar lista (Excel)</button><button data-act="cutview">👁 Ver plano completo</button><button data-act="cutprint">🖨 Imprimir</button><button data-act="cutseed">↻ Otra combinación</button></div>
     <div class="okbox" id="cutNoteBox" style="display:${CUT.note ? 'block' : 'none'}">${esc(CUT.note || '')}</div>`;
   if (P.warns.length) h += `<div class="badbox">${P.warns.map(esc).join('<br>')}</div>`;
@@ -1066,7 +1186,7 @@ function renderCutPane() {
   phs.forEach(p => { h += `<h2 class="ph-${p.id}">${esc(p.label)} — ${p.nSheets} tablero${p.nSheets === 1 ? '' : 's'}</h2><div class="hint2">${esc(p.desc)}</div><h3>Planos de corte</h3>${cutSheetsHTML(P, CUT.showCuts, 100 + p.n * 100, p.id)}<h3>Lista de corte</h3>${cutTables(P, p.id)}${cutSequenceHTML(P, p.id)}`; });
   const stt = pane.scrollTop; pane.innerHTML = h + '</div>'; pane.scrollTop = stt;
 }
-function applyCutSetting(el) { const c = S.cut, k = el.dataset.cut; if (k === 'sheetP' || k === 'sheetBP') { const [a, b] = el.value.split('x').map(Number); if (a > 20 && b > 20) { if (k === 'sheetP') c.sheet = [a, b]; else c.sheetBack = [a, b]; } } else if (k === 'sheetL') c.sheet = [Math.max(30, num(el.value) / 10), c.sheet[1]]; else if (k === 'sheetW') c.sheet = [c.sheet[0], Math.max(20, num(el.value) / 10)]; else if (k === 'kerf') c.kerf = clamp(num(el.value) / 10, 0, 2); else if (k === 'trim') c.trim = clamp(num(el.value) / 10, 0, 5); else if (k === 'showCuts') { CUT.showCuts = el.checked; renderCutPane(); return; } else if (['grain', 'incDoors', 'incBacks'].includes(k)) c[k] = el.checked; update(); commitNow(); refreshCut(false); }
+function applyCutSetting(el) { const c = S.cut, k = el.dataset.cut; if (k === 'sheetP' || k === 'sheetBP') { const [a, b] = el.value.split('x').map(Number); if (a > 20 && b > 20) { if (k === 'sheetP') c.sheet = [a, b]; else c.sheetBack = [a, b]; } } else if (k === 'sheetL') c.sheet = [Math.max(30, num(el.value) / 10), c.sheet[1]]; else if (k === 'sheetW') c.sheet = [c.sheet[0], Math.max(20, num(el.value) / 10)]; else if (k === 'kerf') c.kerf = clamp(num(el.value) / 10, 0, 2); else if (k === 'trim') c.trim = clamp(num(el.value) / 10, 0, 5); else if (k === 'showCuts') { CUT.showCuts = el.checked; renderCutPane(); return; } else if (['grain', 'incDoors', 'incBacks', 'applyTrim'].includes(k)) c[k] = el.checked; update(); commitNow(); refreshCut(false); }
 const projSlug = () => (currentName || 'mueble').replace(/[^\w\-]+/g, '_'), cutFileName = (ext, ph) => 'corte_' + (PH_TAG[ph || 'all'] || 'todo') + '_' + projSlug() + '.' + ext;
 function openCutViewer(ph) { const plan = cutPlanNow(); $('#cutDoc').innerHTML = '<div class="cutdoc">' + cutDocHTML(plan, withBB(SB, M), currentName || 'Mueble', ph || 'all') + '</div>'; $('#cutOverlay').classList.add('on'); document.body.classList.add('printing-cut'); $('#cutDoc').scrollTop = 0; }
 function closeCutViewer() { $('#cutOverlay').classList.remove('on'); document.body.classList.remove('printing-cut'); }
@@ -1085,7 +1205,7 @@ async function saveCut(kind, ph) {
 }
 function openCutTab(ph) { if (ph) CUT.ph = ph; VIEW.mode = 'tables'; infoTab = 'cut'; applyMode(); applyTabs(); update(); refreshCut(true); }
 /* ---------- planos ---------- */
-const DR_LABEL = { MUROS: 'Muros / pilares', HATCH: 'Sombreado', CAJA: 'CAJA (fase 1)', PUERTAS: 'PUERTAS (fase 2)', ACCESORIOS: 'BALDAS (fase 3)', OCULTO: 'Ocultos', COTAS: 'Cotas', SIMBOLOS: 'Símbolos', MARCO: 'Marco', TEXTOS: 'Textos' };
+const DR_LABEL = { MUROS: 'Muros / pilares', HATCH: 'Sombreado', CAJA: 'CAJA (fase 1)', PUERTAS: 'PUERTAS (fase 2)', ACCESORIOS: 'BALDAS (fase 3)', OCULTO: 'Ocultos', COTAS: 'Cotas', SIMBOLOS: 'Símbolos', MARCO: 'Marco', TEXTOS: 'Textos', VIDRIO: 'Vidrio', INOX: 'Acero inox', EXTERNOS: 'Módulos externos' };
 function drVisInit() { if (!DRW.vis) { DRW.vis = {}; Object.keys(DR_LAYERS).forEach(k => DRW.vis[k] = true); } }
 const drOk = L => DRW.vis ? DRW.vis[L] !== false : true;
 function setDrPreset(v) { drVisInit(); const base = ['MUROS', 'HATCH', 'COTAS', 'TEXTOS', 'MARCO', 'OCULTO', 'SIMBOLOS'], on = v === 'caja' ? base.concat('CAJA') : v === 'puertas' ? base.concat('PUERTAS') : v === 'acc' ? base.concat('ACCESORIOS') : v === 'f2' ? base.concat('CAJA', 'PUERTAS') : Object.keys(DR_LAYERS); Object.keys(DR_LAYERS).forEach(k => DRW.vis[k] = on.includes(k)); renderPlansPane(); }
@@ -1121,19 +1241,25 @@ function resizeCanvas(cv) { const r = cv.getBoundingClientRect(), dpr = window.d
 function endpoint(pt) { if (!UI.pend || !pt) return pt; const ortho = !!VIEW.ortho !== !!UI.shift; if (!ortho) return pt; const dx = pt[0] - UI.pend[0], dy = pt[1] - UI.pend[1]; return Math.abs(dx) >= Math.abs(dy) ? [pt[0], UI.pend[1]] : [UI.pend[0], pt[1]]; }
 function draw() {
   if (!M) return; const cv = $('#cv3d');
-  if (cv.offsetParent !== null) { const s = resizeCanvas(cv), ctx = cv.getContext('2d'); ctx.setTransform(s.dpr, 0, 0, s.dpr, 0, 0); m3D(ctx, s.w, s.h, SB, M, CAM, { ceiling: VIEW.ceiling, wall: VIEW.wall, labels: VIEW.labels, doors: VIEW.doors, interior: VIEW.interior, pilares: VIEW.pilares, back: true, sel: UI.sel }); }
-  const pc = $('#cvplan'); if (pc.offsetParent !== null) { const p = resizeCanvas(pc), c2 = pc.getContext('2d'); c2.setTransform(p.dpr, 0, 0, p.dpr, 0, 0); PL = mView(c2, p.w, p.h, SB, M, { doors: VIEW.doors, interior: VIEW.interior, pilares: VIEW.pilares, focus: UI.focus, sel: UI.sel, hoverItem: UI.hoverItem, hover: planHover, user: { tool: UI.tool, pend: UI.pend, hover: UI.hover, snapped: UI.snapped, ep: UI.pend && UI.hover ? endpoint(UI.hover) : null } }, VIEW.bottom); }
+  if (cv.offsetParent !== null) { const s = resizeCanvas(cv), ctx = cv.getContext('2d'); ctx.setTransform(s.dpr, 0, 0, s.dpr, 0, 0); m3D(ctx, s.w, s.h, SB, M, CAM, { ceiling: VIEW.ceiling, wall: VIEW.wall, labels: VIEW.labels, doors: VIEW.doors, interior: VIEW.interior, pilares: VIEW.pilares, handles: VIEW.handles, glass: VIEW.glass, ext: VIEW.ext, glassOpen: VIEW.glassOpen, back: true, sel: UI.sel }); }
+  const pc = $('#cvplan'); if (pc.offsetParent !== null) { const p = resizeCanvas(pc), c2 = pc.getContext('2d'); c2.setTransform(p.dpr, 0, 0, p.dpr, 0, 0); PL = mView(c2, p.w, p.h, SB, M, { doors: VIEW.doors, interior: VIEW.interior, pilares: VIEW.pilares, handles: VIEW.handles, glass: VIEW.glass, ext: VIEW.ext, focus: UI.focus, sel: UI.sel, hoverItem: UI.hoverItem, hover: planHover, user: { tool: UI.tool, pend: UI.pend, hover: UI.hover, snapped: UI.snapped, ep: UI.pend && UI.hover ? endpoint(UI.hover) : null } }, VIEW.bottom); }
 }
 function refreshInfo() {
   const w = $('#warns'); if (!M.warns.length) w.style.display = 'none'; else { w.style.display = 'block'; $('#warnTitle').textContent = '⚠ ' + M.warns.length + ' aviso' + (M.warns.length > 1 ? 's' : ''); $('#warnBody').innerHTML = M.warns.map(x => `<div>⚠ ${esc(x)}</div>`).join(''); applyWarn(); }
   const fs = $('#focusSel'); if (fs) { const want = '<option value="all">Todo</option>' + SB.items.map(i => `<option value="${i.id}">${esc(i.name)}</option>`).join(''); if (fs._o !== want) { fs.innerHTML = want; fs._o = want; } if (UI.focus !== 'all' && !SB.items.some(i => i.id === UI.focus)) UI.focus = 'all'; fs.value = UI.focus; }
-  SB.items.forEach(it => { const sm = $('#sum-' + it.id); if (sm) sm.textContent = `${fmt(it.w)}×${fmt(it.d)}×${fmt(it.h)}`; const cl = $('#calc-' + it.id), inf = M.info[it.id]; if (cl) cl.innerHTML = it.type === 'cuerpo' && inf ? `<b>${inf.N}</b> hueco${inf.N === 1 ? '' : 's'} de <b>${fmt(inf.hueco)}</b> cm libres · alto útil ${fmt(inf.hc)} cm${inf.doors.length ? ' · ' + inf.doors.length + ' hoja' + (inf.doors.length === 1 ? '' : 's') + ' de ' + fmt(inf.doors[0].x1 - inf.doors[0].x0) + ' cm' : ''}` : it.type === 'pilar' ? `Columna terminada: ${fmt((M.ext[it.id] || {}).x1 - (M.ext[it.id] || {}).x0)} × ${fmt((M.ext[it.id] || {}).y1 - (M.ext[it.id] || {}).y0)} cm` : ''; });
+  SB.items.forEach(it => { const sm = $('#sum-' + it.id); if (sm) sm.textContent = `${fmt(it.w)}×${fmt(it.d)}×${fmt(it.h)}`; const cl = $('#calc-' + it.id), inf = M.info[it.id]; if (cl) cl.innerHTML = (it.type === 'tablero' || it.type === 'vidrio') && inf ? `Cara <b>${fmt(inf.face[0])} × ${fmt(inf.face[1])}</b> cm · espesor <b>${fmt(inf.T)}</b> cm (${PLANO_LAB[inf.ax]}) · ${esc(inf.mat.name)}${inf.mat.cut === false ? ' · <span class="muted">fuera del corte</span>' : ''}` : it.type === 'modulo_externo' && inf ? `Módulo comprado ${fmt(it.w)} × ${fmt(it.d)} × ${fmt(it.h)} cm · solo referencia (no entra en el corte)` : it.type === 'cuerpo' && inf ? `<b>${inf.N}</b> hueco${inf.N === 1 ? '' : 's'} de <b>${fmt(inf.hueco)}</b> cm libres · alto útil ${fmt(inf.hc)} cm${inf.doors.length ? ' · ' + inf.doors.length + ' hoja' + (inf.doors.length === 1 ? '' : 's') + ' de ' + fmt(inf.doors[0].x1 - inf.doors[0].x0) + ' cm' : ''}` : it.type === 'pilar' ? `Columna terminada: ${fmt((M.ext[it.id] || {}).x1 - (M.ext[it.id] || {}).x0)} × ${fmt((M.ext[it.id] || {}).y1 - (M.ext[it.id] || {}).y0)} cm` : ''; });
   applyBottom(); const b = M.bb;
   let t = `<div class="okbox">Medidas totales del conjunto: <b>${fmt(b.w)} × ${fmt(b.d)} × ${fmt(b.h)} cm</b> (ancho × fondo × alto)${SB.ceil > 0 ? ' · techo a ' + fmt(SB.ceil) + ' cm' : ''}.</div><table><tr><th>Elemento</th><th>Tipo</th><th>x</th><th>y</th><th>z</th><th>Ancho</th><th>Fondo</th><th>Alto / esp.</th><th>Detalle</th></tr>`;
   SB.items.forEach(it => { const inf = M.info[it.id]; t += `<tr><td><b>${esc(it.name)}</b></td><td>${it.type}</td><td>${fmt(it.x)}</td><td>${fmt(it.y)}</td><td>${fmt(it.z)}</td><td>${fmt(it.w)}</td><td>${fmt(it.d)}</td><td>${fmt(it.h)}</td><td>${it.type === 'cuerpo' && inf ? `${inf.N} huecos de ${fmt(inf.hueco)} cm · ${it.mods} módulo(s)${it.baldas ? ' · ' + it.baldas + ' balda(s)/hueco' : ''}${it.doors !== 'none' ? ' · puertas' : ''}` : it.type === 'pilar' ? 'pladur' + (it.fF || it.fL || it.fR ? ' + forro ' + fmt(it.ft * 10, 0) + ' mm' : '') : ''}</td></tr>`; });
-  t += `</table><div class="hint">Superficie de tablero (sin traseras) ≈ <b>${fmt(M.area, 2)} m²</b> · traseras ≈ <b>${fmt(M.areaBack, 2)} m²</b>.</div>` + (M.warns.length ? `<div class="warnbox">${M.warns.map(x => '⚠ ' + esc(x)).join('<br>')}</div>` : '<div class="okbox">✓ Sin avisos.</div>'); $('#pane-res').innerHTML = t;
-  let q = '<table><tr><th>Fase</th><th>Pieza</th><th>Largo</th><th>Ancho</th><th>Esp.</th><th>Uds</th><th>Notas</th></tr>'; PHASES.forEach(ph => { const rows = M.bom.filter(r => r.grp === ph.id); if (!rows.length) return; q += `<tr class="phrow"><td colspan="7"><b>${esc(ph.label)}</b> <span class="muted">· ${esc(ph.desc)}</span></td></tr>`; rows.forEach(r => q += `<tr><td><span class="phtag ph-${ph.id}">${ph.n} · ${ph.short}</span></td><td>${esc(r.name)}</td><td>${fmt(r.L)}</td><td>${fmt(r.W)}</td><td>${fmt(r.T)}</td><td>${r.qty}</td><td>${esc(r.note)}</td></tr>`); });
-  $('#pane-bom').innerHTML = q + '</table><div class="hint">Medidas en cm. <button class="mini" data-act="bomcsv">Descargar CSV</button> · el plano de corte de cada fase está en la pestaña «✂ Corte».</div>'; scheduleCut(); schedulePlans();
+  const tech = SB.items.filter(it => it.role || (it.machining && it.machining.length) || it.trim_allowance > 0 || it.handle !== 'none' || it.material || it.type === 'vidrio' || it.type === 'modulo_externo');
+  if (tech.length) { t += `</table><div class="sec2">Taller y herrajes por elemento</div><table><tr><th>Elemento</th><th>Material</th><th>Función</th><th>Mecanizados</th><th>Tirador / apertura</th><th>Demasía</th></tr>`; tech.forEach(it => { const inf = M.info[it.id] || {}, mt = inf.mat || matOf(SB, it.material || SB.palette); t += `<tr><td><b>${esc(it.name)}</b></td><td>${esc(mt.name)}${it.type === 'cuerpo' && it.doors !== 'none' && it.doorMat ? '<br><span class="muted">puertas: ' + esc(matOf(SB, it.doorMat).name) + '</span>' : ''}</td><td>${esc(nice(it.role))}</td><td>${esc((it.machining || []).map(nice).join(' · '))}</td><td>${it.type === 'cuerpo' ? esc(HANDLES[it.handle]) + (it.opening_system ? '<br><span class="muted">' + esc(nice(it.opening_system)) + '</span>' : '') : ''}</td><td>${it.trim_allowance > 0 ? fmt(it.trim_allowance * 10, 0) + ' mm' : ''}</td></tr>`; }); }
+  t += `</table><div class="hint">Superficie de tablero (sin traseras ni materiales fuera del corte) ≈ <b>${fmt(M.area, 2)} m²</b> · traseras ≈ <b>${fmt(M.areaBack, 2)} m²</b>.</div>` + (M.warns.length ? `<div class="warnbox">${M.warns.map(x => '⚠ ' + esc(x)).join('<br>')}</div>` : '<div class="okbox">✓ Sin avisos.</div>'); $('#pane-res').innerHTML = t;
+  const matCell = r => r.mname ? esc(r.mname) + (r.mfin ? '<br><span class="muted">' + esc(r.mfin) + '</span>' : '') : '<span class="muted">—</span>';
+  let q = '<table><tr><th>Fase</th><th>Pieza</th><th>Material</th><th>Largo</th><th>Ancho</th><th>Esp.</th><th>Uds</th><th>Notas</th></tr>'; PHASES.forEach(ph => { const rows = M.bom.filter(r => r.grp === ph.id); if (!rows.length) return; q += `<tr class="phrow"><td colspan="8"><b>${esc(ph.label)}</b> <span class="muted">· ${esc(ph.desc)}</span></td></tr>`; rows.forEach(r => q += `<tr><td><span class="phtag ph-${ph.id}">${ph.n} · ${ph.short}</span></td><td>${esc(r.name)}</td><td>${matCell(r)}</td><td>${fmt(r.L)}</td><td>${fmt(r.W)}</td><td>${fmt(r.T)}</td><td>${r.qty}</td><td>${esc(r.note)}</td></tr>`); });
+  const outR = M.bom.filter(r => r.grp === 'ext'); if (outR.length) { q += `<tr class="phrow"><td colspan="8"><b>FUERA DEL CORTE</b> <span class="muted">· inox, vidrio, espejo y módulos comprados: se encargan o se compran aparte (no entran en los tableros)</span></td></tr>`; outR.forEach(r => q += `<tr><td><span class="phtag">fuera</span></td><td>${esc(r.name)}</td><td>${matCell(r)}</td><td>${fmt(r.L)}</td><td>${fmt(r.W)}</td><td>${fmt(r.T)}</td><td>${r.qty}</td><td>${esc(r.note)}</td></tr>`); }
+  q += '</table>'; if (M.hw.length) { q += '<div class="sec2">Herrajes</div><table><tr><th>Herraje</th><th>Uds</th><th>Elemento / nota</th></tr>' + M.hw.map(h => `<tr><td>${esc(h.name)}</td><td>${h.qty}</td><td>${esc(h.note)}</td></tr>`).join('') + '</table>'; }
+  $('#pane-obra').innerHTML = (() => { const rs = SB.raw_site_measurements || {}, ks = Object.keys(rs); let o = '<div class="hint">Medidas reales de obra, tal como se tomaron (sin descontar grosores de tablero). Se guardan dentro del proyecto y sirven de referencia para las piezas de ajuste.</div>'; o += ks.length ? '<table><tr><th>Medida</th><th>Valor (cm)</th></tr>' + ks.map(k => `<tr><td>${esc(nice(k))}</td><td>${Array.isArray(rs[k]) ? rs[k].map(v => fmt(v)).join(' a ') : typeof rs[k] === 'number' ? fmt(rs[k]) : esc(rs[k])}</td></tr>`).join('') + '</table>' : '<div class="muted">Este proyecto no tiene medidas de obra registradas. Pueden venir en el JSON como «raw_site_measurements».</div>'; if ((SB.checks || []).length) o += '<div class="sec2">Comprobaciones</div><table>' + SB.checks.map(c => `<tr><td>${esc(c.label)}</td><td>${esc(c.value)}</td></tr>`).join('') + '</table>'; const tr = SB.items.filter(i => i.trim_allowance > 0); if (tr.length) o += '<div class="sec2">Demasías de ajuste en obra</div><table><tr><th>Pieza</th><th>Demasía</th></tr>' + tr.map(i => `<tr><td>${esc(i.name)}</td><td>${fmt(i.trim_allowance * 10, 0)} mm</td></tr>`).join('') + '</table>'; return o; })();
+  $('#pane-bom').innerHTML = q + '<div class="hint">Medidas en cm. <button class="mini" data-act="bomcsv">Descargar CSV</button> · el plano de corte de cada fase está en la pestaña «✂ Corte».</div>'; scheduleCut(); schedulePlans();
 }
 /* ---------- vista inferior editable ---------- */
 const planPos = e => { const r = $('#cvplan').getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
@@ -1179,7 +1305,7 @@ window.addEventListener('DOMContentLoaded', () => {
   let nw = null; try { nw = lsGet('mueble_v1_new'); if (nw) localStorage.removeItem('mueble_v1_new'); } catch (e) { }
   if (nw && nw.tpl) { S = mNorm(mTemplate(nw.tpl)); currentName = nw.name || ''; UI.sel = null; }
   lastSnap = JSON.stringify(S); $('#projName').value = currentName; if (EMBEDDED) $('#embBanner').style.display = 'block';
-  renderSide(); window.__initCam(); initPlan(); syncView(); refreshTitle(); applyMode(); applyTabs(); applyWarn(); update(); setView('persp'); updHist();
+  renderSide(); window.__initCam(); initPlan(); syncView(); { const gr = $('#glassr'); if (gr) { gr.value = VIEW.glassOpen || 0; $('#glasstxt').textContent = Math.round(VIEW.glassOpen || 0) + '%'; gr.addEventListener('input', () => { VIEW.glassOpen = num(gr.value); $('#glasstxt').textContent = Math.round(VIEW.glassOpen) + '%'; requestDraw(); save(); }); } } refreshTitle(); applyMode(); applyTabs(); applyWarn(); update(); setView('persp'); updHist();
   toast('Pulsa un elemento (en la lista o en la vista) para ver y editar sus cotas.');
 });
 
